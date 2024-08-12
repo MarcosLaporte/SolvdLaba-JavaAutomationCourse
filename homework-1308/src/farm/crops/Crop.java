@@ -10,9 +10,9 @@ public abstract class Crop {
         HARVEST
     }
 
-    int acres;
-    int daysToGrow;
-    GrowthStage currentGrowthStage;
+    public int acres;
+    public int daysToGrow;
+    public GrowthStage currentGrowthStage;
 
     public Crop(int acres, int daysToGrow, GrowthStage currentGrowthStage) {
         this.acres = acres;

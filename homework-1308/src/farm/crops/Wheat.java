@@ -10,8 +10,8 @@ public class Wheat extends Crop {
         SOFT_WHITE
     }
 
-    WheatVariety variety;
-    int mgOfGluten;
+    public WheatVariety variety;
+    public int mgOfGluten;
 
     public Wheat(int acres, int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety, int mgOfGluten) {
         super(acres, daysToGrow, currentGrowthStage);

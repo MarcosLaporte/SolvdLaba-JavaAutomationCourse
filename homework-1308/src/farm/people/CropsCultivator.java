@@ -5,8 +5,8 @@ import farm.crops.Crop;
 import java.util.List;
 
 public class CropsCultivator extends Farmer {
-    List<Crop> cropsInCare;
-    FarmerShift shift;
+    public List<Crop> cropsInCare;
+    public FarmerShift shift;
 
     public CropsCultivator(String fullName, String ssn, float salary, List<Crop> cropsInCare, FarmerShift shift) {
         super(fullName, ssn, salary);

@@ -1,12 +1,12 @@
 package farm.people;
 
 public abstract class Farmer {
-    public enum FarmerType { OWNER, CULTIVATOR, ANIMAL_CARE }
-    public enum FarmerShift { MORNING, EVENING, NIGHT }
+    public enum FarmerType {OWNER, CULTIVATOR, ANIMAL_CARETAKER}
+    public enum FarmerShift {MORNING, EVENING, NIGHT}
 
-    String fullName;
+    public String fullName;
     private String ssn;
-    FarmerType type;
+    public FarmerType type;
     private double annualSalary;
 
     public String getSsn() {

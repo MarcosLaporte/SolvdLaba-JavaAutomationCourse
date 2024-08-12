@@ -3,8 +3,8 @@ package farm.crops;
 public class Tomato extends Crop {
     public enum TomatoVariety {CHERRY, BEEFSTEAK, BRANDYWINE, BETTER_BOY, BIG_BEEF}
 
-    TomatoVariety variety;
-    int yieldPerPlant;
+    public TomatoVariety variety;
+    public int yieldPerPlant;
 
     public Tomato(int acres, int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety, int yieldPerPlant) {
         super(acres, daysToGrow, currentGrowthStage);

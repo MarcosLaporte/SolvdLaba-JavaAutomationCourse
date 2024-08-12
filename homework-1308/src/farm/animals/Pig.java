@@ -3,8 +3,8 @@ package farm.animals;
 public class Pig extends Animal {
     public enum PigPen {NORTH_BARN, SOUTH_BARN, EAST_FIELD, WEST_PASTURE, CENTRAL_STABLE}
 
-    boolean isTrained;
-    PigPen penLocation;
+    public boolean isTrained;
+    public PigPen penLocation;
 
     public Pig(int age, String food, AnimalSex sex, float weight, float height, boolean isTrained, PigPen penLocation) {
         super(age, food, sex, weight, height);

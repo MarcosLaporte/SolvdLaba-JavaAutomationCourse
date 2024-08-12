@@ -6,11 +6,11 @@ public abstract class Animal {
     public enum AnimalSex {F, M}
 
     private int id;
-    int age;
-    String food;
-    AnimalSex sex;
-    float weight;
-    float height;
+    public int age;
+    public String food;
+    public AnimalSex sex;
+    public float weight;
+    public float height;
 
     public int getId() {
         return id;

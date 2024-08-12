@@ -3,8 +3,8 @@ package farm.crops;
 public class Corn extends Crop {
     public enum KernelType {FLINT, FLOUR, DENT, POP, SWEET, WAXY}
 
-    KernelType kernelType;
-    float avgKernelSize;
+    public KernelType kernelType;
+    public float avgKernelSize;
 
     public Corn(int acres, int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType, float avgKernelSize) {
         super(acres, daysToGrow, currentGrowthStage);

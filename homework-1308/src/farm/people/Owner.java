@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Owner extends Farmer {
-    Farm farm;
+    public Farm farm;
     private double netWorth;
     private List<Farmer> employees;
 

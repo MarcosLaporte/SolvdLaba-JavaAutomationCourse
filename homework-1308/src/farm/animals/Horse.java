@@ -1,9 +1,9 @@
 package farm.animals;
 
 public class Horse extends Animal {
-    boolean isForCompetition;
-    float speed;
-    boolean isRideable;
+    public boolean isForCompetition;
+    public float speed;
+    public boolean isRideable;
 
     public Horse(int age, String food, AnimalSex sex, float weight, float height, boolean isForCompetition, float speed, boolean isRideable) {
         super(age, food, sex, weight, height);
