@@ -31,4 +31,9 @@ public abstract class Farmer {
     public Farmer(String fullName, String ssn) {
         this(fullName, ssn, 65000);
     }
+
+    public String toString() {
+        return String.format("| %-16s | %15s | %11s | $%9.2f |\n",
+                this.type, this.fullName, this.ssn, this.annualSalary);
+    }
 }

@@ -8,6 +8,7 @@ public class Tomato extends Crop {
 
     public Tomato(int acres, int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety, int yieldPerPlant) {
         super(acres, daysToGrow, currentGrowthStage);
+        this.type = CropType.TOMATO;
         this.variety = variety;
         this.yieldPerPlant = yieldPerPlant;
     }
@@ -17,6 +18,7 @@ public class Tomato extends Crop {
 
     public Tomato(int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety, int yieldPerPlant) {
         super(daysToGrow, currentGrowthStage);
+        this.type = CropType.TOMATO;
         this.variety = variety;
         this.yieldPerPlant = yieldPerPlant;
     }
@@ -26,6 +28,7 @@ public class Tomato extends Crop {
 
     public Tomato(int acres, int daysToGrow,TomatoVariety variety, int yieldPerPlant) {
         super(acres, daysToGrow);
+        this.type = CropType.TOMATO;
         this.variety = variety;
         this.yieldPerPlant = yieldPerPlant;
     }
@@ -35,6 +38,7 @@ public class Tomato extends Crop {
 
     public Tomato(int daysToGrow,TomatoVariety variety, int yieldPerPlant) {
         super(daysToGrow);
+        this.type = CropType.TOMATO;
         this.variety = variety;
         this.yieldPerPlant = yieldPerPlant;
     }

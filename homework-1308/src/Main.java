@@ -17,6 +17,7 @@ import farm.people.Owner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
@@ -97,7 +98,13 @@ public class Main {
         employees.addAll(cropsCultivators);
         employees.addAll(animalCaretakers);
 
-        Owner owner = new Owner("Mr. Jones", "243-1244-768", 90_000, manorFarm, 750_452.6, employees);
+        Owner owner = new Owner("Mr. Jones", "243-12-5768", 90_000, manorFarm, 750_452.6, employees);
 
+        System.out.println("=================================================================\n");
+        System.out.println(owner.employeesToString());
+        System.out.println("=================================================================\n");
+        System.out.println(cropsCultivators.get(new Random().nextInt(0, cropsCultivators.size())).cropsToString());
+        System.out.println("=================================================================\n");
+        System.out.println(animalCaretakers.get(new Random().nextInt(0, animalCaretakers.size())).animalsToString());
     }
 }

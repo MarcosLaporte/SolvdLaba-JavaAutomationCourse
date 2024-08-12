@@ -1,6 +1,7 @@
 package farm.crops;
 
 public abstract class Crop {
+    public enum CropType {WHEAT, CORN, TOMATO}
     public enum GrowthStage {
         SEEDLING,
         VEGETATIVE,
@@ -10,6 +11,7 @@ public abstract class Crop {
         HARVEST
     }
 
+    public CropType type;
     public int acres;
     public int daysToGrow;
     public GrowthStage currentGrowthStage;
@@ -30,5 +32,10 @@ public abstract class Crop {
 
     public Crop(int daysToGrow) {
         this(10, daysToGrow, GrowthStage.SEEDLING);
+    }
+
+    public String toString() {
+        return String.format("| %-6s | %-5d | %-12d | %-12s |\n",
+                this.type, this.acres, this.daysToGrow, this.currentGrowthStage);
     }
 }

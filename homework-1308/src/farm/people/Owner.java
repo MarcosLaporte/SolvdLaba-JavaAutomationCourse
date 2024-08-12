@@ -37,4 +37,18 @@ public class Owner extends Farmer {
         this.employees = employees;
     }
 
+    public String employeesToString() {
+        Iterator<Farmer> it = this.employees.iterator();
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString());
+        sb.append(String.format("| %-16s | %-15s | %-11s | %-10s |\n",
+                "TYPE", "FULL NAME", "SSN", "SALARY"));
+        sb.append("+------------------+-----------------+-------------+------------+\n");
+        while (it.hasNext()) {
+            sb.append(it.next());
+        }
+        sb.append("+------------------+-----------------+-------------+------------+\n");
+
+        return sb.toString();
+    }
 }

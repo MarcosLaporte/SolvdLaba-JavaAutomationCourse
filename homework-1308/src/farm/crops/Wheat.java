@@ -15,6 +15,7 @@ public class Wheat extends Crop {
 
     public Wheat(int acres, int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety, int mgOfGluten) {
         super(acres, daysToGrow, currentGrowthStage);
+        this.type = CropType.WHEAT;
         this.variety = variety;
         this.mgOfGluten = mgOfGluten;
     }
@@ -24,6 +25,7 @@ public class Wheat extends Crop {
 
     public Wheat(int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety, int mgOfGluten) {
         super(daysToGrow, currentGrowthStage);
+        this.type = CropType.WHEAT;
         this.variety = variety;
         this.mgOfGluten = mgOfGluten;
     }
@@ -33,6 +35,7 @@ public class Wheat extends Crop {
 
     public Wheat(int acres, int daysToGrow, WheatVariety variety, int mgOfGluten) {
         super(acres, daysToGrow);
+        this.type = CropType.WHEAT;
         this.variety = variety;
         this.mgOfGluten = mgOfGluten;
     }
@@ -42,6 +45,7 @@ public class Wheat extends Crop {
 
     public Wheat(int daysToGrow, WheatVariety variety, int mgOfGluten) {
         super(daysToGrow);
+        this.type = CropType.WHEAT;
         this.variety = variety;
         this.mgOfGluten = mgOfGluten;
     }

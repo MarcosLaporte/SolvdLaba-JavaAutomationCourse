@@ -8,6 +8,7 @@ public class Corn extends Crop {
 
     public Corn(int acres, int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType, float avgKernelSize) {
         super(acres, daysToGrow, currentGrowthStage);
+        this.type = CropType.CORN;
         this.kernelType = kernelType;
         this.avgKernelSize = avgKernelSize;
     }
@@ -17,6 +18,7 @@ public class Corn extends Crop {
 
     public Corn(int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType, float avgKernelSize) {
         super(daysToGrow, currentGrowthStage);
+        this.type = CropType.CORN;
         this.kernelType = kernelType;
         this.avgKernelSize = avgKernelSize;
     }
@@ -26,6 +28,7 @@ public class Corn extends Crop {
 
     public Corn(int acres, int daysToGrow, KernelType kernelType, float avgKernelSize) {
         super(acres, daysToGrow);
+        this.type = CropType.CORN;
         this.kernelType = kernelType;
         this.avgKernelSize = avgKernelSize;
     }
@@ -35,6 +38,7 @@ public class Corn extends Crop {
 
     public Corn(int daysToGrow, KernelType kernelType, float avgKernelSize) {
         super(daysToGrow);
+        this.type = CropType.CORN;
         this.kernelType = kernelType;
         this.avgKernelSize = avgKernelSize;
     }
