@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Farm {
-    String name;
-    String location;
-    float size;
-    List<Animal> animals;
-    List<Crop> crops;
+    public String name;
+    public String location;
+    public float size;
+    public List<Animal> animals;
+    public List<Crop> crops;
 
     public Farm(String name, String location, float size, List<Animal> animals, List<Crop> crops) {
         this.name = name;

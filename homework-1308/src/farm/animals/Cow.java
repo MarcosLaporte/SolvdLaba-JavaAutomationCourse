@@ -1,7 +1,7 @@
 package farm.animals;
 
 public class Cow extends Animal {
-    boolean producesMilk;
+    public boolean producesMilk;
     public float milkProduction; //Only if producesMilk is true
 
     public Cow(int age, String food, AnimalSex sex, float weight, float height, boolean producesMilk, float milkProduction) {

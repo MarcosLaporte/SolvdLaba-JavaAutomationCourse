@@ -1,19 +1,8 @@
 import farm.Farm;
 
-import farm.animals.Animal;
-import farm.animals.Cow;
-import farm.animals.Horse;
-import farm.animals.Pig;
-
-import farm.crops.Corn;
-import farm.crops.Crop;
-import farm.crops.Tomato;
-import farm.crops.Wheat;
-
-import farm.people.AnimalCaretaker;
-import farm.people.CropsCultivator;
-import farm.people.Farmer;
-import farm.people.Owner;
+import farm.animals.*;
+import farm.crops.*;
+import farm.people.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,28 +72,37 @@ public class Main {
 
         /* FARMERS */
         List<CropsCultivator> cropsCultivators = new ArrayList<>();
-        cropsCultivators.add(new CropsCultivator("John Doe", "123-45-6789", 72000, crops1, Farmer.FarmerShift.MORNING));
-        cropsCultivators.add(new CropsCultivator("Jane Smith", "987-65-4321", crops2, Farmer.FarmerShift.EVENING));
-        cropsCultivators.add(new CropsCultivator("Jim Beam", "112-23-3445", 67000, crops3));
-        cropsCultivators.add(new CropsCultivator("Anna Belle", "223-34-4556", crops4));
+        cropsCultivators.add(new CropsCultivator("Jane Smith", "987-65-4321", 45, Employee.WorkShift.EVENING, crops2, 265));
+        cropsCultivators.add(new CropsCultivator("John Doe", "123-45-6789", 50, 72000, Employee.WorkShift.NIGHT, crops1, 0));
+        cropsCultivators.add(new CropsCultivator("Jim Beam", "112-23-3445", 34, 67000, crops3, 200));
+        cropsCultivators.add(new CropsCultivator("Anna Belle", "223-34-4556", 67, crops4, 360));
 
         List<AnimalCaretaker> animalCaretakers = new ArrayList<>();
-        animalCaretakers.add(new AnimalCaretaker("Tom Farmer", "334-55-6677", 68000, animals1, Farmer.FarmerShift.MORNING));
-        animalCaretakers.add(new AnimalCaretaker("Sara Green", "445-66-7788", animals2, Farmer.FarmerShift.EVENING));
-        animalCaretakers.add(new AnimalCaretaker("Bob White", "556-77-8899", 71000, animals3));
-        animalCaretakers.add(new AnimalCaretaker("Linda Blue", "667-88-9900", animals4));
+        animalCaretakers.add(new AnimalCaretaker("Tom Farmer", "334-55-6677", 31, 68000, Employee.WorkShift.MORNING, animals1, false));
+        animalCaretakers.add(new AnimalCaretaker("Sara Green", "445-66-7788", 53, Employee.WorkShift.EVENING, animals2, true));
+        animalCaretakers.add(new AnimalCaretaker("Bob White", "556-77-8899", 42, 71000, animals3, true));
+        animalCaretakers.add(new AnimalCaretaker("Linda Blue", "667-88-9900", 28, animals4, false));
 
-        List<Farmer> employees = new ArrayList<>();
+        List<Employee> employees = new ArrayList<>();
         employees.addAll(cropsCultivators);
         employees.addAll(animalCaretakers);
 
-        Owner owner = new Owner("Mr. Jones", "243-12-5768", 90_000, manorFarm, 750_452.6, employees);
+        Owner owner = new Owner("Mr. Jones", "243-12-5768", 74, manorFarm, 750_452.6, employees);
 
-        System.out.println("=================================================================\n");
         System.out.println(owner.employeesToString());
-        System.out.println("=================================================================\n");
-        System.out.println(cropsCultivators.get(new Random().nextInt(0, cropsCultivators.size())).cropsToString());
-        System.out.println("=================================================================\n");
-        System.out.println(animalCaretakers.get(new Random().nextInt(0, animalCaretakers.size())).animalsToString());
+
+        CropsCultivator randCultivator = cropsCultivators.get(
+                new Random().nextInt(0, cropsCultivators.size())
+        );
+        System.out.println(
+                randCultivator.cropsToString()
+        );
+
+        AnimalCaretaker randAnimalCare = animalCaretakers.get(
+                new Random().nextInt(0, animalCaretakers.size())
+        );
+        System.out.println(
+                randAnimalCare.animalsToString()
+        );
     }
 }
