@@ -3,6 +3,7 @@ package farm.animals;
 import farm.Good;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public abstract class Animal {
@@ -40,7 +41,6 @@ public abstract class Animal {
     public AnimalSex sex;
     public float weightInKg;
     public float heightInCm;
-    protected static String producedGoods;
 
     private Animal mother;
     private Animal father;
@@ -48,10 +48,11 @@ public abstract class Animal {
     public int getId() {
         return id;
     }
-
-    public String getProducedGoods() {
-        return producedGoods;
+    public long getAge() {
+        return ChronoUnit.YEARS.between(this.dateOfBirth, LocalDate.now());
     }
+
+    public abstract String getProducedGoods();
 
     public Animal getMother() {
         return mother;
@@ -98,6 +99,23 @@ public abstract class Animal {
         for (Animal an : list) {
             sb.append(an);
             sb.append("-----------------------------------\n");
+        }
+
+        return sb.toString();
+    }
+
+    public static String toTable(List<Animal> list) {
+        if (list.isEmpty()) return "No animals in the list.\n";
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("+---------+------+-----+------------+-----+-----------+-----------+\n");
+        sb.append(String.format("| %-7s | %-4s | %-3s | %-10s | %3s | %-9s | %-9s |\n",
+                "SPECIES", "ID", "AGE", "FOOD", "SEX", "WEIGHT", "HEIGHT"));
+        sb.append("+---------+------+-----+------------+-----+-----------+-----------+\n");
+        for (Animal an : list) {
+            sb.append(String.format("| %-7s | %-4d | %-3d | %-10s | %-3s | %-6.2f kg | %-6.2f cm |\n",
+                    an.species, an.id, an.getAge(), an.food, an.sex, an.weightInKg, an.heightInCm));
+            sb.append("+---------+------+-----+------------+-----+-----------+-----------+\n");
         }
 
         return sb.toString();

@@ -10,11 +10,20 @@ import java.util.Objects;
 public class Farm {
     public String name;
     public String location;
-    public float size;
+    public float size; //
     public List<Animal> animals;
     public List<Crop> crops;
     public List<Good> stock;
     public List<Good> soldGoods;
+
+    public float getTotalValueSold() {
+        float total = 0;
+        for (Good gd : this.soldGoods) {
+            total += gd.getTotalValue();
+        }
+
+        return total;
+    }
 
     public Farm(String name, String location, float size, List<Animal> animals, List<Crop> crops, List<Good> stock, List<Good> soldGoods) {
         this.name = name;
@@ -44,7 +53,7 @@ public class Farm {
     public List<Animal> addAnimal(Animal animal) {
         for (Animal an : this.animals) {
             if (an.equals(animal))
-                return List.copyOf(this.animals); //TODO: Thrown exception
+                return List.copyOf(this.animals); //TODO: Throw exception
         }
 
         this.animals.add(animal);
@@ -55,7 +64,7 @@ public class Farm {
     public List<Crop> addCrop(Crop crop) {
         for (Crop cr : this.crops) {
             if (cr.equals(crop))
-                return List.copyOf(this.crops); //TODO: Thrown exception
+                return List.copyOf(this.crops); //TODO: Throw exception
         }
 
         this.crops.add(crop);
@@ -64,14 +73,25 @@ public class Farm {
     }
 
     public String toString() {
-        return "Name: " + this.name + "\nLocation: " + this.location + "\nSize: " + this.size + "ac\n" +
+        return "Name: " + this.name + "\nLocation: " + this.location + "\nSize: " + this.size + " acres\n" +
                 "\n=========CROPS=========\n" +
-                Crop.toString(this.crops) +
+                Crop.toTable(this.crops) +
                 "\n========ANIMALS========\n" +
-                Animal.toString(this.animals) +
+                Animal.toTable(this.animals) +
                 "\n=========GOODS=========\n" +
                 Good.toString(this.stock) +
                 "\n======SOLD GOODS=======\n" +
-                Good.toString(this.soldGoods);
+                Good.toString(this.soldGoods) +
+                "Total sold: $" + this.getTotalValueSold();
+    }
+
+    public float sellGood(Good goodToSell) throws Exception {
+        if (!this.stock.contains(goodToSell))
+            throw new Exception("This good does not exist in farm's stock.");
+
+        this.soldGoods.add(goodToSell);
+        this.stock.remove(goodToSell);
+
+        return goodToSell.getTotalValue();
     }
 }

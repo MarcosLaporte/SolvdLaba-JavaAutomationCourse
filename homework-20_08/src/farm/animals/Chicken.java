@@ -62,12 +62,11 @@ public class Chicken extends Animal {
     private int eggPerDay; //Only if Animal.Sex == F
     private EggSize eggSize; //Only if Animal.Sex == F
     public CoopLocation coopLocation;
-    static {
-        producedGoods = "EGGS";
-    }
+    protected static String producedGoods = "EGGS";
 
+    @Override
     public String getProducedGoods() {
-        return this.sex == AnimalSex.F ? producedGoods : "";
+        return this.sex == AnimalSex.F ? producedGoods : "NONE";
     }
 
     public int getEggPerDay() {

@@ -30,12 +30,16 @@ public class Sheep extends Animal {
             }
 
             return sb.toString();
-        }}
+        }
+    }
 
     public boolean isTrained;
     public WoolType woolType;
-    static {
-        producedGoods = "WOOL";
+    protected static String producedGoods = "WOOL";
+
+    @Override
+    public String getProducedGoods() {
+        return producedGoods;
     }
 
     public Sheep(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean isTrained, WoolType woolType) {

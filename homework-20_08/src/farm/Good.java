@@ -1,7 +1,5 @@
 package farm;
 
-import farm.crops.Crop; //TODO: Implement this
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
@@ -24,6 +22,14 @@ public class Good {
     public LocalDate productionDate;
     protected float unitValue;
 
+    public void setUnitValue(float unitValue) {
+        this.unitValue = unitValue;
+    }
+
+    public float getTotalValue() {
+        return this.unitValue * this.quantity;
+    }
+
     public Good(String type, float quantity, String unitOfMeasure, GoodsQuality quality, LocalDate productionDate, float unitValue) {
         this.type = type;
         this.quantity = quantity;
@@ -38,8 +44,8 @@ public class Good {
     }
 
     public String toString() {
-        return String.format("Type='%s'\nQuantity=%.2f %s\nQuality='%s'\nProduction Date=%s\nUnit value: %f.2\n",
-                this.type, this.quantity, this.unitOfMeasure, this.quality, this.productionDate, this.unitValue);
+        return String.format("Type: '%s'\nQuantity: %.2f %s\nQuality: '%s'\nProduction Date: %s\nUnit value: %.2f\nTotal value: %.2f\n",
+                this.type, this.quantity, this.unitOfMeasure, this.quality, this.productionDate, this.unitValue, this.getTotalValue());
     }
 
     public static String toString(List<Good> list) {

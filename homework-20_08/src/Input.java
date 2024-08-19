@@ -5,30 +5,48 @@ import java.util.Scanner;
 
 public abstract class Input {
     private static final Scanner SCANNER = new Scanner(System.in);
-
     static {
         SCANNER.useLocale(Locale.US);
     }
 
     static int readInt(String msg, String errorMsg, int min, int max) {
-        final Scanner SCANNER = new Scanner(System.in);
         System.out.print(msg);
-        int inputNumber = SCANNER.nextInt();
-        while (inputNumber < min || inputNumber > max) {
-            System.out.print(errorMsg);
-            inputNumber = SCANNER.nextInt();
-        }
+        int inputNumber = min;
+        boolean isValid = false;
+
+        do {
+            try {
+                inputNumber = SCANNER.nextInt();
+                if (inputNumber < min || inputNumber > max)
+                    throw new Exception("Value out of bounds.");
+
+                isValid = true;
+            } catch (Exception e) {
+                System.out.print(errorMsg);
+                SCANNER.next();
+            }
+        } while (!isValid);
 
         return inputNumber;
     }
 
     static float readFloat(String msg, String errorMsg, float min, float max) {
         System.out.print(msg);
-        float inputNumber = SCANNER.nextFloat();
-        while (inputNumber < min || inputNumber > max) {
-            System.out.print(errorMsg);
-            inputNumber = SCANNER.nextFloat();
-        }
+        float inputNumber = min;
+        boolean isValid = false;
+
+        do {
+            try {
+                inputNumber = SCANNER.nextFloat();
+                if (inputNumber < min || inputNumber > max)
+                    throw new Exception("Value out of bounds.");
+
+                isValid = true;
+            } catch (Exception e) {
+                System.out.print(errorMsg);
+                SCANNER.next();
+            }
+        } while (!isValid);
 
         return inputNumber;
     }
@@ -37,7 +55,7 @@ public abstract class Input {
         System.out.print(msg);
         char inputChar = Character.toUpperCase(SCANNER.next().charAt(0));
         while (!contains(availableValues, inputChar)) {
-            System.out.println(errorMsg);
+            System.out.print(errorMsg);
             inputChar = Character.toUpperCase(SCANNER.next().charAt(0));
         }
 
@@ -48,7 +66,7 @@ public abstract class Input {
         System.out.print(msg);
         String inputStr = SCANNER.next();
         while (!contains(availableValues, inputStr)) {
-            System.out.println(errorMsg);
+            System.out.print(errorMsg);
             inputStr = SCANNER.next();
         }
 

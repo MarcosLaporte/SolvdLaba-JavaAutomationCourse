@@ -8,8 +8,11 @@ import java.util.Random;
 public class Cow extends Animal {
     public boolean producesMilk;
     public float milkProduction; //Only if producesMilk is true
-    static {
-        producedGoods = "MILK";
+    protected static String producedGoods = "MILK";
+
+    @Override
+    public String getProducedGoods() {
+        return producedGoods;
     }
 
     public Cow(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean producesMilk, float milkProduction) {
@@ -63,7 +66,7 @@ public class Cow extends Animal {
     @Override
     public Good produceGoods() {
         final Random RANDOM = new Random();
-
+        //TODO: Throw exception if cow.sex == M
         return new Good(
                 this.getProducedGoods(),
                 RANDOM.nextFloat(20, 30),
