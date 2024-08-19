@@ -62,7 +62,7 @@ public class Chicken extends Animal {
     private int eggPerDay; //Only if Animal.Sex == F
     private EggSize eggSize; //Only if Animal.Sex == F
     public CoopLocation coopLocation;
-    protected static String producedGoods = "EGGS";
+    protected final static String producedGoods = "EGGS";
 
     @Override
     public String getProducedGoods() {
@@ -131,9 +131,11 @@ public class Chicken extends Animal {
     }
 
     @Override
-    public Good produceGoods() {
-        final Random RANDOM = new Random();
+    public Good produceGoods() throws Exception {
+        if (this.sex == AnimalSex.M)
+            throw new Exception("Roosters do not lay eggs.");
 
+        final Random RANDOM = new Random();
         return new Good(
                 this.getProducedGoods(),
                 RANDOM.nextInt(9, 12),

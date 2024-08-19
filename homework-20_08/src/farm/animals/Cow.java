@@ -8,7 +8,7 @@ import java.util.Random;
 public class Cow extends Animal {
     public boolean producesMilk;
     public float milkProduction; //Only if producesMilk is true
-    protected static String producedGoods = "MILK";
+    protected final static String producedGoods = "MILK";
 
     @Override
     public String getProducedGoods() {
@@ -64,9 +64,11 @@ public class Cow extends Animal {
     }
 
     @Override
-    public Good produceGoods() {
+    public Good produceGoods() throws Exception {
+        if (!this.producesMilk)
+            throw new Exception("This cow does not produce milk.");
+
         final Random RANDOM = new Random();
-        //TODO: Throw exception if cow.sex == M
         return new Good(
                 this.getProducedGoods(),
                 RANDOM.nextFloat(20, 30),

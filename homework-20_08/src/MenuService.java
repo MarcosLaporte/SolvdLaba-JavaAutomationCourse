@@ -12,6 +12,7 @@ import farm.crops.Wheat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class MenuService {
     enum Menu {
@@ -112,8 +113,12 @@ public class MenuService {
         }
 
         System.out.println("Getting the " + chosenAn.species + " ready...");
-        farm.stock.add(chosenAn.produceGoods());
-        System.out.println(chosenAn.getProducedGoods() + " added to stock!");
+        try {
+            farm.stock.add(chosenAn.produceGoods());
+            System.out.println(chosenAn.getProducedGoods() + " added to stock!");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static void manageHarvest(Farm farm) {

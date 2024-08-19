@@ -35,7 +35,7 @@ public class Sheep extends Animal {
 
     public boolean isTrained;
     public WoolType woolType;
-    protected static String producedGoods = "WOOL";
+    protected final static String producedGoods = "WOOL";
 
     @Override
     public String getProducedGoods() {

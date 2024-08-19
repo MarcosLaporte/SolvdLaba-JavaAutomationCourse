@@ -150,5 +150,5 @@ public abstract class Animal {
         return children;
     }
 
-    public abstract Good produceGoods();
+    public abstract Good produceGoods() throws Exception;
 }
