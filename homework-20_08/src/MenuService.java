@@ -122,7 +122,7 @@ public class MenuService {
     }
 
     public static void manageHarvest(Farm farm) {
-        Crop chosenCr = chooseCrop(farm.crops);
+        Crop chosenCr = chooseCropToHarvest(farm.crops);
         if (chosenCr == null) {
             System.out.println("Back to main menu...");
             return;
@@ -445,19 +445,20 @@ public class MenuService {
         return new Tomato(cropData.acres, cropData.daysToGrow, cropData.currentGrowthStage, auxTomatoVariety, auxYieldPerPlant);
     }
 
-    public static Crop chooseCrop(List<Crop> list) {
-        if (list.isEmpty()) {
-            System.out.println("No crops in the list.");
+    public static Crop chooseCropToHarvest(List<Crop> list) {
+        Stream<Crop> harvestStream = list.stream().filter(cr -> cr.currentGrowthStage == Crop.GrowthStage.HARVEST);
+        List<Crop> finalList = harvestStream.toList();
+
+        if (finalList.isEmpty()) {
+            System.out.println("No crops to harvest in the list.");
             return null;
         }
         StringBuilder sb = new StringBuilder();
         sb.append("\n0. GO BACK\n");
         int index = 1;
 
-        for (Crop cr : list) {
-            if (cr.currentGrowthStage != Crop.GrowthStage.HARVEST) continue;
-
-            sb.append(String.format("%d. %s - %f acres\n", index, cr.type, cr.acres));
+        for (Crop cr : finalList) {
+            sb.append(String.format("%d. %s - %.2f acres\n", index, cr.type, cr.acres));
             index++;
         }
 
@@ -468,7 +469,7 @@ public class MenuService {
         );
 
         if (chosenOpt == 0) return null;
-        return list.get(chosenOpt - 1);
+        return finalList.get(chosenOpt - 1);
     }
 
     /*---------------GOODS---------------*/
