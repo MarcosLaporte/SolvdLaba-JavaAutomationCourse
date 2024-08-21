@@ -10,11 +10,27 @@ import java.util.Objects;
 public class Farm {
     public String name;
     public String location;
-    public float size; //
-    public List<Animal> animals;
-    public List<Crop> crops;
-    public List<Good> stock;
-    public List<Good> soldGoods;
+    public float size;
+    protected List<Animal> animals;
+    protected List<Crop> crops;
+    protected List<Good> stock;
+    protected List<Good> soldGoods;
+
+    public List<Animal> getAnimals() {
+        return List.copyOf(animals);
+    }
+
+    public List<Crop> getCrops() {
+        return List.copyOf(crops);
+    }
+
+    public List<Good> getSoldGoods() {
+        return List.copyOf(soldGoods);
+    }
+
+    public List<Good> getStock() {
+        return List.copyOf(stock);
+    }
 
     public float getTotalValueSold() {
         float total = 0;
@@ -66,48 +82,42 @@ public class Farm {
         return this.hashCode() == obj.hashCode();
     }
 
-    public List<Animal> addAnimal(Animal animal) {
+    public void addAnimal(Animal animal) throws Exception {
         for (Animal an : this.animals) {
             if (an.equals(animal))
-                return List.copyOf(this.animals); //TODO: Throw exception
+                throw new Exception("Animal already exists in list.");
         }
 
         this.animals.add(animal);
-
-        return List.copyOf(this.animals);
     }
 
-    public List<Crop> addCrop(Crop crop) {
+    public void addCrop(Crop crop) throws Exception {
         for (Crop cr : this.crops) {
             if (cr.equals(crop))
-                return List.copyOf(this.crops); //TODO: Throw exception
+                throw new Exception("Crop already exists in list.");
         }
 
         this.crops.add(crop);
-
-        return List.copyOf(this.crops);
     }
 
-    public String toString() {
-        return "Name: " + this.name + "\nLocation: " + this.location + "\nSize: " + this.size + " acres\n" +
-                "\n=========CROPS=========\n" +
-                Crop.toTable(this.crops) +
-                "\n========ANIMALS========\n" +
-                Animal.toTable(this.animals) +
-                "\n=========GOODS=========\n" +
-                Good.toString(this.stock) +
-                "\n======SOLD GOODS=======\n" +
-                Good.toString(this.soldGoods) +
-                "Total sold: $" + this.getTotalValueSold();
+    private void addGood(Good good, List<Good> goodsList) throws Exception {
+        for (Good gd : goodsList) {
+            if (gd.equals(good))
+                throw new Exception("Good already exists in list.");
+        }
+
+        goodsList.add(good);
     }
 
-    public float sellGood(Good goodToSell) throws Exception {
+    public void addGoodToStock(Good good) throws Exception {
+        this.addGood(good, this.stock);
+    }
+
+    public void sellGood(Good goodToSell) throws Exception {
         if (!this.stock.contains(goodToSell))
             throw new Exception("This good does not exist in farm's stock.");
 
-        this.soldGoods.add(goodToSell);
+        addGood(goodToSell, this.soldGoods);
         this.stock.remove(goodToSell);
-
-        return goodToSell.getTotalValue();
     }
 }

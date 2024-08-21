@@ -78,7 +78,11 @@ public class MenuService {
             default -> throw new IllegalStateException("Unexpected value: " + innerMenuOption);
         };
 
-        farm.addAnimal(newAnimal);
+        try {
+            farm.addAnimal(newAnimal);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         System.out.println(newAnimal.getClass().getSimpleName() + " created successfully!");
     }
 
@@ -101,12 +105,16 @@ public class MenuService {
             default -> throw new IllegalStateException("Unexpected value: " + innerMenuOption);
         };
 
-        farm.addCrop(newCrop);
-        System.out.println(newCrop.getClass().getSimpleName() + " created successfully!");
+        try {
+            farm.addCrop(newCrop);
+            System.out.println(newCrop.type + " created successfully!");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static void manageAnimalGoods(Farm farm) {
-        Animal chosenAn = chooseAnimal(farm.animals);
+        Animal chosenAn = chooseAnimal(farm.getAnimals());
         if (chosenAn == null) {
             System.out.println("Back to main menu...");
             return;
@@ -114,7 +122,7 @@ public class MenuService {
 
         System.out.println("Getting the " + chosenAn.species + " ready...");
         try {
-            farm.stock.add(chosenAn.produceGoods());
+            farm.addGoodToStock(chosenAn.produceGoods());
             System.out.println(chosenAn.getProducedGoods() + " added to stock!");
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -122,7 +130,7 @@ public class MenuService {
     }
 
     public static void manageHarvest(Farm farm) {
-        Crop chosenCr = chooseCropToHarvest(farm.crops);
+        Crop chosenCr = chooseCropToHarvest(farm.getCrops());
         if (chosenCr == null) {
             System.out.println("Back to main menu...");
             return;
@@ -139,7 +147,7 @@ public class MenuService {
             );
             harvestedCrop.setUnitValue(unitValue);
 
-            farm.stock.add(harvestedCrop);
+            farm.addGoodToStock(harvestedCrop);
             System.out.println(harvestedCrop.type + " added to stock!");
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -147,12 +155,12 @@ public class MenuService {
     }
 
     public static void breedAnimals(Farm farm) {
-        Animal animal1 = chooseAnimal(farm.animals);
+        Animal animal1 = chooseAnimal(farm.getAnimals());
         if (animal1 == null) {
             System.out.println("Back to main menu...");
             return;
         }
-        Animal animal2 = chooseAnimal(farm.animals);
+        Animal animal2 = chooseAnimal(farm.getAnimals());
         if (animal2 == null) {
             System.out.println("Back to main menu...");
             return;
@@ -170,7 +178,7 @@ public class MenuService {
     }
 
     public static void sellGoods(Farm farm) {
-        Good chosenGood = chooseGood(farm.stock);
+        Good chosenGood = chooseGood(farm.getStock());
         if (chosenGood == null) {
             System.out.println("Back to main menu...");
             return;
