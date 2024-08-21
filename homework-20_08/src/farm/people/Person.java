@@ -31,8 +31,8 @@ public abstract class Person {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
 
-        Employee emp = (Employee) obj;
-        return this.ssn.equals(emp.getSsn());
+        Person person = (Person) obj;
+        return this.ssn.equals(person.getSsn());
     }
 
     @Override
