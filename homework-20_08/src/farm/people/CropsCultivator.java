@@ -32,6 +32,7 @@ public class CropsCultivator extends Employee {
         this.lastHarvestYield = lastHarvestYield;
     }
 
+    @Override
     public String toString() {
         return String.format("| %-16s | %15s | %11s | $%9.2f | %-3d |\n",
                 this.type, this.fullName, this.getSsn(), this.getAnnualSalary(), this.lastHarvestYield);

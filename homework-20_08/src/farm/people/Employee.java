@@ -35,5 +35,6 @@ public abstract class Employee extends Person {
         this(fullName, ssn, age, 65000, WorkShift.MORNING, type);
     }
 
+    @Override
     public abstract String toString();
 }

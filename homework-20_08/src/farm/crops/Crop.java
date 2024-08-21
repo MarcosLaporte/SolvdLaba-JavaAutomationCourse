@@ -73,6 +73,7 @@ public abstract class Crop {
         this(type, 10, daysToGrow, GrowthStage.SEEDLING);
     }
 
+    @Override
     public String toString() {
         return "Type: " + this.type + "\n" +
                 "Acres: " + this.acres + "ac\n" +

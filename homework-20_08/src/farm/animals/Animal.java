@@ -34,7 +34,7 @@ public abstract class Animal {
         }
     }
 
-    public Species species;
+    public final Species species;
     private final int id;
     private final LocalDate dateOfBirth;
     public String food;
@@ -82,6 +82,7 @@ public abstract class Animal {
         this(species, new Random().nextInt(1, 9999), dateOfBirth, food, sex, weightInKg, heightInCm);
     }
 
+    @Override
     public String toString() {
         return "Species: " + this.species + "\n" +
                 "ID: " + this.id + "\n" +
@@ -121,6 +122,7 @@ public abstract class Animal {
         return sb.toString();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
@@ -129,6 +131,7 @@ public abstract class Animal {
         return id == animal.id;
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(this.species, this.id);
     }

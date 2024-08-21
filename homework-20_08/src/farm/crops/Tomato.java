@@ -78,7 +78,7 @@ public class Tomato extends Crop {
         final Random RANDOM = new Random();
 
         this.currentGrowthStage = GrowthStage.HARVESTED;
-        int plantsAmount = RANDOM.nextInt(4000, 6000) * ((int) this.acres);
+        int plantsAmount = (int)(RANDOM.nextInt(4000, 5000) * this.acres);
         int quantity = this.yieldPerPlant * plantsAmount;
         return new Good("Tomato", quantity, "Unit", Good.GoodsQuality.getRandomQuality(), LocalDate.now(), unitValue);
     }

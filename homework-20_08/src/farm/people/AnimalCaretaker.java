@@ -32,6 +32,7 @@ public class AnimalCaretaker extends Employee {
         this.isVetCertified = isVetCertified;
     }
 
+    @Override
     public String toString() {
         return String.format("| %-16s | %15s | %11s | $%9.2f |  %c  |\n",
                 this.type, this.fullName, this.getSsn(), this.getAnnualSalary(), this.isVetCertified ? 'Y' : 'N');

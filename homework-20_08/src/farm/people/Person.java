@@ -20,11 +20,13 @@ public abstract class Person {
         this.age = age;
     }
 
+    @Override
     public String toString() {
         return String.format("| %15s | %11s | $%3d |\n",
                 this.fullName, this.ssn, this.age);
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
@@ -33,9 +35,8 @@ public abstract class Person {
         return this.ssn.equals(emp.getSsn());
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(this.getClass(), this.ssn);
     }
-
-    
 }
