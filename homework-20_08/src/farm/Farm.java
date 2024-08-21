@@ -39,10 +39,26 @@ public class Farm {
         this(name, location, size, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
+    @Override
+    public String toString() {
+        return "Name: " + this.name + "\nLocation: " + this.location + "\nSize: " + this.size + " acres\n" +
+                "\n=========CROPS=========\n" +
+                Crop.toTable(this.crops) +
+                "\n========ANIMALS========\n" +
+                Animal.toTable(this.animals) +
+                "\n=========GOODS=========\n" +
+                Good.toTable(this.stock) +
+                "\n======SOLD GOODS=======\n" +
+                Good.toTable(this.soldGoods) +
+                "Total sold: $" + this.getTotalValueSold();
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(this.name, this.location);
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
