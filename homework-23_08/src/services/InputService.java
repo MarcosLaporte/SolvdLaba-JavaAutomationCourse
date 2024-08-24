@@ -1,15 +1,17 @@
+package services;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Scanner;
 
-public abstract class Input {
+public abstract class InputService {
     private static final Scanner SCANNER = new Scanner(System.in);
     static {
         SCANNER.useLocale(Locale.US);
     }
 
-    static int readInt(String msg, String errorMsg, int min, int max) {
+    public static int readInt(String msg, String errorMsg, int min, int max) {
         System.out.print(msg);
         int inputNumber = min;
         boolean isValid = false;
@@ -30,7 +32,7 @@ public abstract class Input {
         return inputNumber;
     }
 
-    static float readFloat(String msg, String errorMsg, float min, float max) {
+    public static float readFloat(String msg, String errorMsg, float min, float max) {
         System.out.print(msg);
         float inputNumber = min;
         boolean isValid = false;
@@ -51,7 +53,7 @@ public abstract class Input {
         return inputNumber;
     }
 
-    static char readCharInValues(String msg, String errorMsg, char[] availableValues) {
+    public static char readCharInValues(String msg, String errorMsg, char[] availableValues) {
         System.out.print(msg);
         char inputChar = Character.toUpperCase(SCANNER.next().charAt(0));
         while (!contains(availableValues, inputChar)) {
@@ -60,6 +62,19 @@ public abstract class Input {
         }
 
         return inputChar;
+    }
+
+    public static String readString(String msg, int minLength, int maxLength) {
+        System.out.print(msg);
+        String inputStr = SCANNER.nextLine();
+        while (inputStr.length() < minLength) {
+            System.out.print("Minimum length is " + minLength + " characters.\nTry again: ");
+            inputStr = SCANNER.nextLine();
+        }
+        if (inputStr.length() > maxLength)
+            inputStr = inputStr.substring(0, maxLength);
+
+        return inputStr;
     }
 
     public static String readStringInValues(String msg, String errorMsg, String[] availableValues) {
@@ -89,7 +104,7 @@ public abstract class Input {
         return false;
     }
 
-    static LocalDate readValidDate() {
+    public static LocalDate readValidDate() {
         int year, month, day;
         boolean validDate = false;
         LocalDate date = null;

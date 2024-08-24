@@ -1,5 +1,8 @@
 import farm.*;
 import farm.people.*;
+import services.InputService;
+import services.MainMenu;
+import services.MenuService;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,14 +11,14 @@ public class Main {
 
         System.out.printf("\nWelcome to %s! My name is %s and I own this place. Located in %s with %.2f acres of land.\n", manorFarm.name, myOwner.fullName, manorFarm.location, manorFarm.size);
 
-        boolean loadData = Input.readCharInValues(
+        boolean loadData = InputService.readCharInValues(
                 "Load data? Y/N: ",
                 "This option does not exist. Try again: ",
                 new char[]{'Y', 'N'}
         ) == 'Y';
         if (loadData) MenuService.loadAnimalsAndCrops(manorFarm);
 
-        MenuService.mainMenu(manorFarm);
+        MainMenu.mainMenu(manorFarm);
 
         System.out.println("\n\n" + manorFarm);
     }
