@@ -27,19 +27,20 @@ public class InstancesService {
             return;
         }
 
-        Animal newAnimal = switch (innerMenuOption) {
-            case 1 -> initCattle();
-            case 2 -> initSheep();
-            case 3 -> initChicken();
-            default -> throw new IllegalStateException("Unexpected value: " + innerMenuOption);
+        Animal newAnimal = switch (Animal.Species.values()[innerMenuOption]) {
+            case CATTLE -> initCattle();
+            case SHEEP -> initSheep();
+            case CHICKEN -> initChicken();
+            case GOAT -> initGoat();
+            case HORSE -> initHorse();
         };
 
         try {
             farm.addAnimal(newAnimal);
+            System.out.println(newAnimal.species + " created successfully!");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        System.out.println(newAnimal.getClass().getSimpleName() + " created successfully!");
     }
 
     private record AnimalData(
@@ -174,8 +175,58 @@ public class InstancesService {
         return newChicken;
     }
 
-    //TODO: public static Chicken initGoat()
-    //TODO: public static Chicken initHorse()
+    public static Goat initGoat() {
+        System.out.println("Let's create a goat!");
+        AnimalData animalData = initAnimal();
+
+        int furTypeVal = InputService.readInt(
+                Shearable.FurType.getAll() + "Select mohair type: ",
+                "This option does not exist. Try again: ",
+                1, Shearable.FurType.values().length
+        );
+        Shearable.FurType auxFurType = Shearable.FurType.getFurType(furTypeVal);
+
+        Goat newGoat;
+        if (animalData.id != null)
+            newGoat = new Goat(animalData.id, animalData.dateOfBirth, animalData.food, animalData.sex, animalData.weightInKg, animalData.heightInCm, auxFurType);
+        else
+            newGoat = new Goat(animalData.dateOfBirth, animalData.food, animalData.sex, animalData.weightInKg, animalData.heightInCm, auxFurType);
+
+        return newGoat;
+    }
+
+    public static Horse initHorse() {
+        System.out.println("Let's create a horse!");
+        AnimalData animalData = initAnimal();
+
+        char charIsForCompetition = InputService.readCharInValues(
+                "Is it trained for competition? Y/N ",
+                "This option does not exist. Try again: ",
+                new char[]{'Y', 'N'}
+        );
+        boolean auxIsForCompetition = charIsForCompetition == 'Y';
+
+        float auxSpeed = InputService.readFloat(
+                "Enter average speed (km/h): ",
+                "Invalid value. Try again (10-65): ",
+                10, 65
+        );
+
+        char charIsRideable = InputService.readCharInValues(
+                "Allows people to ride it? Y/N ",
+                "This option does not exist. Try again: ",
+                new char[]{'Y', 'N'}
+        );
+        boolean auxIsRideable = charIsRideable == 'Y';
+
+        Horse newHorse;
+        if (animalData.id != null)
+            newHorse = new Horse(animalData.id, animalData.dateOfBirth, animalData.food, animalData.sex, animalData.weightInKg, animalData.heightInCm, auxIsForCompetition, auxSpeed, auxIsRideable);
+        else
+            newHorse = new Horse(animalData.dateOfBirth, animalData.food, animalData.sex, animalData.weightInKg, animalData.heightInCm, auxIsForCompetition, auxSpeed, auxIsRideable);
+
+        return newHorse;
+    }
 
     public static void breedAnimals(Farm farm) {
         Animal animal1 = MenuService.chooseAnimal(farm.getAnimals());
