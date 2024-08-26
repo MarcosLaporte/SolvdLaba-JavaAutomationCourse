@@ -49,7 +49,7 @@ public abstract class Crop {
         }
     }
 
-    public CropType type;
+    public final CropType type;
     public float acres;
     public int daysToGrow;
     public GrowthStage currentGrowthStage;

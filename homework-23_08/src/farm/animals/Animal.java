@@ -28,7 +28,7 @@ public abstract class Animal {
     private final int id;
     private final LocalDate dateOfBirth;
     public String food;
-    public AnimalSex sex;
+    public final AnimalSex sex;
     public float weightInKg;
     public float heightInCm;
 

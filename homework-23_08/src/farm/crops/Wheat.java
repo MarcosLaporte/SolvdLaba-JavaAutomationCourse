@@ -33,7 +33,7 @@ public final class Wheat extends Crop {
         }
     }
 
-    public WheatVariety variety;
+    public final WheatVariety variety;
     public int mgOfGluten;
 
     public Wheat(float acres, int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety, int mgOfGluten) {

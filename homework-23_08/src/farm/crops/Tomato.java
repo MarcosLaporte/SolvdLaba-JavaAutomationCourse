@@ -33,7 +33,7 @@ public final class Tomato extends Crop {
         }
     }
 
-    public TomatoVariety variety;
+    public final TomatoVariety variety;
     public int yieldPerPlant;
 
     public Tomato(float acres, int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety, int yieldPerPlant) {

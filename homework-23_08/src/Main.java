@@ -11,8 +11,6 @@ public class Main {
 
         MainMenu.mainMenu(owner, farm);
 
-
         System.out.println("\n\n" + farm);
     }
-
 }

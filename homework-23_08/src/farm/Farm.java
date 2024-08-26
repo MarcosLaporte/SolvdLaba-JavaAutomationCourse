@@ -19,9 +19,15 @@ public final class Farm {
     public List<Animal> getAnimals() {
         return List.copyOf(animals);
     }
+    public void setAnimals(List<Animal> animals) {
+        this.animals = animals;
+    }
 
     public List<Crop> getCrops() {
         return List.copyOf(crops);
+    }
+    public void setCrops(List<Crop> crops) {
+        this.crops = crops;
     }
 
     public List<Good> getSoldGoods() {

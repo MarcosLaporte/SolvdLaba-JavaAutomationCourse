@@ -8,7 +8,7 @@ import java.util.Random;
 
 public final class Sheep extends Animal implements Shearable {
     public boolean isTrained;
-    public FurType woolType;
+    public final FurType woolType;
 
     public Sheep(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean isTrained, FurType woolType) {
         super(Species.SHEEP, dateOfBirth, food, sex, weightInKg, heightInCm);

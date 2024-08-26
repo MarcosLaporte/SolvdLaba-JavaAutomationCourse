@@ -8,10 +8,11 @@ import java.time.LocalDate;
 import java.util.Random;
 
 public final class Goat extends Animal implements Milker, Shearable {
-    public FurType mohairType;
+    public final FurType mohairType;
 
     public Goat(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, FurType mohairType) {
         super(Species.GOAT, dateOfBirth, food, sex, weightInKg, heightInCm);
+        this.mohairType = mohairType;
     }
     public Goat(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm) {
         this(dateOfBirth, food, sex, weightInKg, heightInCm, FurType.MEDIUM);
@@ -19,6 +20,7 @@ public final class Goat extends Animal implements Milker, Shearable {
 
     public Goat(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, FurType mohairType) {
         super(Species.GOAT, id, dateOfBirth, food, sex, weightInKg, heightInCm);
+        this.mohairType = mohairType;
     }
     public Goat(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm) {
         this(id, dateOfBirth, food, sex, weightInKg, heightInCm, FurType.MEDIUM);

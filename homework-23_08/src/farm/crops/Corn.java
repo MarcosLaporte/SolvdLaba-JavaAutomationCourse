@@ -33,7 +33,7 @@ public final class Corn extends Crop {
         }
     }
 
-    public KernelType kernelType;
+    public final KernelType kernelType;
     public float avgKernelSize;
 
     public Corn(float acres, int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType, float avgKernelSize) {

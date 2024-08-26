@@ -33,7 +33,7 @@ public final class Cattle extends Animal implements Milker {
             return sb.toString();
         }
     }
-    public CattleBreed breed;
+    public final CattleBreed breed;
 
     public Cattle(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, CattleBreed breed) {
         super(Species.CATTLE, dateOfBirth, food, sex, weightInKg, heightInCm);
