@@ -14,14 +14,6 @@ public abstract class Animal {
             this.value = this.ordinal()+1;
         }
 
-        public static boolean valueExists(int number){
-            for (Species an : Species.values()) {
-                if (an.value == number)
-                    return true;
-            }
-
-            return false;
-        }
         public static String getAll() {
             StringBuilder sb = new StringBuilder();
             for (Species an : Species.values()) {

@@ -16,9 +16,9 @@ public final class Cattle extends Animal implements Milker {
         }
 
         public static CattleBreed getCattleBreed(int value) {
-            for (CattleBreed wt : CattleBreed.values()) {
-                if (wt.value == value)
-                    return wt;
+            for (CattleBreed cb : CattleBreed.values()) {
+                if (cb.value == value)
+                    return cb;
             }
 
             return null;

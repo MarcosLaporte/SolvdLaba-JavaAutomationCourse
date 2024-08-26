@@ -62,4 +62,13 @@ public class Owner extends Person {
         return mainSb.toString();
     }
 
+
+    public void addEmployee(Employee employee) throws Exception {
+        for (Employee an : this.employees) {
+            if (an.equals(employee))
+                throw new Exception("Employee already exists in list.");
+        }
+
+        this.employees.add(employee);
+    }
 }

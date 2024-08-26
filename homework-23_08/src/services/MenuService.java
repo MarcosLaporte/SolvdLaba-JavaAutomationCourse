@@ -1,19 +1,48 @@
 package services;
 
-import farm.Farm;
-import farm.Good;
+import farm.*;
 import farm.animals.*;
+import farm.animals.interfaces.EggLayer;
 import farm.animals.interfaces.Shearable;
-import farm.crops.Corn;
-import farm.crops.Crop;
-import farm.crops.Tomato;
-import farm.crops.Wheat;
+import farm.crops.*;
+import farm.people.Owner;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class MenuService {
-    public static void loadAnimalsAndCrops(Farm farm) {
+    public static Farm handleFarm() {
+        boolean createNewFarm = InputService.readCharInValues(
+                "Create new farm (1) or load default (2)? ",
+                "This option does not exist. Try again: ",
+                new char[]{'1', '2'}
+        ) == '1';
+
+        return createNewFarm ?
+                FarmService.createFarm() :
+                new Farm("Manor Farm", "Willingdon, England", 152.3F);
+    }
+
+    public static Owner handleOwner(Farm farm) {
+        boolean createNewOwner = InputService.readCharInValues(
+                "Create new owner (1) or load default (2)? ",
+                "This option does not exist. Try again: ",
+                new char[]{'1', '2'}
+        ) == '1';
+
+        return createNewOwner ?
+                FarmService.initOwner(farm) :
+                new Owner("Mr. Jones", "243-12-5768", 74, farm, 750_452.6);
+    }
+
+    public static void handleAnimalsAndCrops(Farm farm) {
+        boolean loadData = InputService.readCharInValues(
+                "Load default animals and crops? Y/N: ",
+                "This option does not exist. Try again: ",
+                new char[]{'Y', 'N'}
+        ) == 'Y';
+        if (!loadData) return;
+
         try {
             farm.addCrop(new Wheat(6, 92, Crop.GrowthStage.SEEDLING, Wheat.WheatVariety.HARD_RED_WINTER));
             farm.addCrop(new Corn(7, 125, Corn.KernelType.FLOUR, 8.5F));
@@ -23,18 +52,40 @@ public class MenuService {
             farm.addCrop(new Corn(120, Corn.KernelType.DENT));
             farm.addCrop(new Tomato(6, 70, Crop.GrowthStage.HARVEST, Tomato.TomatoVariety.BIG_BEEF, 50));
 
-            farm.addAnimal(new Cattle(LocalDate.of(2020, 5, 14), "Grass", Animal.AnimalSex.M, 600.5f, 150.0f));
-            farm.addAnimal(new Sheep(LocalDate.of(2018, 4, 22), "Grass", Animal.AnimalSex.M, 70.0f, 100.0f, true, Shearable.FurType.FINE));
-            farm.addAnimal(new Chicken(201, LocalDate.of(2021, 9, 11), "Grain", Animal.AnimalSex.F, 2.8f, 47.0f, 4, Chicken.EggSize.MEDIUM, Chicken.CoopLocation.LAKESIDE));
-            farm.addAnimal(new Sheep(302, LocalDate.of(2017, 12, 1), "Shrubs", Animal.AnimalSex.M, 69.8f, 99.5f, true));
-            farm.addAnimal(new Cattle(101, LocalDate.of(2021, 11, 29), "Mixed Feed", Animal.AnimalSex.F, 620.2f, 152.5f, Cattle.CattleBreed.HEREFORD));
-            farm.addAnimal(new Chicken(LocalDate.of(2022, 7, 20), "Corn", Animal.AnimalSex.M, 2.5f, 45.0f, 3, Chicken.EggSize.LARGE, Chicken.CoopLocation.HILLTOP));
-            farm.addAnimal(new Cattle(102, LocalDate.of(2022, 1, 18), "Grain", Animal.AnimalSex.F, 610.8f, 148.3f, Cattle.CattleBreed.HOLSTEIN));
-            farm.addAnimal(new Sheep(LocalDate.of(2020, 6, 15), "Herbs", Animal.AnimalSex.M, 68.5f, 98.0f, true));
-            farm.addAnimal(new Chicken(LocalDate.of(2023, 2, 5), "Seeds", Animal.AnimalSex.F, 2.3f, 44.0f, Chicken.CoopLocation.HILLTOP));
-            farm.addAnimal(new Chicken(202, LocalDate.of(2020, 11, 3), "Worms", Animal.AnimalSex.M, 2.6f, 46.0f, Chicken.CoopLocation.BARNYARD));
-            farm.addAnimal(new Sheep(301, LocalDate.of(2019, 8, 10), "Hay", Animal.AnimalSex.M, 72.3f, 102.0f, true, Shearable.FurType.MEDIUM));
-            farm.addAnimal(new Cattle(LocalDate.of(2019, 3, 7), "Hay", Animal.AnimalSex.F, 580.0f, 145.0f, Cattle.CattleBreed.JERSEY));
+            farm.addAnimal(new Cattle(LocalDate.of(2021, 5, 10), "Grass", Animal.AnimalSex.M, 500.0f, 150.0f, Cattle.CattleBreed.HOLSTEIN));
+            farm.addAnimal(new Cattle(LocalDate.of(2021, 5, 10), "Hay", Animal.AnimalSex.F, 480.0f, 148.0f));
+            farm.addAnimal(new Cattle(101, LocalDate.of(2020, 4, 12), "Grass", Animal.AnimalSex.M, 520.0f, 152.0f, Cattle.CattleBreed.JERSEY));
+            farm.addAnimal(new Cattle(102, LocalDate.of(2020, 4, 13), "Corn", Animal.AnimalSex.F, 510.0f, 151.0f));
+            farm.addAnimal(new Cattle(LocalDate.of(2022, 3, 8), "Silage", Animal.AnimalSex.F, 470.0f, 145.0f, Cattle.CattleBreed.ANGUS));
+            farm.addAnimal(new Cattle(LocalDate.of(2022, 3, 8), "Grain", Animal.AnimalSex.M, 490.0f, 149.0f));
+
+            farm.addAnimal(new Chicken(LocalDate.of(2023, 2, 14), "Corn", Animal.AnimalSex.F, 2.5f, 35.0f, 6, EggLayer.EggSize.MEDIUM, Chicken.CoopLocation.BARNYARD));
+            farm.addAnimal(new Chicken(LocalDate.of(2023, 2, 14), "Seeds", Animal.AnimalSex.M, 2.7f, 37.0f, Chicken.CoopLocation.HILLTOP));
+            farm.addAnimal(new Chicken(201, LocalDate.of(2023, 1, 18), "Insects", Animal.AnimalSex.F, 2.4f, 34.5f, 7, EggLayer.EggSize.LARGE, Chicken.CoopLocation.CENTRAL));
+            farm.addAnimal(new Chicken(202, LocalDate.of(2023, 1, 18), "Worms", Animal.AnimalSex.M, 2.8f, 38.0f, Chicken.CoopLocation.LAKESIDE));
+            farm.addAnimal(new Chicken(LocalDate.of(2023, 3, 12), "Fruits", Animal.AnimalSex.F, 2.6f, 36.0f, 5, EggLayer.EggSize.SMALL, Chicken.CoopLocation.BARNYARD));
+            farm.addAnimal(new Chicken(LocalDate.of(2023, 3, 12), "Vegetables", Animal.AnimalSex.M, 2.9f, 39.0f, Chicken.CoopLocation.CENTRAL));
+
+            farm.addAnimal(new Goat(LocalDate.of(2022, 8, 20), "Hay", Animal.AnimalSex.M, 65.0f, 70.0f, Shearable.FurType.LONG));
+            farm.addAnimal(new Goat(LocalDate.of(2022, 8, 20), "Grass", Animal.AnimalSex.F, 63.0f, 68.0f));
+            farm.addAnimal(new Goat(301, LocalDate.of(2021, 7, 15), "Grain", Animal.AnimalSex.M, 67.0f, 72.0f, Shearable.FurType.DOUBLE_COATED));
+            farm.addAnimal(new Goat(302, LocalDate.of(2021, 7, 15), "Leaves", Animal.AnimalSex.F, 66.0f, 71.0f));
+            farm.addAnimal(new Goat(LocalDate.of(2023, 6, 25), "Vegetables", Animal.AnimalSex.F, 64.0f, 69.0f, Shearable.FurType.FINE));
+            farm.addAnimal(new Goat(LocalDate.of(2023, 6, 25), "Fruit", Animal.AnimalSex.M, 68.0f, 73.0f));
+
+            farm.addAnimal(new Sheep(LocalDate.of(2021, 11, 5), "Grass", Animal.AnimalSex.F, 50.0f, 55.0f, true, Shearable.FurType.MEDIUM));
+            farm.addAnimal(new Sheep(LocalDate.of(2021, 11, 5), "Hay", Animal.AnimalSex.M, 52.0f, 57.0f, false));
+            farm.addAnimal(new Sheep(401, LocalDate.of(2020, 10, 10), "Grain", Animal.AnimalSex.F, 51.0f, 56.0f, true, Shearable.FurType.FINE));
+            farm.addAnimal(new Sheep(402, LocalDate.of(2020, 10, 10), "Silage", Animal.AnimalSex.M, 53.0f, 58.0f, false));
+            farm.addAnimal(new Sheep(LocalDate.of(2022, 12, 1), "Leaves", Animal.AnimalSex.F, 49.0f, 54.0f, true, Shearable.FurType.LONG));
+            farm.addAnimal(new Sheep(LocalDate.of(2022, 12, 1), "Vegetables", Animal.AnimalSex.M, 54.0f, 59.0f, false));
+
+            farm.addAnimal(new Horse(LocalDate.of(2020, 5, 22), "Hay", Animal.AnimalSex.M, 450.0f, 160.0f, true, 40.0f, true));
+            farm.addAnimal(new Horse(LocalDate.of(2020, 5, 22), "Grass", Animal.AnimalSex.F, 430.0f, 158.0f, true, 38.0f));
+            farm.addAnimal(new Horse(501, LocalDate.of(2019, 4, 10), "Grain", Animal.AnimalSex.M, 470.0f, 162.0f, false, 45.0f, true));
+            farm.addAnimal(new Horse(502, LocalDate.of(2019, 4, 10), "Fruits", Animal.AnimalSex.F, 460.0f, 161.0f, false, 43.0f));
+            farm.addAnimal(new Horse(LocalDate.of(2021, 3, 30), "Vegetables", Animal.AnimalSex.F, 440.0f, 159.0f, true, 39.0f, true));
+            farm.addAnimal(new Horse(LocalDate.of(2021, 3, 30), "Silage", Animal.AnimalSex.M, 480.0f, 163.0f, false, 46.0f));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
