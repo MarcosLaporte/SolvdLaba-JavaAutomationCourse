@@ -33,7 +33,7 @@ public class FarmService {
             return;
         }
 
-        Employee newEmployee = switch (Employee.EmployeeType.values()[innerMenuOption]) {
+        Employee newEmployee = switch (Employee.EmployeeType.values()[innerMenuOption-1]) {
             case CULTIVATOR -> initCropsCultivator();
             case ANIMAL_CARETAKER -> initAnimalCare();
         };

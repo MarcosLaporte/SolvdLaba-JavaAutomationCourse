@@ -19,11 +19,10 @@ public class CropsService {
             return;
         }
 
-        Crop newCrop = switch (innerMenuOption) {
-            case 1 -> initWheat();
-            case 2 -> initCorn();
-            case 3 -> initTomato();
-            default -> throw new IllegalStateException("Unexpected value: " + innerMenuOption);
+        Crop newCrop = switch (Crop.CropType.values()[innerMenuOption-1]) {
+            case WHEAT -> initWheat();
+            case CORN -> initCorn();
+            case TOMATO -> initTomato();
         };
 
         try {

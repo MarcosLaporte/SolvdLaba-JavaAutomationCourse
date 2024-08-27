@@ -20,7 +20,7 @@ public class AnimalsService {
             return;
         }
 
-        Animal newAnimal = switch (Animal.Species.values()[innerMenuOption]) {
+        Animal newAnimal = switch (Animal.Species.values()[innerMenuOption-1]) {
             case CATTLE -> initCattle();
             case SHEEP -> initSheep();
             case CHICKEN -> initChicken();
