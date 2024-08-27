@@ -1,15 +1,15 @@
 package farm.animals;
 
 import farm.Good;
-import farm.animals.interfaces.Milker;
-import farm.animals.interfaces.Shearable;
+import farm.animals.interfaces.IMilker;
+import farm.animals.interfaces.IShearable;
 import farm.exceptions.IncompatibleBreedingException;
 import farm.exceptions.UnableToProduceException;
 
 import java.time.LocalDate;
 import java.util.Random;
 
-public final class Goat extends Animal implements Milker, Shearable {
+public final class Goat extends Animal implements IMilker, IShearable {
     public final FurType mohairType;
 
     public Goat(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, FurType mohairType) {

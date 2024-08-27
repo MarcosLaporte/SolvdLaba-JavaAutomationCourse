@@ -1,14 +1,14 @@
 package farm.animals;
 
 import farm.Good;
-import farm.animals.interfaces.Milker;
+import farm.animals.interfaces.IMilker;
 import farm.exceptions.IncompatibleBreedingException;
 import farm.exceptions.UnableToProduceException;
 
 import java.time.LocalDate;
 import java.util.Random;
 
-public final class Cattle extends Animal implements Milker {
+public final class Cattle extends Animal implements IMilker {
     public enum CattleBreed {
         HOLSTEIN, JERSEY, ANGUS, HEREFORD, BROWN_SWISS;
 

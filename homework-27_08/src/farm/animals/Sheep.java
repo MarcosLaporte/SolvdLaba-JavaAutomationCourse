@@ -1,13 +1,13 @@
 package farm.animals;
 
 import farm.Good;
-import farm.animals.interfaces.Shearable;
+import farm.animals.interfaces.IShearable;
 import farm.exceptions.IncompatibleBreedingException;
 
 import java.time.LocalDate;
 import java.util.Random;
 
-public final class Sheep extends Animal implements Shearable {
+public final class Sheep extends Animal implements IShearable {
     public boolean isTrained;
     public final FurType woolType;
 

@@ -2,8 +2,8 @@ package services;
 
 import farm.*;
 import farm.animals.*;
-import farm.animals.interfaces.EggLayer;
-import farm.animals.interfaces.Shearable;
+import farm.animals.interfaces.IEggLayer;
+import farm.animals.interfaces.IShearable;
 import farm.crops.*;
 import farm.exceptions.RepeatedInstanceException;
 import farm.people.Owner;
@@ -63,25 +63,25 @@ public class MenuService {
             animals.add(new Cattle(LocalDate.of(2022, 3, 13), "Silage", Animal.AnimalSex.F, 470.0f, 145.0f, Cattle.CattleBreed.ANGUS));
             animals.add(new Cattle(LocalDate.of(2022, 6, 1), "Grain", Animal.AnimalSex.M, 490.0f, 149.0f));
 
-            animals.add(new Chicken(LocalDate.of(2023, 2, 14), "Corn", Animal.AnimalSex.F, 2.5f, 35.0f, 6, EggLayer.EggSize.MEDIUM, Chicken.CoopLocation.BARNYARD));
+            animals.add(new Chicken(LocalDate.of(2023, 2, 14), "Corn", Animal.AnimalSex.F, 2.5f, 35.0f, 6, IEggLayer.EggSize.MEDIUM, Chicken.CoopLocation.BARNYARD));
             animals.add(new Chicken(LocalDate.of(2023, 2, 14), "Seeds", Animal.AnimalSex.M, 2.7f, 37.0f, Chicken.CoopLocation.HILLTOP));
-            animals.add(new Chicken(201, LocalDate.of(2023, 1, 18), "Insects", Animal.AnimalSex.F, 2.4f, 34.5f, 7, EggLayer.EggSize.LARGE, Chicken.CoopLocation.CENTRAL));
+            animals.add(new Chicken(201, LocalDate.of(2023, 1, 18), "Insects", Animal.AnimalSex.F, 2.4f, 34.5f, 7, IEggLayer.EggSize.LARGE, Chicken.CoopLocation.CENTRAL));
             animals.add(new Chicken(202, LocalDate.of(2023, 1, 18), "Worms", Animal.AnimalSex.M, 2.8f, 38.0f, Chicken.CoopLocation.LAKESIDE));
-            animals.add(new Chicken(LocalDate.of(2023, 3, 12), "Fruits", Animal.AnimalSex.F, 2.6f, 36.0f, 5, EggLayer.EggSize.SMALL, Chicken.CoopLocation.BARNYARD));
+            animals.add(new Chicken(LocalDate.of(2023, 3, 12), "Fruits", Animal.AnimalSex.F, 2.6f, 36.0f, 5, IEggLayer.EggSize.SMALL, Chicken.CoopLocation.BARNYARD));
             animals.add(new Chicken(LocalDate.of(2023, 3, 12), "Vegetables", Animal.AnimalSex.M, 2.9f, 39.0f, Chicken.CoopLocation.CENTRAL));
 
-            animals.add(new Goat(LocalDate.of(2022, 8, 20), "Hay", Animal.AnimalSex.M, 65.0f, 70.0f, Shearable.FurType.LONG));
+            animals.add(new Goat(LocalDate.of(2022, 8, 20), "Hay", Animal.AnimalSex.M, 65.0f, 70.0f, IShearable.FurType.LONG));
             animals.add(new Goat(LocalDate.of(2022, 8, 20), "Grass", Animal.AnimalSex.F, 63.0f, 68.0f));
-            animals.add(new Goat(301, LocalDate.of(2021, 7, 15), "Grain", Animal.AnimalSex.M, 67.0f, 72.0f, Shearable.FurType.DOUBLE_COATED));
+            animals.add(new Goat(301, LocalDate.of(2021, 7, 15), "Grain", Animal.AnimalSex.M, 67.0f, 72.0f, IShearable.FurType.DOUBLE_COATED));
             animals.add(new Goat(302, LocalDate.of(2021, 7, 15), "Leaves", Animal.AnimalSex.F, 66.0f, 71.0f));
-            animals.add(new Goat(LocalDate.of(2023, 6, 25), "Vegetables", Animal.AnimalSex.F, 64.0f, 69.0f, Shearable.FurType.FINE));
+            animals.add(new Goat(LocalDate.of(2023, 6, 25), "Vegetables", Animal.AnimalSex.F, 64.0f, 69.0f, IShearable.FurType.FINE));
             animals.add(new Goat(LocalDate.of(2023, 6, 25), "Fruit", Animal.AnimalSex.M, 68.0f, 73.0f));
 
-            animals.add(new Sheep(LocalDate.of(2021, 11, 5), "Grass", Animal.AnimalSex.F, 50.0f, 55.0f, true, Shearable.FurType.MEDIUM));
+            animals.add(new Sheep(LocalDate.of(2021, 11, 5), "Grass", Animal.AnimalSex.F, 50.0f, 55.0f, true, IShearable.FurType.MEDIUM));
             animals.add(new Sheep(LocalDate.of(2021, 11, 5), "Hay", Animal.AnimalSex.M, 52.0f, 57.0f, false));
-            animals.add(new Sheep(401, LocalDate.of(2020, 10, 10), "Grain", Animal.AnimalSex.F, 51.0f, 56.0f, true, Shearable.FurType.FINE));
+            animals.add(new Sheep(401, LocalDate.of(2020, 10, 10), "Grain", Animal.AnimalSex.F, 51.0f, 56.0f, true, IShearable.FurType.FINE));
             animals.add(new Sheep(402, LocalDate.of(2020, 10, 10), "Silage", Animal.AnimalSex.M, 53.0f, 58.0f, false));
-            animals.add(new Sheep(LocalDate.of(2022, 12, 1), "Leaves", Animal.AnimalSex.F, 49.0f, 54.0f, true, Shearable.FurType.LONG));
+            animals.add(new Sheep(LocalDate.of(2022, 12, 1), "Leaves", Animal.AnimalSex.F, 49.0f, 54.0f, true, IShearable.FurType.LONG));
             animals.add(new Sheep(LocalDate.of(2022, 12, 1), "Vegetables", Animal.AnimalSex.M, 54.0f, 59.0f, false));
 
             animals.add(new Horse(LocalDate.of(2020, 5, 22), "Hay", Animal.AnimalSex.M, 450.0f, 160.0f, true, 40.0f, true));

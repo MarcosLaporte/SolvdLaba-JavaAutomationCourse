@@ -2,8 +2,8 @@ package services;
 
 import farm.Farm;
 import farm.animals.*;
-import farm.animals.interfaces.EggLayer;
-import farm.animals.interfaces.Shearable;
+import farm.animals.interfaces.IEggLayer;
+import farm.animals.interfaces.IShearable;
 import farm.exceptions.IncompatibleBreedingException;
 import farm.exceptions.RepeatedInstanceException;
 
@@ -121,11 +121,11 @@ public class AnimalsService {
         boolean auxIsTrained = charIsTrained == 'Y';
 
         int furTypeVal = InputService.readInt(
-                Shearable.FurType.getAll() + "Select fur type: ",
+                IShearable.FurType.getAll() + "Select fur type: ",
                 "This option does not exist. Try again: ",
-                1, Shearable.FurType.values().length
+                1, IShearable.FurType.values().length
         );
-        Shearable.FurType auxFurType = Shearable.FurType.getFurType(furTypeVal);
+        IShearable.FurType auxFurType = IShearable.FurType.getFurType(furTypeVal);
 
         Sheep newSheep;
         if (animalData.id != null)
@@ -147,11 +147,11 @@ public class AnimalsService {
         );
 
         int eggSizeVal = InputService.readInt(
-                EggLayer.EggSize.getAll() + "Select egg size: ",
+                IEggLayer.EggSize.getAll() + "Select egg size: ",
                 "Invalid value. Try again: ",
-                1, EggLayer.EggSize.values().length
+                1, IEggLayer.EggSize.values().length
         );
-        EggLayer.EggSize auxEggSize = EggLayer.EggSize.getEggSize(eggSizeVal);
+        IEggLayer.EggSize auxEggSize = IEggLayer.EggSize.getEggSize(eggSizeVal);
 
         int coopLocVal = InputService.readInt(
                 Chicken.CoopLocation.getAll() + "Select coop location: ",
@@ -174,11 +174,11 @@ public class AnimalsService {
         AnimalData animalData = initAnimal();
 
         int furTypeVal = InputService.readInt(
-                Shearable.FurType.getAll() + "Select mohair type: ",
+                IShearable.FurType.getAll() + "Select mohair type: ",
                 "This option does not exist. Try again: ",
-                1, Shearable.FurType.values().length
+                1, IShearable.FurType.values().length
         );
-        Shearable.FurType auxFurType = Shearable.FurType.getFurType(furTypeVal);
+        IShearable.FurType auxFurType = IShearable.FurType.getFurType(furTypeVal);
 
         Goat newGoat;
         if (animalData.id != null)

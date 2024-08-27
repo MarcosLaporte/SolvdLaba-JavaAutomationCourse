@@ -1,14 +1,14 @@
 package farm.animals;
 
 import farm.Good;
-import farm.animals.interfaces.EggLayer;
+import farm.animals.interfaces.IEggLayer;
 import farm.exceptions.IncompatibleBreedingException;
 import farm.exceptions.UnableToProduceException;
 
 import java.time.LocalDate;
 import java.util.Random;
 
-public final class Chicken extends Animal implements EggLayer {
+public final class Chicken extends Animal implements IEggLayer {
     public enum CoopLocation {
         CENTRAL, HILLTOP, LAKESIDE, BARNYARD;
 
