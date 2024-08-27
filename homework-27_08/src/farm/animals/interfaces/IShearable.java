@@ -2,7 +2,7 @@ package farm.animals.interfaces;
 
 import farm.Good;
 
-public interface Shearable {
+public interface IShearable {
     enum FurType {
         FINE, DOWN, MEDIUM, LONG, DOUBLE_COATED;
 

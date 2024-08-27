@@ -3,7 +3,7 @@ package farm.animals.interfaces;
 import farm.Good;
 import farm.exceptions.UnableToProduceException;
 
-public interface EggLayer{
+public interface IEggLayer {
     enum EggSize {
         SMALL, MEDIUM, LARGE, EXTRA_LARGE;
 
