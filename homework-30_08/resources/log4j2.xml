@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!-- Console appender for printing to the console -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5p - %m%n"/>
+        </Console>
+
+        <!-- File appender for saving logs to a file -->
+        <File name="FileLogger" fileName="logs/app.log">
+            <PatternLayout pattern="%-5p - %m%n"/>
+            <param name="append" value="false" />
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <!-- Logger that logs everything to the console -->
+        <Logger name="ConsoleLogger" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <!-- Logger that only logs info, warn, and error messages to the file -->
+        <Logger name="FileOnlyLogger" level="info" additivity="false">
+            <AppenderRef ref="FileLogger"/>
+        </Logger>
+
+        <!-- Root logger that can be used for general logging -->
+        <Root level="debug">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileLogger"/>
+        </Root>
+    </Loggers>
+</Configuration>
