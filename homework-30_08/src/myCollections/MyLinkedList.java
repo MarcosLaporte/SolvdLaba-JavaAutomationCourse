@@ -32,12 +32,32 @@ public class MyLinkedList<E> implements Iterable<E> {
         size++;
     }
 
+    public void add(E data, int index) throws IndexOutOfBoundsException {
+        if (index < 0 || index > this.size)  // Correct index check
+            throw new IndexOutOfBoundsException(index);
+
+        Node<E> newNode = new Node<>(data);
+
+        if (index == 0) {
+            newNode.next = this.head;
+            this.head = newNode;
+        } else {
+            Node<E> current = this.head;
+            for (int i = 0; i < index - 1; i++) {
+                current = current.next;
+            }
+            newNode.next = current.next;
+            current.next = newNode;
+        }
+        size++;
+    }
+
     public Node<E> get(int index) throws IndexOutOfBoundsException {
         if (index < 0 || index >= this.size)
             throw new IndexOutOfBoundsException(index);
 
         int count = 0;
-        Node<E> node = head;
+        Node<E> node = this.head;
         while (count < index) {
             node = node.next;
             count++;
@@ -50,14 +70,12 @@ public class MyLinkedList<E> implements Iterable<E> {
         if (index < 0 || index >= this.size)
             throw new IndexOutOfBoundsException(index);
 
-        int count = 0;
-        Node<E> node = head;
-        while (count < index) {
-            node = node.next;
-            count++;
+        Node<E> current = this.head;
+        for (int count = 0; count < index - 1; count++) {
+            current = current.next;
         }
 
-        node.data = data;
+        current.data = data;
     }
 
     public void remove(E data) {
@@ -80,12 +98,30 @@ public class MyLinkedList<E> implements Iterable<E> {
         }
     }
 
+    public void remove(int index) throws IndexOutOfBoundsException {
+        if (index < 0 || index >= this.size)
+            throw new IndexOutOfBoundsException(index);
+
+        Node<E> current = this.head;
+        if (index == 0) {
+            this.head = this.head.next; // Remove the head node
+        } else {
+            for (int count = 0; count < index - 1; count++) {
+                current = current.next;
+            }
+            current.next = current.next.next;
+        }
+
+        size--;
+    }
+
     public void clear() {
         this.head = null;
         this.size = 0;
     }
 
-    public String printList() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
 
         for (E el : this) {
