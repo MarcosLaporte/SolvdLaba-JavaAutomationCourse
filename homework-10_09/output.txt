@@ -1,0 +1,3 @@
+Amount of letters in "Viva la vida loca": 14Amount of unique words in "Java is a powerful programming language.
+Java has many featu...": 58Amount of letters in "Java is a powerful programming language.
+Java has many featu...": 401

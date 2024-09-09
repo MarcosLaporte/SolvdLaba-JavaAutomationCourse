@@ -1,0 +1,32 @@
+DEBUG - Start: 2024-09-09T18:19:35.922318200
+INFO  - Amount of letters in "as -dsf,ñ ": 6
+INFO  - Amount of unique words in "Hello, hello! How are you? You are learning Java, Java is fun!": 8
+INFO  - Amount of "car" found in "Cartman driving a golfcArt sized car alongside a caravan carr...": 2
+DEBUG - Finish: 2024-09-09T18:23:02.535388600
+
+DEBUG - Start: 2024-09-09T18:26:27.714243300
+INFO  - Amount of unique words in "hello world! Testing World this testing": 4
+DEBUG - Finish: 2024-09-09T18:30:23.188222
+
+DEBUG - Start: 2024-09-09T18:53:16.893392100
+INFO  - Amount of unique words in "Java is a powerful programming language.Java has many feature...": 58
+INFO  - Amount of letters in "Java is a powerful programming language.Java has many feature...": 401
+INFO  - Amount of "is" found in "Java is a powerful programming language.Java has many feature...": 5
+DEBUG - Finish: 2024-09-09T18:56:07.812661300
+
+DEBUG - Start: 2024-09-09T20:16:01.701024
+INFO  - Content written to file successfully.
+DEBUG - Finish: 2024-09-09T20:16:27.594762100
+
+DEBUG - Start: 2024-09-09T20:16:50.764235300
+INFO  - Content written to file successfully.
+ERROR - C:\Users\Marcos\SolvdLaba-JavaAutomationCourse\homework-10_09\vaaa.log
+ERROR - File doesn't exist
+DEBUG - Finish: 2024-09-09T20:17:41.821243100
+
+DEBUG - Start: 2024-09-09T20:21:38.682106
+INFO  - Content written to file successfully.
+INFO  - Content written to file successfully.
+INFO  - Content written to file successfully.
+DEBUG - Finish: 2024-09-09T20:24:39.735799
+
