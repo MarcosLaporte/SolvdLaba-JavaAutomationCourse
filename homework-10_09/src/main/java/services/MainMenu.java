@@ -72,10 +72,11 @@ public class MainMenu {
         String msg = "Amount of unique words in \"" +
                 StringUtils.abbreviate(text, 64) +
                 "\": " +
-                StringService.countUniqueWordsInText(text);
+                StringService.countUniqueWordsInText(text) +
+                "\n";
 
         LoggerService.consoleLog(Level.INFO, msg);
-        FileService.writeFile("output.txt", msg);
+        FileService.writeFile("output.txt", msg + "\n");
     }
 
     private static void manageOption2() {
@@ -88,10 +89,11 @@ public class MainMenu {
         String msg = "Amount of letters in \"" +
                 StringUtils.abbreviate(text, 64) +
                 "\": " +
-                StringService.countLettersInText(text);
+                StringService.countLettersInText(text) +
+                "\n";
 
         LoggerService.consoleLog(Level.INFO, msg);
-        FileService.writeFile("output.txt", msg);
+        FileService.writeFile("output.txt", msg + "\n");
     }
 
     private static void manageOption3() {
@@ -103,14 +105,14 @@ public class MainMenu {
 
         String word = InputService.readString("Enter the word to look in the text: ", 2, 255);
 
-        String msg = String.format("Amount of \"%s\" found in \"%s\": %d",
+        String msg = String.format("Amount of \"%s\" found in \"%s\": %d\n",
                 word,
                 StringUtils.abbreviate(text, 64),
                 StringService.countGivenWordInText(text, word)
         );
 
         LoggerService.consoleLog(Level.INFO, msg);
-        FileService.writeFile("output.txt", msg);
+        FileService.writeFile("output.txt", msg + "\n");
     }
 
     private static void manageOption4() {
