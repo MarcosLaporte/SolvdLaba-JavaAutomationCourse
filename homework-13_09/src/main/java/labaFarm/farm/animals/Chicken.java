@@ -7,6 +7,7 @@ import labaFarm.farm.exceptions.IncompatibleBreedingException;
 import labaFarm.farm.exceptions.UnableToProduceException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -56,28 +57,22 @@ public final class Chicken extends Animal implements IEggLayer {
         this.eggSize = this.sex == AnimalSex.F ? eggSize : null;
     }
 
-    public Chicken(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, int eggPerDay, EggSize eggSize, CoopLocation coopLocation) {
-        super(Species.CHICKEN, dateOfBirth, food, sex, weightInKg, heightInCm);
-        this.setEggPerDay(eggPerDay);
-        this.setEggSize(eggSize);
-        this.coopLocation = coopLocation;
-    }
-    public Chicken(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, CoopLocation coopLocation) {
-        this(dateOfBirth, food, sex, weightInKg, heightInCm, 0, null, coopLocation);
-    }
-
     public Chicken(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, int eggPerDay, EggSize eggSize, CoopLocation coopLocation) {
         super(Species.CHICKEN, id, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.setEggPerDay(eggPerDay);
         this.setEggSize(eggSize);
         this.coopLocation = coopLocation;
     }
-    public Chicken(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, CoopLocation coopLocation) {
-        this(id, dateOfBirth, food, sex, weightInKg, heightInCm, 0, null, coopLocation);
+
+    public Chicken(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, int eggPerDay, EggSize eggSize, CoopLocation coopLocation) {
+        super(Species.CHICKEN, existingAnimals, dateOfBirth, food, sex, weightInKg, heightInCm);
+        this.setEggPerDay(eggPerDay);
+        this.setEggSize(eggSize);
+        this.coopLocation = coopLocation;
     }
 
     @Override
-    public Chicken breedWith(Animal partner) throws IncompatibleBreedingException {
+    public Chicken breedWith(Animal partner, List<Animal> animalList) throws IncompatibleBreedingException {
         if (!compatibleForBreeding.test(this, partner))
             throw new IncompatibleBreedingException(this, partner);
 
@@ -95,7 +90,7 @@ public final class Chicken extends Animal implements IEggLayer {
         float weight = RANDOM.nextFloat(.003F, .0045F);
         float height = RANDOM.nextFloat(5F, 7F);
 
-        Chicken newChicken = new Chicken(LocalDate.now(), "Grain", sex, weight, height, mother.coopLocation);
+        Chicken newChicken = new Chicken(animalList, LocalDate.now(), "Grain", sex, weight, height, 0, null, mother.coopLocation);
         newChicken.setFather(father);
 
         newChicken.setMother(mother);

@@ -5,32 +5,27 @@ import labaFarm.farm.animals.interfaces.IShearable;
 import labaFarm.farm.exceptions.IncompatibleBreedingException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 public final class Sheep extends Animal implements IShearable {
     public boolean isTrained;
     public final FurType woolType;
 
-    public Sheep(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean isTrained, FurType woolType) {
-        super(Species.SHEEP, dateOfBirth, food, sex, weightInKg, heightInCm);
-        this.isTrained = isTrained;
-        this.woolType = woolType;
-    }
-    public Sheep(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean isTrained) {
-        this(dateOfBirth, food, sex, weightInKg, heightInCm, isTrained, FurType.FINE);
-    }
-
     public Sheep(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean isTrained, FurType woolType) {
         super(Species.SHEEP, id, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.isTrained = isTrained;
         this.woolType = woolType;
     }
-    public Sheep(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean isTrained) {
-        this(id, dateOfBirth, food, sex, weightInKg, heightInCm, isTrained, FurType.FINE);
+
+    public Sheep(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean isTrained, FurType woolType) {
+        super(Species.SHEEP, existingAnimals, dateOfBirth, food, sex, weightInKg, heightInCm);
+        this.isTrained = isTrained;
+        this.woolType = woolType;
     }
 
     @Override
-    public Sheep breedWith(Animal partner) throws IncompatibleBreedingException {
+    public Sheep breedWith(Animal partner, List<Animal> animalList) throws IncompatibleBreedingException {
         if (!compatibleForBreeding.test(this, partner))
             throw new IncompatibleBreedingException(this, partner);
 
@@ -48,7 +43,7 @@ public final class Sheep extends Animal implements IShearable {
         float weight = RANDOM.nextFloat(1F, 1.8F);
         float height = RANDOM.nextFloat(20F, 30F);
 
-        Sheep newSheep = new Sheep(LocalDate.now(), "Milk", sex, weight, height, false, mother.woolType);
+        Sheep newSheep = new Sheep(animalList, LocalDate.now(), "Milk", sex, weight, height, false, mother.woolType);
         newSheep.setFather(father);
         newSheep.setMother(mother);
 

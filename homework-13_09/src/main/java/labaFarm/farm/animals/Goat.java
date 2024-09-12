@@ -7,29 +7,24 @@ import labaFarm.farm.exceptions.IncompatibleBreedingException;
 import labaFarm.farm.exceptions.UnableToProduceException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 public final class Goat extends Animal implements IMilker, IShearable {
     public final FurType mohairType;
 
-    public Goat(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, FurType mohairType) {
-        super(Species.GOAT, dateOfBirth, food, sex, weightInKg, heightInCm);
-        this.mohairType = mohairType;
-    }
-    public Goat(LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm) {
-        this(dateOfBirth, food, sex, weightInKg, heightInCm, FurType.MEDIUM);
-    }
-
     public Goat(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, FurType mohairType) {
         super(Species.GOAT, id, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.mohairType = mohairType;
     }
-    public Goat(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm) {
-        this(id, dateOfBirth, food, sex, weightInKg, heightInCm, FurType.MEDIUM);
+
+    public Goat(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, FurType mohairType) {
+        super(Species.GOAT, existingAnimals, dateOfBirth, food, sex, weightInKg, heightInCm);
+        this.mohairType = mohairType;
     }
 
     @Override
-    public Goat breedWith(Animal partner) throws IncompatibleBreedingException {
+    public Goat breedWith(Animal partner, List<Animal> animalList) throws IncompatibleBreedingException {
         if (!compatibleForBreeding.test(this, partner))
             throw new IncompatibleBreedingException(this, partner);
 
@@ -47,7 +42,7 @@ public final class Goat extends Animal implements IMilker, IShearable {
         float weight = RANDOM.nextFloat(25F, 45F);
         float height = RANDOM.nextFloat(65F, 75F);
 
-        Goat newGoat = new Goat(LocalDate.now(), "Milk", sex, weight, height, mother.mohairType);
+        Goat newGoat = new Goat(animalList, LocalDate.now(), "Milk", sex, weight, height, mother.mohairType);
         newGoat.setFather(father);
         newGoat.setMother(mother);
 

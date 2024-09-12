@@ -1,15 +1,17 @@
 package labaFarm.farm.animals;
 
+import labaFarm.farm.IIdentifiable;
 import labaFarm.farm.exceptions.IncompatibleBreedingException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-public abstract class Animal {
+public abstract class Animal implements IIdentifiable<Animal> {
     public enum AnimalSex {F, M}
 
     public enum Species {
@@ -32,7 +34,7 @@ public abstract class Animal {
     }
 
     public final Species species;
-    private final int id;
+    private int id;
     private final LocalDate dateOfBirth;
     public String food;
     public final AnimalSex sex;
@@ -42,14 +44,11 @@ public abstract class Animal {
     private Animal mother;
     private Animal father;
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
 
     public long getAge() {
         return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
     }
-
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
@@ -57,7 +56,6 @@ public abstract class Animal {
     public Animal getMother() {
         return mother;
     }
-
     protected void setMother(Animal mother) {
         this.mother = mother;
     }
@@ -65,7 +63,6 @@ public abstract class Animal {
     public Animal getFather() {
         return father;
     }
-
     protected void setFather(Animal father) {
         this.father = father;
     }
@@ -80,8 +77,18 @@ public abstract class Animal {
         this.heightInCm = Math.abs(heightInCm);
     }
 
-    public Animal(Species species, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm) {
-        this(species, new Random().nextInt(1, 9999), dateOfBirth, food, sex, weightInKg, heightInCm);
+    @Override
+    public int getNewId(List<Animal> existingObjects) {
+        Stream<Animal> sameCropTypeStream = existingObjects.stream().filter(c -> c.species == this.species);
+        Optional<Animal> maxIdCrop = sameCropTypeStream.max(Comparator.comparingInt(cr -> cr.id));
+
+        return maxIdCrop.isPresent() ? maxIdCrop.get().id + 1 : this.species.value * 1000 + 1;
+    }
+
+    public Animal(Species species, List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm) {
+        this(species, -1, dateOfBirth, food, sex, weightInKg, heightInCm);
+
+        this.id = this.getNewId(existingAnimals);
     }
 
     @Override
@@ -112,8 +119,14 @@ public abstract class Animal {
         StringBuilder sb = new StringBuilder();
 
         sb.append("+---------+------+-----+------------+-----+-----------+-----------+\n");
-        sb.append(String.format("| %-7s | %-4s | %-3s | %-10s | %3s | %-9s | %-9s |\n",
-                "SPECIES", "ID", "AGE", "FOOD", "SEX", "WEIGHT", "HEIGHT"));
+        sb.append(String.format("| %s | %s | %s | %s | %s | %s | %s |\n",
+                StringUtils.center("SPECIES", 7),
+                StringUtils.center("ID", 4),
+                StringUtils.center("AGE", 3),
+                StringUtils.center("FOOD", 10),
+                StringUtils.center("SEX", 3),
+                StringUtils.center("WEIGHT", 9),
+                StringUtils.center("HEIGHT", 9)));
         sb.append("+---------+------+-----+------------+-----+-----------+-----------+\n");
         for (Animal an : list) {
             sb.append(String.format("| %-7s | %-4d | %-3d | %-10s | %-3s | %-6.2f kg | %-6.2f cm |\n",
@@ -138,7 +151,7 @@ public abstract class Animal {
         return Objects.hash(this.species, this.id);
     }
 
-    public abstract Animal breedWith(Animal partner) throws IncompatibleBreedingException;
+    public abstract Animal breedWith(Animal partner, List<Animal> animalList) throws IncompatibleBreedingException;
 
     protected transient BiPredicate<Animal, Animal> compatibleForBreeding = (x, y) -> x.species == y.species && x.sex != y.sex;
 

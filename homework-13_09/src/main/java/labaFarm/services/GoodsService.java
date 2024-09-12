@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Level;
 
 public class GoodsService {
     public static void manageAnimalGoods(Farm farm) {
-        Animal chosenAn = MenuService.chooseAnimal(farm.getAnimals());
+        Animal chosenAn = MenuService.chooseAnimal(farm.animals);
         if (chosenAn == null) {
             System.out.println("Back to main menu...");
             return;
