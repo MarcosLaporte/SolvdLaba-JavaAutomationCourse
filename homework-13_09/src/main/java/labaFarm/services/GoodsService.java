@@ -45,7 +45,7 @@ public class GoodsService {
     }
 
     public static void manageHarvest(Farm farm) {
-        CropSector chosenCr = MenuService.chooseCropToHarvest(farm.getCrops());
+        CropSector chosenCr = MenuService.chooseCropToHarvest(farm.cropSectors);
         if (chosenCr == null) {
             System.out.println("Back to main menu...");
             return;
