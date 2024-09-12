@@ -9,29 +9,17 @@ import labaFarm.myCollections.MyLinkedList;
 import java.util.*;
 
 public final class Farm {
+    private final int id;
     public String name;
     public String location;
     public float size;
-    private List<Animal> animals;
-    private List<CropSector> cropSectors;
+    public final List<Animal> animals;
+    public final List<CropSector> cropSectors;
     private MyLinkedList<Good> stock;
     private MyLinkedList<Good> soldGoods;
 
-    public List<Animal> getAnimals() {
-        return List.copyOf(animals);
-    }
+    public int getId() { return id; }
 
-    public void setAnimals(List<Animal> animals) {
-        this.animals = animals;
-    }
-
-    public List<CropSector> getCrops() {
-        return List.copyOf(cropSectors);
-    }
-
-    public void setCrops(List<CropSector> cropSectors) {
-        this.cropSectors = cropSectors;
-    }
 
     public MyLinkedList<Good> getStock() {
         return stock.clone();
@@ -53,6 +41,7 @@ public final class Farm {
     public Farm(String name, String location, float size, List<Animal> animals, List<CropSector> cropSectors, MyLinkedList<Good> stock, MyLinkedList<Good> soldGoods) {
         this.name = name;
         this.location = location;
+        this.id = this.hashCode();
         this.size = size;
         this.animals = animals;
         this.cropSectors = cropSectors;

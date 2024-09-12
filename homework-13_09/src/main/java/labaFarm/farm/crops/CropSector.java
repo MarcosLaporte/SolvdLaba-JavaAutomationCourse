@@ -1,12 +1,17 @@
 package labaFarm.farm.crops;
 
 import labaFarm.farm.Good;
+import labaFarm.farm.IIdentifiable;
 import labaFarm.farm.exceptions.UnableToHarvestException;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
-public abstract class CropSector {
+public abstract class CropSector implements IIdentifiable<CropSector> {
     public enum CropType {
         WHEAT, CORN, TOMATO;
 
@@ -52,27 +57,33 @@ public abstract class CropSector {
     }
 
     public final CropType type;
+    private int id;
     public float acres;
     public int daysToGrow;
     public GrowthStage currentGrowthStage;
 
-    public CropSector(CropType type, float acres, int daysToGrow, GrowthStage currentGrowthStage) {
+    public int getId() { return this.id; }
+
+    public CropSector(CropType type, int id, float acres, int daysToGrow, GrowthStage currentGrowthStage) {
+        this.id = id;
         this.type = type;
         this.acres = acres;
         this.daysToGrow = daysToGrow;
         this.currentGrowthStage = currentGrowthStage;
     }
 
-    public CropSector(CropType type, int daysToGrow, GrowthStage currentGrowthStage) {
-        this(type, 10, daysToGrow, currentGrowthStage);
+    @Override
+    public int getNewId(List<CropSector> existingObjects) {
+        Stream<CropSector> sameCropTypeStream = existingObjects.stream().filter(c -> c.type == this.type);
+        Optional<CropSector> maxIdCrop = sameCropTypeStream.max(Comparator.comparingInt(cr -> cr.id));
+
+        return maxIdCrop.isPresent() ? maxIdCrop.get().id + 1 : this.type.value * 1000 + 1;
     }
 
-    public CropSector(CropType type, float acres, int daysToGrow) {
-        this(type, acres, daysToGrow, GrowthStage.SEEDLING);
-    }
+    public CropSector(CropType type, List<CropSector> existingCrops, float acres, int daysToGrow, GrowthStage currentGrowthStage) {
+        this(type, -1, acres, daysToGrow, currentGrowthStage);
 
-    public CropSector(CropType type, int daysToGrow) {
-        this(type, 10, daysToGrow, GrowthStage.SEEDLING);
+        this.id = this.getNewId(existingCrops);
     }
 
     @Override
@@ -99,14 +110,18 @@ public abstract class CropSector {
         if (list.isEmpty()) return "No crops in the list.\n";
         StringBuilder sb = new StringBuilder();
 
-        sb.append("+--------+-------+--------------+--------------+\n");
-        sb.append(String.format("| %-6s | %-5s | %-12s | %-12s |\n",
-                "TYPE", "ACRES", "DAYS TO GROW", "GROWTH STAGE"));
-        sb.append("+--------+-------+--------------+--------------+\n");
+        sb.append("+--------+------+-------+--------------+--------------+\n");
+        sb.append(String.format("| %s | %s | %s | %s | %s |\n",
+                StringUtils.center("TYPE", 6),
+                StringUtils.center("ID", 4),
+                StringUtils.center("ACRES", 5),
+                StringUtils.center("DAYS TO GROW", 12),
+                StringUtils.center("GROWTH STAGE", 12)));
+        sb.append("+--------+------+-------+--------------+--------------+\n");
         for (CropSector cr : list) {
-            sb.append(String.format("| %-6s | %-5.2f | %-12d | %-12s |\n",
-                    cr.type, cr.acres, cr.daysToGrow, cr.currentGrowthStage));
-            sb.append("+--------+-------+--------------+--------------+\n");
+            sb.append(String.format("| %-4d | %-6s | %-5.2f | %-12d | %-12s |\n",
+                    cr.id, cr.type, cr.acres, cr.daysToGrow, cr.currentGrowthStage));
+            sb.append("+--------+------+-------+--------------+--------------+\n");
         }
 
         return sb.toString();

@@ -1,6 +1,8 @@
 package labaFarm.services;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -68,7 +70,7 @@ class LocalDateAdapter extends TypeAdapter<LocalDate> {
         if (value != null) {
             out.value(value.format(formatter));
         } else {
-            out.nullValue(); // Handles null value
+            out.nullValue();
         }
     }
 
@@ -169,6 +171,7 @@ class CropAdapter extends TypeAdapter<CropSector> {
     public void write(JsonWriter out, CropSector cropSector) throws IOException {
         out.beginObject();
         out.name("type").value(cropSector.type.name());
+        out.name("id").value(cropSector.getId());
         out.name("acres").value(cropSector.acres);
         out.name("daysToGrow").value(cropSector.daysToGrow);
         out.name("currentGrowthStage").value(cropSector.currentGrowthStage.name());
@@ -199,6 +202,7 @@ class CropAdapter extends TypeAdapter<CropSector> {
 
         String typeStr = (String) properties.get("type");
         CropSector.CropType cropType = CropSector.CropType.valueOf(typeStr);
+        int id = ((Double) properties.get("id")).intValue();
         float acres = ((Double) properties.get("acres")).floatValue();
         int daysToGrow = ((Double) properties.get("daysToGrow")).intValue();
         String currentGrowthStageStr = (String) properties.get("currentGrowthStage");
@@ -209,17 +213,17 @@ class CropAdapter extends TypeAdapter<CropSector> {
                 String kernelTypeStr = (String) properties.get("kernelType");
                 Corn.KernelType kernelType = Corn.KernelType.valueOf(kernelTypeStr);
                 float avgKernelSize = ((Double) properties.get("avgKernelSize")).floatValue();
-                return new Corn(acres, daysToGrow, currentGrowthStage, kernelType, avgKernelSize);
+                return new Corn(id, acres, daysToGrow, currentGrowthStage, kernelType, avgKernelSize);
             case TOMATO:
                 String tomatoVarietyStr = (String) properties.get("variety");
                 Tomato.TomatoVariety tomatoVariety = Tomato.TomatoVariety.valueOf(tomatoVarietyStr);
                 int yieldPerPlant = ((Double) properties.get("yieldPerPlant")).intValue();
-                return new Tomato(acres, daysToGrow, currentGrowthStage, tomatoVariety, yieldPerPlant);
+                return new Tomato(id, acres, daysToGrow, currentGrowthStage, tomatoVariety, yieldPerPlant);
             case WHEAT:
                 String wheatVarietyStr = (String) properties.get("variety");
                 Wheat.WheatVariety wheatVariety = Wheat.WheatVariety.valueOf(wheatVarietyStr);
                 int mgOfGluten = ((Double) properties.get("mgOfGluten")).intValue();
-                return new Wheat(acres, daysToGrow, currentGrowthStage, wheatVariety, mgOfGluten);
+                return new Wheat(id, acres, daysToGrow, currentGrowthStage, wheatVariety, mgOfGluten);
             default:
                 throw new IllegalArgumentException("Unknown crop type: " + cropType);
         }

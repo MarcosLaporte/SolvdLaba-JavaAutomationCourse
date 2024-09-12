@@ -4,6 +4,7 @@ import labaFarm.farm.Good;
 import labaFarm.farm.exceptions.UnableToHarvestException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 public final class Corn extends CropSector {
@@ -37,40 +38,22 @@ public final class Corn extends CropSector {
     public final KernelType kernelType;
     public float avgKernelSize;
 
-    public Corn(float acres, int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType, float avgKernelSize) {
-        super(CropType.CORN, acres, daysToGrow, currentGrowthStage);
+    public Corn(int id, float acres, int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType, float avgKernelSize) {
+        super(CropType.CORN, id, acres, daysToGrow, currentGrowthStage);
         this.kernelType = kernelType;
         this.avgKernelSize = avgKernelSize;
     }
-    public Corn(float acres, int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType) {
-        this(acres, daysToGrow, currentGrowthStage, kernelType, 8.5F);
+    public Corn(int id, float acres, int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType) {
+        this(id, acres, daysToGrow, currentGrowthStage, kernelType, 8.5F);
     }
 
-    public Corn(int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType, float avgKernelSize) {
-        super(CropType.CORN, daysToGrow, currentGrowthStage);
+    public Corn(List<CropSector> existingCrops, float acres, int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType, float avgKernelSize) {
+        super(CropType.CORN, existingCrops, acres, daysToGrow, currentGrowthStage);
         this.kernelType = kernelType;
         this.avgKernelSize = avgKernelSize;
     }
-    public Corn(int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType) {
-        this(daysToGrow, currentGrowthStage, kernelType, 8.5F);
-    }
-
-    public Corn(float acres, int daysToGrow, KernelType kernelType, float avgKernelSize) {
-        super(CropType.CORN, acres, daysToGrow);
-        this.kernelType = kernelType;
-        this.avgKernelSize = avgKernelSize;
-    }
-    public Corn(float acres, int daysToGrow, KernelType kernelType) {
-        this(acres, daysToGrow, kernelType, 8.5F);
-    }
-
-    public Corn(int daysToGrow, KernelType kernelType, float avgKernelSize) {
-        super(CropType.CORN, daysToGrow);
-        this.kernelType = kernelType;
-        this.avgKernelSize = avgKernelSize;
-    }
-    public Corn(int daysToGrow, KernelType kernelType) {
-        this(daysToGrow, kernelType, 8.5F);
+    public Corn(List<CropSector> existingCrops, float acres, int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType) {
+        this(existingCrops, acres, daysToGrow, currentGrowthStage, kernelType, 8.5F);
     }
 
     @Override

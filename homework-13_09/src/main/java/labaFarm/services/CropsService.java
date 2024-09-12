@@ -8,6 +8,8 @@ import labaFarm.farm.crops.Wheat;
 import labaFarm.farm.exceptions.RepeatedInstanceException;
 import org.apache.logging.log4j.Level;
 
+import java.util.List;
+
 public class CropsService {
     public static void createNewCrop(Farm farm) {
         int innerMenuOption = InputService.readInt(
@@ -22,9 +24,9 @@ public class CropsService {
         }
 
         CropSector newCropSector = switch (CropSector.CropType.values()[innerMenuOption-1]) {
-            case WHEAT -> initWheat();
-            case CORN -> initCorn();
-            case TOMATO -> initTomato();
+            case WHEAT -> initWheat(farm.cropSectors);
+            case CORN -> initCorn(farm.cropSectors);
+            case TOMATO -> initTomato(farm.cropSectors);
         };
 
         try {
@@ -36,13 +38,14 @@ public class CropsService {
     }
 
     private record CropData(
+            List<CropSector> existingCrops,
             float acres,
             int daysToGrow,
             CropSector.GrowthStage currentGrowthStage
     ) {
     }
 
-    private static CropData initCrop() {
+    private static CropData initCrop(List<CropSector> existingCrops) {
         float auxAcres = InputService.readFloat(
                 "Enter acres to use: ",
                 "Invalid value. Try again: ",
@@ -62,12 +65,12 @@ public class CropsService {
         );
         CropSector.GrowthStage auxGrowthStage = CropSector.GrowthStage.getGrowthStage(growthStageVal);
 
-        return new CropData(auxAcres, auxDays, auxGrowthStage);
+        return new CropData(existingCrops, auxAcres, auxDays, auxGrowthStage);
     }
 
-    public static Wheat initWheat() {
+    public static Wheat initWheat(List<CropSector> existingCrops) {
         System.out.println("Let's create some wheat crops!");
-        CropData cropData = initCrop();
+        CropData cropData = initCrop(existingCrops);
 
         int wheatVarietyVal = InputService.readInt(
                 Wheat.WheatVariety.getAll() + "Select wheat variety: ",
@@ -82,12 +85,12 @@ public class CropsService {
                 6000, 15000
         );
 
-        return new Wheat(cropData.acres, cropData.daysToGrow, cropData.currentGrowthStage, auxWheatVariety, auxGluten);
+        return new Wheat(cropData.existingCrops, cropData.acres, cropData.daysToGrow, cropData.currentGrowthStage, auxWheatVariety, auxGluten);
     }
 
-    public static Corn initCorn() {
+    public static Corn initCorn(List<CropSector> existingCrops) {
         System.out.println("Let's create some corn crops!");
-        CropData cropData = initCrop();
+        CropData cropData = initCrop(existingCrops);
 
         int kernelTypeVal = InputService.readInt(
                 Corn.KernelType.getAll() + "Select kernel type: ",
@@ -102,12 +105,12 @@ public class CropsService {
                 0.1F, 15
         );
 
-        return new Corn(cropData.acres, cropData.daysToGrow, cropData.currentGrowthStage, auxKernelType, auxKernelSize);
+        return new Corn(cropData.existingCrops, cropData.acres,  cropData.daysToGrow, cropData.currentGrowthStage, auxKernelType, auxKernelSize);
     }
 
-    public static Tomato initTomato() {
+    public static Tomato initTomato(List<CropSector> existingCrops) {
         System.out.println("Let's create some tomato crops!");
-        CropData cropData = initCrop();
+        CropData cropData = initCrop(existingCrops);
 
         int tomatoVarietyVal = InputService.readInt(
                 Tomato.TomatoVariety.getAll() + "Select tomato variety: ",
@@ -122,6 +125,6 @@ public class CropsService {
                 1, 15
         );
 
-        return new Tomato(cropData.acres, cropData.daysToGrow, cropData.currentGrowthStage, auxTomatoVariety, auxYieldPerPlant);
+        return new Tomato(cropData.existingCrops, cropData.acres,  cropData.daysToGrow, cropData.currentGrowthStage, auxTomatoVariety, auxYieldPerPlant);
     }
 }

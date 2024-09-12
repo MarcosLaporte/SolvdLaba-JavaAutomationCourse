@@ -4,6 +4,7 @@ import labaFarm.farm.Good;
 import labaFarm.farm.exceptions.UnableToHarvestException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 public final class Tomato extends CropSector {
@@ -37,40 +38,22 @@ public final class Tomato extends CropSector {
     public final TomatoVariety variety;
     public int yieldPerPlant;
 
-    public Tomato(float acres, int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety, int yieldPerPlant) {
-        super(CropType.TOMATO, acres, daysToGrow, currentGrowthStage);
+    public Tomato(int id, float acres, int daysToGrow, GrowthStage currentGrowthStage, TomatoVariety variety, int yieldPerPlant) {
+        super(CropType.TOMATO, id, acres, daysToGrow, currentGrowthStage);
         this.variety = variety;
         this.yieldPerPlant = yieldPerPlant;
     }
-    public Tomato(float acres, int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety) {
-        this(acres, daysToGrow, currentGrowthStage, variety, 45);
+    public Tomato(int id, float acres, int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety) {
+        this(id, acres, daysToGrow, currentGrowthStage, variety, 45);
     }
 
-    public Tomato(int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety, int yieldPerPlant) {
-        super(CropType.TOMATO, daysToGrow, currentGrowthStage);
+    public Tomato(List<CropSector> existingCrops, float acres, int daysToGrow, GrowthStage currentGrowthStage, TomatoVariety variety, int yieldPerPlant) {
+        super(CropType.TOMATO, existingCrops, acres, daysToGrow, currentGrowthStage);
         this.variety = variety;
         this.yieldPerPlant = yieldPerPlant;
     }
-    public Tomato(int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety) {
-        this(daysToGrow, currentGrowthStage, variety, 45);
-    }
-
-    public Tomato(float acres, int daysToGrow,TomatoVariety variety, int yieldPerPlant) {
-        super(CropType.TOMATO, acres, daysToGrow);
-        this.variety = variety;
-        this.yieldPerPlant = yieldPerPlant;
-    }
-    public Tomato(float acres, int daysToGrow,TomatoVariety variety) {
-        this(acres, daysToGrow, variety, 45);
-    }
-
-    public Tomato(int daysToGrow,TomatoVariety variety, int yieldPerPlant) {
-        super(CropType.TOMATO, daysToGrow);
-        this.variety = variety;
-        this.yieldPerPlant = yieldPerPlant;
-    }
-    public Tomato(int daysToGrow,TomatoVariety variety) {
-        this(daysToGrow, variety, 45);
+    public Tomato(List<CropSector> existingCrops, float acres, int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety) {
+        this(existingCrops, acres, daysToGrow, currentGrowthStage, variety, 45);
     }
 
     @Override

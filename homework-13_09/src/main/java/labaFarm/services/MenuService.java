@@ -26,7 +26,7 @@ public class MenuService {
 
         return createNewFarm ?
                 FarmService.createFarm() :
-                new Farm("Manor Farm", "Willingdon, England", 152.3F);
+                JsonService.readData("farm.json", Farm.class);
     }
 
     public static Owner handleOwner(Farm farm) {
@@ -38,7 +38,7 @@ public class MenuService {
 
         return createNewOwner ?
                 FarmService.initOwner(farm) :
-                new Owner("Mr. Jones", "243-12-5768", 74, farm, 750_452.6);
+                JsonService.readData("owner.json", Owner.class);
     }
 
     public static void handleAnimalsAndCrops(Farm farm) {
@@ -50,13 +50,13 @@ public class MenuService {
         if (!loadData) return;
 
         try {
-            farm.addCrop(new Wheat(6, 92, CropSector.GrowthStage.SEEDLING, Wheat.WheatVariety.HARD_RED_WINTER));
-            farm.addCrop(new Corn(7, 125, Corn.KernelType.FLOUR, 8.5F));
-            farm.addCrop(new Wheat(8, 105, CropSector.GrowthStage.VEGETATIVE, Wheat.WheatVariety.HARD_WHITE, 7300));
-            farm.addCrop(new Corn(11, 135, CropSector.GrowthStage.HARVEST, Corn.KernelType.WAXY, 7.8F));
-            farm.addCrop(new Tomato(9, 75, CropSector.GrowthStage.MATURITY, Tomato.TomatoVariety.CHERRY));
-            farm.addCrop(new Corn(120, Corn.KernelType.DENT));
-            farm.addCrop(new Tomato(6, 70, CropSector.GrowthStage.HARVEST, Tomato.TomatoVariety.BIG_BEEF, 50));
+            farm.addCrop(new Wheat(farm.cropSectors, 6, 92, CropSector.GrowthStage.SEEDLING, Wheat.WheatVariety.HARD_RED_WINTER));
+            farm.addCrop(new Corn(farm.cropSectors, 7, 125, CropSector.GrowthStage.FLOWERING, Corn.KernelType.FLOUR, 8.5F));
+            farm.addCrop(new Wheat(farm.cropSectors, 8, 105, CropSector.GrowthStage.VEGETATIVE, Wheat.WheatVariety.HARD_WHITE, 7300));
+            farm.addCrop(new Corn(farm.cropSectors, 11, 135, CropSector.GrowthStage.HARVEST, Corn.KernelType.WAXY, 7.8F));
+            farm.addCrop(new Tomato(farm.cropSectors, 9, 75, CropSector.GrowthStage.MATURITY, Tomato.TomatoVariety.CHERRY));
+            farm.addCrop(new Corn(farm.cropSectors, 10, 120, CropSector.GrowthStage.SEEDLING, Corn.KernelType.DENT));
+            farm.addCrop(new Tomato(farm.cropSectors, 6, 70, CropSector.GrowthStage.HARVEST, Tomato.TomatoVariety.BIG_BEEF, 50));
 
             List<Animal> animals = new ArrayList<>();
             animals.add(new Cattle(LocalDate.of(2021, 5, 10), "Grass", Animal.AnimalSex.M, 500.0f, 150.0f, Cattle.CattleBreed.HOLSTEIN));

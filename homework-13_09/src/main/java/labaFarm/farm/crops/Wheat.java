@@ -4,6 +4,7 @@ import labaFarm.farm.Good;
 import labaFarm.farm.exceptions.UnableToHarvestException;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 
 public final class Wheat extends CropSector {
@@ -37,40 +38,22 @@ public final class Wheat extends CropSector {
     public final WheatVariety variety;
     public int mgOfGluten;
 
-    public Wheat(float acres, int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety, int mgOfGluten) {
-        super(CropType.WHEAT, acres, daysToGrow, currentGrowthStage);
+    public Wheat(int id, float acres, int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety, int mgOfGluten) {
+        super(CropType.WHEAT, id, acres, daysToGrow, currentGrowthStage);
         this.variety = variety;
         this.mgOfGluten = mgOfGluten;
     }
-    public Wheat(float acres, int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety) {
-        this(acres, daysToGrow, currentGrowthStage, variety, 7500);
+    public Wheat(int id, float acres, int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety) {
+        this(id, acres, daysToGrow, currentGrowthStage, variety, 7500);
     }
 
-    public Wheat(int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety, int mgOfGluten) {
-        super(CropType.WHEAT, daysToGrow, currentGrowthStage);
+    public Wheat(List<CropSector> existingCrops, float acres, int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety, int mgOfGluten) {
+        super(CropType.WHEAT, existingCrops, acres, daysToGrow, currentGrowthStage);
         this.variety = variety;
         this.mgOfGluten = mgOfGluten;
     }
-    public Wheat(int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety) {
-        this(daysToGrow, currentGrowthStage, variety, 7500);
-    }
-
-    public Wheat(float acres, int daysToGrow, WheatVariety variety, int mgOfGluten) {
-        super(CropType.WHEAT, acres, daysToGrow);
-        this.variety = variety;
-        this.mgOfGluten = mgOfGluten;
-    }
-    public Wheat(float acres, int daysToGrow, WheatVariety variety) {
-        this(acres, daysToGrow, variety, 7500);
-    }
-
-    public Wheat(int daysToGrow, WheatVariety variety, int mgOfGluten) {
-        super(CropType.WHEAT, daysToGrow);
-        this.variety = variety;
-        this.mgOfGluten = mgOfGluten;
-    }
-    public Wheat(int daysToGrow, WheatVariety variety) {
-        this(daysToGrow, variety, 7500);
+    public Wheat(List<CropSector> existingCrops, float acres, int daysToGrow, GrowthStage currentGrowthStage, WheatVariety variety) {
+        this(existingCrops, acres, daysToGrow, currentGrowthStage, variety, 7500);
     }
 
     @Override
