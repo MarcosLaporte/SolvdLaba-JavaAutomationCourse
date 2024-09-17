@@ -1,6 +1,7 @@
 package labaFarm.farm.animals;
 
 import labaFarm.farm.IIdentifiable;
+import labaFarm.farm.animals.interfaces.IAnimalFilter;
 import labaFarm.farm.exceptions.IncompatibleBreedingException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -166,4 +167,10 @@ public abstract class Animal implements IIdentifiable<Animal> {
     }
 
     public transient BiFunction<Animal, Animal, Integer> compareTo = (x, y) -> x.id - y.id;
+    public transient BiPredicate<Float, Float> validWeight = (from, to) -> this.weightInKg >= from && this.weightInKg <= to;
+    public transient BiPredicate<Float, Float> validHeight = (from, to) -> this.heightInCm >= from && this.heightInCm <= to;
+
+    public transient IAnimalFilter<Animal> femaleFilter = animal -> animal.sex == AnimalSex.F;
+    public transient IAnimalFilter<Animal> maleFilter = animal -> animal.sex == AnimalSex.M;
+
 }

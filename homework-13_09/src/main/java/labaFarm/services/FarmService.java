@@ -81,6 +81,7 @@ public class FarmService {
         );
 
         return new Owner(personData.fullName, personData.ssn, personData.age, farm, auxNetWorth);
+//        return new Owner(personData.fullName, personData.ssn, personData.age, farm.getId(), auxNetWorth);
     }
 
     private record EmployeeData(
@@ -131,7 +132,7 @@ public class FarmService {
     }
 
     public static CropsCultivator initCropsCultivator() {
-        System.out.println("Let's create an crops cultivator!");
+        System.out.println("Let's create a crops cultivator!");
         PersonData personData = initPerson();
         EmployeeData employeeData = initEmployee(Employee.EmployeeType.CULTIVATOR);
 

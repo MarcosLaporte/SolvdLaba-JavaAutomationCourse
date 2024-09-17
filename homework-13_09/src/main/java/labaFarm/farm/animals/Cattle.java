@@ -1,6 +1,7 @@
 package labaFarm.farm.animals;
 
 import labaFarm.farm.Good;
+import labaFarm.farm.animals.interfaces.IAnimalFilter;
 import labaFarm.farm.animals.interfaces.IMilker;
 import labaFarm.farm.exceptions.IncompatibleBreedingException;
 import labaFarm.farm.exceptions.UnableToProduceException;
@@ -89,4 +90,7 @@ public final class Cattle extends Animal implements IMilker {
                 RANDOM.nextFloat(0.9F, 2.5F)
         );
     }
+
+    public transient IAnimalFilter<Cattle> angusFilter = cow -> cow.breed == CattleBreed.ANGUS;
+
 }

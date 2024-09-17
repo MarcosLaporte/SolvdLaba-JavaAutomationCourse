@@ -11,10 +11,8 @@ import labaFarm.farm.people.Owner;
 import org.apache.logging.log4j.Level;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Map;
 
 public class MenuService {
     public static Farm handleFarm() {
@@ -94,13 +92,13 @@ public class MenuService {
         return Employee.WorkShift.getWorkShift(shiftVal);
     }
 
-    public static Animal chooseAnimal(List<Animal> list) {
+    public static Animal chooseAnimal(List<Animal> list, boolean goBackOption) {
         if (list.isEmpty()) {
             System.out.println("No animals in the list.");
             return null;
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("\n0. GO BACK\n");
+        if (goBackOption) sb.append("\n0. GO BACK\n");
         int index = 1;
 
         for (Animal an : list) {
@@ -111,26 +109,26 @@ public class MenuService {
         int chosenOpt = InputService.readInt(
                 sb + "Choose an animal: ",
                 "This option does not exist. Try again: ",
-                0, index
+                goBackOption ? 0 : 1, index
         );
 
         if (chosenOpt == 0) return null;
         return list.get(chosenOpt - 1);
     }
+    public static Animal chooseAnimal(List<Animal> list) {
+        return chooseAnimal(list, true);
+    }
 
-    public static CropSector chooseCropToHarvest(List<CropSector> list) {
-        Stream<CropSector> harvestStream = list.stream().filter(cr -> cr.currentGrowthStage == CropSector.GrowthStage.HARVEST);
-        List<CropSector> finalList = harvestStream.toList();
-
-        if (finalList.isEmpty()) {
-            System.out.println("No crops to harvest in the list.");
+    public static CropSector chooseCrop(List<CropSector> list, boolean goBackOption) {
+        if (list.isEmpty()) {
+            System.out.println("No crops in the list.");
             return null;
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("\n0. GO BACK\n");
+        if (goBackOption) sb.append("\n0. GO BACK\n");
         int index = 1;
 
-        for (CropSector cr : finalList) {
+        for (CropSector cr : list) {
             sb.append(String.format("%d. %s - %.2f acres\n", index, cr.type, cr.acres));
             index++;
         }
@@ -138,20 +136,23 @@ public class MenuService {
         int chosenOpt = InputService.readInt(
                 sb + "\nChoose a crop: ",
                 "This option does not exist. Try again: ",
-                0, index
+                goBackOption ? 0 : 1, index
         );
 
         if (chosenOpt == 0) return null;
-        return finalList.get(chosenOpt - 1);
+        return list.get(chosenOpt - 1);
+    }
+    public static CropSector chooseCrop(List<CropSector> list) {
+        return chooseCrop(list, true);
     }
 
-    public static Good chooseGood(List<Good> list) {
+    public static Good chooseGood(List<Good> list, boolean goBackOption) {
         if (list.isEmpty()) {
             System.out.println("No goods in the list.");
             return null;
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("\n0. GO BACK\n");
+        if (goBackOption) sb.append("\n0. GO BACK\n");
         int index = 1;
 
         for (Good good : list) {
@@ -162,11 +163,26 @@ public class MenuService {
         int chosenOpt = InputService.readInt(
                 sb + "\nChoose one of the goods from the list: ",
                 "This option does not exist. Try again: ",
-                0, index
+                goBackOption ? 0 : 1, index
         );
 
         if (chosenOpt == 0) return null;
         return list.get(chosenOpt - 1);
     }
+    public static Good chooseGood(List<Good> list) {
+        return chooseGood(list, true);
+    }
 
+    public static Employee chooseEmployee(Map<String, Employee> employeeMap) {
+        String[] employeesSSN = employeeMap.keySet().toArray(new String[0]);
+        System.out.println(Employee.toTable(employeeMap.values().stream().toList()));
+
+        String chosenSSN = InputService.readStringInValues(
+                "Enter selected employee's SSN: ",
+                "That value does not exist. Try again: ",
+                employeesSSN
+        );
+
+        return employeeMap.get(chosenSSN);
+    }
 }

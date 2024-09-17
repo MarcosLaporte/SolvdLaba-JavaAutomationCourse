@@ -2,7 +2,6 @@ package labaFarm.farm.animals.interfaces;
 
 import labaFarm.farm.Good;
 
-@FunctionalInterface
 public interface IShearable {
     enum FurType {
         FINE, DOWN, MEDIUM, LONG, DOUBLE_COATED;

@@ -1,16 +1,18 @@
 package labaFarm.farm.people;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.Random;
+import labaFarm.farm.people.interfaces.IFinishShift;
 
-public abstract class Employee extends Person {
+import java.util.*;
+import java.util.function.Predicate;
+
+public abstract class Employee extends Person implements IFinishShift<Employee> {
     public enum WorkShift {
         MORNING, EVENING, NIGHT;
 
         private final int value;
+
         WorkShift() {
-            this.value = ordinal()+1;
+            this.value = ordinal() + 1;
         }
 
         public static String getAll() {
@@ -31,12 +33,14 @@ public abstract class Employee extends Person {
             return null;
         }
     }
+
     public enum EmployeeType {
         CULTIVATOR, ANIMAL_CARETAKER;
 
         private final int value;
+
         EmployeeType() {
-            this.value = ordinal()+1;
+            this.value = ordinal() + 1;
         }
 
         public static String getAll() {
@@ -95,11 +99,32 @@ public abstract class Employee extends Person {
     protected void setRandomWorkShift(int amount) {
         Random random = new Random();
         for (int i = 0; i < amount; i++) {
-            int index = random.nextInt(1, WorkShift.values().length)-1;
+            int index = random.nextInt(1, WorkShift.values().length) - 1;
             this.nextShifts.add(WorkShift.values()[index]);
         }
     }
 
     @Override
     public abstract String toString();
+
+    public static String toTable(List<Employee> employees) {
+        StringBuilder sb = new StringBuilder();
+        for (Employee emp : employees) {
+            sb.append(emp);
+        }
+
+        return String.format("| %-16s | %-15s | %-11s | %-10s | Vet |\n", "Type", "Full name", "SSN", "Salary") +
+                "+------------------+-----------------+-------------+------------+-----+\n" +
+                sb +
+                "+------------------+-----------------+-------------+------------+-----+\n";
+    }
+
+    private transient final IFinishShift<CropsCultivator> iFinishShift = () -> this.nextShifts.remove();
+    @Override
+    public void finishShift() {
+        iFinishShift.finishShift();
+    }
+
+    public static Predicate<Employee> cultivatorPredicate = employee -> employee.type == EmployeeType.CULTIVATOR;
+    public static Predicate<Employee> caretakerPredicate = employee -> employee.type == EmployeeType.ANIMAL_CARETAKER;
 }

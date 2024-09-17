@@ -1,6 +1,7 @@
 package labaFarm.farm.animals;
 
 import labaFarm.farm.Good;
+import labaFarm.farm.animals.interfaces.IAnimalFilter;
 import labaFarm.farm.animals.interfaces.IShearable;
 import labaFarm.farm.exceptions.IncompatibleBreedingException;
 
@@ -63,4 +64,6 @@ public final class Sheep extends Animal implements IShearable {
                 RANDOM.nextFloat(800, 1750)
         );
     }
+
+    public transient IAnimalFilter<Sheep> trainedFilter = sheep -> sheep.isTrained;
 }

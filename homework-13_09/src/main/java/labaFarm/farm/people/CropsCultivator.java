@@ -1,31 +1,33 @@
 package labaFarm.farm.people;
 
 import labaFarm.farm.crops.CropSector;
+import labaFarm.farm.people.interfaces.IFinishShift;
 
 import java.util.Queue;
 import java.util.Set;
 
 public class CropsCultivator extends Employee {
-    public Set<CropSector> cropsInCare;
+//    public Set<CropSector> cropsInCare;
+    public Set<Integer> idCropsInCare;
 
-    public CropsCultivator(String fullName, String ssn, int age, double annualSalary, Queue<WorkShift> shift, Set<CropSector> cropsInCare) {
+    public CropsCultivator(String fullName, String ssn, int age, double annualSalary, Queue<WorkShift> shift, Set<Integer> idCropsInCare) {
         super(fullName, ssn, age, annualSalary, shift, EmployeeType.CULTIVATOR);
-        this.cropsInCare = cropsInCare;
+        this.idCropsInCare = idCropsInCare;
     }
 
-    public CropsCultivator(String fullName, String ssn, int age, Queue<WorkShift> shift, Set<CropSector> cropsInCare) {
+    public CropsCultivator(String fullName, String ssn, int age, Queue<WorkShift> shift, Set<Integer> idCropsInCare) {
         super(fullName, ssn, age, shift, EmployeeType.CULTIVATOR);
-        this.cropsInCare = cropsInCare;
+        this.idCropsInCare = idCropsInCare;
     }
 
-    public CropsCultivator(String fullName, String ssn, int age, double annualSalary, Set<CropSector> cropsInCare) {
+    public CropsCultivator(String fullName, String ssn, int age, double annualSalary, Set<Integer> idCropsInCare) {
         super(fullName, ssn, age, annualSalary, EmployeeType.CULTIVATOR);
-        this.cropsInCare = cropsInCare;
+        this.idCropsInCare = idCropsInCare;
     }
 
-    public CropsCultivator(String fullName, String ssn, int age, Set<CropSector> cropsInCare) {
+    public CropsCultivator(String fullName, String ssn, int age, Set<Integer> idCropsInCare) {
         super(fullName, ssn, age, EmployeeType.CULTIVATOR);
-        this.cropsInCare = cropsInCare;
+        this.idCropsInCare = idCropsInCare;
     }
 
     @Override

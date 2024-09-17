@@ -1,7 +1,7 @@
 package labaFarm.farm.animals;
 
 import labaFarm.farm.Good;
-import labaFarm.farm.animals.interfaces.IAnimalAction;
+import labaFarm.farm.animals.interfaces.IAnimalFilter;
 import labaFarm.farm.animals.interfaces.IEggLayer;
 import labaFarm.farm.exceptions.IncompatibleBreedingException;
 import labaFarm.farm.exceptions.UnableToProduceException;
@@ -114,5 +114,7 @@ public final class Chicken extends Animal implements IEggLayer {
                 RANDOM.nextFloat(0.25F, 0.7F)
         );
     }
+
+    public transient IAnimalFilter<Chicken> largeEggsFilter = chicken -> chicken.eggSize == EggSize.LARGE;
 
 }

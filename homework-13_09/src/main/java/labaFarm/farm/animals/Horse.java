@@ -1,5 +1,6 @@
 package labaFarm.farm.animals;
 
+import labaFarm.farm.animals.interfaces.IAnimalFilter;
 import labaFarm.farm.exceptions.IncompatibleBreedingException;
 
 import java.time.LocalDate;
@@ -51,4 +52,7 @@ public final class Horse extends Animal {
 
         return newHorse;
     }
+
+    public transient IAnimalFilter<Horse> competitionFilter = horse -> horse.isForCompetition;
+
 }

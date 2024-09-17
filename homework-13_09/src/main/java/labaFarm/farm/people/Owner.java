@@ -7,6 +7,7 @@ import java.util.*;
 
 public class Owner extends Person {
     public Farm farm;
+//    public int farmId;
     private double netWorth;
     private Map<String, Employee> employees;
 
@@ -31,36 +32,19 @@ public class Owner extends Person {
     }
 
     public Owner(String fullName, String ssn, int age, Farm farm, double netWorth, Map<String, Employee> employees) {
+//    public Owner(String fullName, String ssn, int age, int farmId, double netWorth, Map<String, Employee> employees) {
         super(fullName, ssn, age);
         this.farm = farm;
+//        this.farmId = farmId;
         setNetWorth(netWorth);
         setEmployees(employees);
     }
 
     public Owner(String fullName, String ssn, int age, Farm farm, double netWorth) {
+//    public Owner(String fullName, String ssn, int age, int farmId, double netWorth) {
         this(fullName, ssn, age, farm, netWorth, new HashMap<>());
+//        this(fullName, ssn, age, farmId, netWorth, new HashMap<>());
     }
-
-    public String employeesToString() {
-        StringBuilder crCultSb = new StringBuilder();
-        StringBuilder anCareSb = new StringBuilder();
-        employees.forEach((key, value) -> {
-            if (value.type == Employee.EmployeeType.CULTIVATOR) {
-                crCultSb.append(value);
-            } else {
-                anCareSb.append(value);
-            }
-        });
-
-        return super.toString() +
-                String.format("| %-16s | %-15s | %-11s | %-10s |\n", "Type", "Full name", "SSN", "Salary") +
-                "+------------------+-----------------+-------------+------------+\n" +
-                crCultSb +
-                "+------------------+-----------------+-------------+------------+ Vet +\n" +
-                anCareSb +
-                "+------------------+-----------------+-------------+------------------+\n";
-    }
-
 
     public void addEmployee(Employee employee) throws RepeatedInstanceException {
         if (employees.containsKey(employee.getSsn()))

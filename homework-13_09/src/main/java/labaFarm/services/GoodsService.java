@@ -9,6 +9,8 @@ import labaFarm.farm.exceptions.RepeatedInstanceException;
 import labaFarm.farm.exceptions.UnableToProduceException;
 import org.apache.logging.log4j.Level;
 
+import java.util.stream.Stream;
+
 public class GoodsService {
     public static void manageAnimalGoods(Farm farm) {
         Animal chosenAn = MenuService.chooseAnimal(farm.animals);
@@ -45,7 +47,8 @@ public class GoodsService {
     }
 
     public static void manageHarvest(Farm farm) {
-        CropSector chosenCr = MenuService.chooseCropToHarvest(farm.cropSectors);
+        Stream<CropSector> harvestStream = farm.cropSectors.stream().filter(cr -> cr.currentGrowthStage == CropSector.GrowthStage.HARVEST);
+        CropSector chosenCr = MenuService.chooseCrop(harvestStream.toList());
         if (chosenCr == null) {
             System.out.println("Back to main menu...");
             return;

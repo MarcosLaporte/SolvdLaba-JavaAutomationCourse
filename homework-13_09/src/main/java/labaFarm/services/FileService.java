@@ -14,10 +14,14 @@ public class FileService {
         File file = new File(preparePath(filePath));
         try {
             FileUtils.write(file, content, Charset.defaultCharset(), append);
-            LoggerService.fileLog(Level.INFO, "Content written to file successfully.");
+            LoggerService.log(Level.INFO, "Written to '"+ filePath +"' successfully.");
         } catch (IOException e) {
             LoggerService.log(Level.ERROR, e.getMessage());
         }
+    }
+
+    public static void writeFile(String filePath, String content) {
+        writeFile(filePath, content, true);
     }
 
     public static String readFile(String filePath) {
