@@ -53,6 +53,6 @@ public final class Horse extends Animal {
         return newHorse;
     }
 
-    public transient IAnimalFilter<Horse> competitionFilter = horse -> horse.isForCompetition;
+    public static IAnimalFilter<Horse> competitionFilter = horse -> horse.isForCompetition;
 
 }

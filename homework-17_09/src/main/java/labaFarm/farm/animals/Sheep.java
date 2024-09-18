@@ -65,5 +65,8 @@ public final class Sheep extends Animal implements IShearable {
         );
     }
 
-    public transient IAnimalFilter<Sheep> trainedFilter = sheep -> sheep.isTrained;
+
+    public static IAnimalFilter<Sheep> createFurFilter(FurType woolType) {
+        return sheep -> sheep.woolType == woolType;
+    }
 }

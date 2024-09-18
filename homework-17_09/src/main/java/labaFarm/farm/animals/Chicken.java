@@ -115,6 +115,7 @@ public final class Chicken extends Animal implements IEggLayer {
         );
     }
 
-    public transient IAnimalFilter<Chicken> largeEggsFilter = chicken -> chicken.eggSize == EggSize.LARGE;
-
+    public static IAnimalFilter<Chicken> createEggSizeFilter(EggSize eggSize) {
+        return chicken -> chicken.eggSize == eggSize;
+    }
 }

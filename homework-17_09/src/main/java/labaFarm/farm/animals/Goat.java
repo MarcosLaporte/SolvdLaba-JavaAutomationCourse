@@ -1,6 +1,7 @@
 package labaFarm.farm.animals;
 
 import labaFarm.farm.Good;
+import labaFarm.farm.animals.interfaces.IAnimalFilter;
 import labaFarm.farm.animals.interfaces.IMilker;
 import labaFarm.farm.animals.interfaces.IShearable;
 import labaFarm.farm.exceptions.IncompatibleBreedingException;
@@ -74,5 +75,10 @@ public final class Goat extends Animal implements IMilker, IShearable {
                 Good.GoodsQuality.randomQualitySupplier.get(),
                 RANDOM.nextFloat(12, 16)
         );
+    }
+
+
+    public static IAnimalFilter<Goat> createFurFilter(FurType mohairType) {
+        return goat -> goat.mohairType == mohairType;
     }
 }

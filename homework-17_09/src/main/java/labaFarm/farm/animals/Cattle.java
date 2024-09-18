@@ -91,6 +91,7 @@ public final class Cattle extends Animal implements IMilker {
         );
     }
 
-    public transient IAnimalFilter<Cattle> angusFilter = cow -> cow.breed == CattleBreed.ANGUS;
-
+    public static IAnimalFilter<Cattle> createBreedFilter(CattleBreed breed) {
+        return cattle -> cattle.breed == breed;
+    }
 }
