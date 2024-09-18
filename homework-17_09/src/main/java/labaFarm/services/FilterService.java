@@ -2,6 +2,7 @@ package labaFarm.services;
 
 import labaFarm.farm.Farm;
 import labaFarm.farm.animals.Animal;
+import labaFarm.farm.animals.interfaces.IAnimalFilter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,13 +13,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FilterService {
-
     private enum AnimalFilterField {
         SPECIES, DATE_OF_BIRTH, SEX, WEIGHT, HEIGHT;
 
         private final int value;
+
         AnimalFilterField() {
-            this.value = this.ordinal()+1;
+            this.value = this.ordinal() + 1;
         }
 
         public static String getAll() {
@@ -39,14 +40,15 @@ public class FilterService {
         );
 
         Stream<Animal> animalStream = farm.animals.stream();
-        List<Animal> finalList = switch (AnimalFilterField.values()[fieldChosen - 1]) {
-            case SPECIES -> filterAnimalsBySpecies(animalStream);
-            case DATE_OF_BIRTH -> filterAnimalsByDoB(animalStream);
-            case SEX -> filterAnimalsBySex(animalStream);
-            case WEIGHT -> filterAnimalsByWeight(animalStream);
-            case HEIGHT -> filterAnimalsByHeight(animalStream);
+        IAnimalFilter<Animal> animalFilter = switch (AnimalFilterField.values()[fieldChosen - 1]) {
+            case SPECIES -> getFilterAnimalsBySpecies(animalStream);
+            case DATE_OF_BIRTH -> getFilterAnimalsByDoB(animalStream);
+            case SEX -> getFilterAnimalsBySex(animalStream);
+            case WEIGHT -> getFilterAnimalsByWeight(animalStream);
+            case HEIGHT -> getFilterAnimalsByHeight(animalStream);
         };
 
+        List<Animal> finalList = animalStream.filter(animalFilter::filter).toList();
         System.out.println(Animal.toTable(finalList));
     }
 
@@ -60,7 +62,7 @@ public class FilterService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private static List<Animal> filterAnimalsBySpecies(Stream<Animal> animalStream) {
+    private static IAnimalFilter<Animal> getFilterAnimalsBySpecies(Stream<Animal> animalStream) {
         int chosenSpecies = InputService.readInt(
                 "\nSelect an species to filter.\n" + Animal.Species.getAll() + "Choose an option: ",
                 "This option does not exist. Try again: ",
@@ -68,10 +70,11 @@ public class FilterService {
         );
 
         Animal.Species species = Animal.Species.values()[chosenSpecies - 1];
-        return animalStream.filter(animal -> animal.species == species).toList();
+
+        return animal -> animal.species == species;
     }
 
-    private static List<Animal> filterAnimalsByDoB(Stream<Animal> animalStream) {
+    private static IAnimalFilter<Animal> getFilterAnimalsByDoB(Stream<Animal> animalStream) {
         char enterFromDate = InputService.readCharInValues(
                 "Enter date to filter FROM (1) or skip (2)?",
                 "Invalid option. Try again: ",
@@ -85,10 +88,10 @@ public class FilterService {
         );
         LocalDate dobTo = enterToDate == '1' ? InputService.readValidDate() : LocalDate.MAX;
 
-        return animalStream.filter(animal -> animal.getDateOfBirth().isAfter(dobFrom) && animal.getDateOfBirth().isBefore(dobTo)).toList();
+        return animal -> animal.getDateOfBirth().isAfter(dobFrom) && animal.getDateOfBirth().isBefore(dobTo);
     }
 
-    private static List<Animal> filterAnimalsBySex(Stream<Animal> animalStream) {
+    private static IAnimalFilter<Animal> getFilterAnimalsBySex(Stream<Animal> animalStream) {
         char sexChar = InputService.readCharInValues(
                 "Enter animal sex to filter (F/M): ",
                 "This option does not exist. Try again: ",
@@ -96,10 +99,11 @@ public class FilterService {
         );
 
         Animal.AnimalSex animalSex = Animal.AnimalSex.valueOf(String.valueOf(sexChar));
-        return animalStream.filter(animal -> animal.sex == animalSex).toList();
+
+        return animal -> animal.sex == animalSex;
     }
 
-    private static List<Animal> filterAnimalsByWeight(Stream<Animal> animalStream) {
+    private static IAnimalFilter<Animal> getFilterAnimalsByWeight(Stream<Animal> animalStream) {
         char enterFromWeight = InputService.readCharInValues(
                 "Enter weight to filter FROM (1) or skip (2)?",
                 "Invalid option. Try again: ",
@@ -122,10 +126,10 @@ public class FilterService {
                 weightFrom, 99_999
         ) : 99_999;
 
-        return animalStream.filter(animal -> animal.validWeight.test(weightFrom, weightTo)).toList();
+        return animal -> animal.validWeight.test(weightFrom, weightTo);
     }
 
-    private static List<Animal> filterAnimalsByHeight(Stream<Animal> animalStream) {
+    private static IAnimalFilter<Animal> getFilterAnimalsByHeight(Stream<Animal> animalStream) {
         char enterFromHeight = InputService.readCharInValues(
                 "Enter height to filter FROM (1) or skip (2)?",
                 "Invalid option. Try again: ",
@@ -148,8 +152,7 @@ public class FilterService {
                 heightFrom, 9_999
         ) : 9_999;
 
-        return animalStream.filter(animal -> animal.validHeight.test(heightFrom, heightTo)).toList();
+        return animal -> animal.validHeight.test(heightFrom, heightTo);
     }
-
 
 }

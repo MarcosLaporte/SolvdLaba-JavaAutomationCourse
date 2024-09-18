@@ -2,6 +2,7 @@ package labaFarm.services;
 
 import labaFarm.farm.Farm;
 import labaFarm.farm.people.Owner;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,7 +10,7 @@ import java.util.Scanner;
 
 public class MainMenu {
     private enum Menu {
-        EXIT, PRINT_FARM, NEW_ANIMAL, NEW_CROP, ANIMAL_GOODS, HARVEST_CROP, BREED_ANIMALS, SELL_GOODS, ADD_EMPLOYEE, FILTER_ANIMALS, PERFORM_ACTION;
+        EXIT, PRINT_FARM, NEW_ANIMAL, NEW_CROP, ANIMAL_GOODS, HARVEST_CROP, BREED_ANIMALS, SELL_GOODS, ADD_EMPLOYEE, FILTER_ANIMALS, PERFORM_ACTION, /*DEEP_FILTER*/;
 
         private final int value;
         Menu() {
@@ -19,7 +20,8 @@ public class MainMenu {
         public static String printMenu() {
             StringBuilder sb = new StringBuilder();
             for (Menu option : Menu.values()) {
-                sb.append(String.format("%d. %s\n", option.value, option));
+                String optionStr = StringUtils.replace(String.valueOf(option), "_", " ");
+                sb.append(String.format("%d. %s\n", option.value, optionStr));
             }
 
             return sb.toString();
