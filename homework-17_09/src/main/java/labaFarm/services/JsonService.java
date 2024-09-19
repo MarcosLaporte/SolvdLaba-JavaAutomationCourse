@@ -123,7 +123,7 @@ class AnimalAdapter extends TypeAdapter<Animal> {
     }
 
     @Override
-    public Animal read(JsonReader in) throws IOException {
+    public Animal read(JsonReader in) {
         Type type = new TypeToken<Map<String, Object>>() {}.getType();
         Map<String, Object> properties = GSON.fromJson(in, type);
 
@@ -196,7 +196,7 @@ class CropAdapter extends TypeAdapter<CropSector> {
     }
 
     @Override
-    public CropSector read(JsonReader in) throws IOException {
+    public CropSector read(JsonReader in) {
         Type type = new TypeToken<Map<String, Object>>() {}.getType();
         Map<String, Object> properties = GSON.fromJson(in, type);
 
