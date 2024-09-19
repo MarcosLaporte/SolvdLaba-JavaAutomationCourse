@@ -12,14 +12,14 @@ public final class Horse extends Animal {
     public float speed;
     public boolean isRideable;
 
-    public Horse(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean isForCompetition, float speed, boolean isRideable) {
+    public Horse(Integer id, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, Boolean isForCompetition, Float speed, Boolean isRideable) {
         super(Species.HORSE, id, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.isForCompetition = isForCompetition;
         this.speed = speed;
         this.isRideable = isRideable;
     }
 
-    public Horse(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean isForCompetition, float speed, boolean isRideable) {
+    public Horse(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, Boolean isForCompetition, Float speed, Boolean isRideable) {
         super(Species.HORSE, existingAnimals, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.isForCompetition = isForCompetition;
         this.speed = speed;

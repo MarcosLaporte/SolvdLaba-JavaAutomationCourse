@@ -39,12 +39,12 @@ public final class Cattle extends Animal implements IMilker {
     }
     public final CattleBreed breed;
 
-    public Cattle(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, CattleBreed breed) {
+    public Cattle(Integer id, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, CattleBreed breed) {
         super(Species.CATTLE, id, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.breed = breed;
     }
 
-    public Cattle(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, CattleBreed breed) {
+    public Cattle(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, CattleBreed breed) {
         super(Species.CATTLE, existingAnimals, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.breed = breed;
     }

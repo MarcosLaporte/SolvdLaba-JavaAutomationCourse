@@ -9,48 +9,58 @@ import labaFarm.farm.exceptions.RepeatedInstanceException;
 import org.apache.logging.log4j.Level;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static labaFarm.services.ReflectionService.ClassExclusionPredicate;
 
 public class AnimalsService {
     public static void createNewAnimal(Farm farm) {
-        int innerMenuOption = InputService.readInt(
-                "\nCreate a new instance of which animal?\n0. GO BACK\n" + Animal.Species.getAll() + "Choose an option: ",
-                "This option does not exist. Try again: ",
-                0, Animal.Species.values().length
-        );
-
-        if (innerMenuOption == 0) {
-            System.out.println("Back to main menu...");
-            return;
-        }
-
-        Animal newAnimal = switch (Animal.Species.values()[innerMenuOption-1]) {
-            case CATTLE -> initCattle(farm.animals);
-            case SHEEP -> initSheep(farm.animals);
-            case CHICKEN -> initChicken(farm.animals);
-            case GOAT -> initGoat(farm.animals);
-            case HORSE -> initHorse(farm.animals);
-        };
+        List<Class<? extends Animal>> animalsClasses = new ArrayList<>();
 
         try {
+            animalsClasses = ReflectionService.getSubclassesOf(Animal.class, "labaFarm.farm.animals", ClassExclusionPredicate.ABSTRACT);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        StringBuilder sb = new StringBuilder(" - GO BACK (0)\n");
+        Map<String, Class<? extends Animal>> classesMap = new HashMap<>();
+        for (Class<? extends Animal> clazz : animalsClasses) {
+            classesMap.put((clazz.getSimpleName()).toLowerCase(), clazz);
+            sb.append(" - ").append(clazz.getSimpleName()).append("\n");
+        }
+
+        System.out.println(sb);
+        Class<? extends Animal> clazz;
+        do {
+            String input = InputService.readString("Select a class by entering its name: ", 1, 255);
+            if (input.equals("0")) {
+                System.out.println("Back to main menu...");
+                return;
+            }
+
+            clazz = classesMap.get(input.toLowerCase());
+            if (clazz == null)
+                System.out.println("This animal does not exist. Try again.");
+        } while (clazz == null);
+
+
+        try {
+            Animal newAnimal = initAnimal(farm.animals, clazz);
+
             farm.addAnimal(newAnimal);
             System.out.println(newAnimal.species + " created successfully!");
         } catch (RepeatedInstanceException e) {
             LoggerService.log(Level.WARN, e.getMessage());
+        } catch (Exception e) {
+            LoggerService.log(Level.ERROR, e.getMessage());
         }
     }
 
-    private record AnimalData(
-            List<Animal> existingAnimals,
-            LocalDate dateOfBirth,
-            String food,
-            Animal.AnimalSex sex,
-            float weightInKg,
-            float heightInCm
-    ) {
-    }
-
-    private static AnimalData initAnimal(List<Animal> existingAnimals) {
+    private static Animal initAnimal(List<Animal> existingAnimals, Class<? extends Animal> animalClass) throws Exception {
         System.out.println("Fill with animal's date of birth.");
         LocalDate auxDate = InputService.readValidDate();
 
@@ -75,110 +85,91 @@ public class AnimalsService {
                 0.1F, 9_999
         );
 
-        return new AnimalData(existingAnimals, auxDate, auxFood, auxSex, auxWeight, auxHeight);
-    }
+        ReflectionService<? extends Animal> rs = new ReflectionService<>(animalClass);
+        Animal newAnimal;
+        if (animalClass == Cattle.class) {
+            int breedVal = InputService.readInt(
+                    Cattle.CattleBreed.getAll() + "Select cattle breed: ",
+                    "This option does not exist. Try again: ",
+                    1, Cattle.CattleBreed.values().length
+            );
+            Cattle.CattleBreed auxCattleBreed = Cattle.CattleBreed.getCattleBreed(breedVal);
 
-    public static Cattle initCattle(List<Animal> existingAnimals) {
-        System.out.println("Let's create cattle!");
-        AnimalData animalData = initAnimal(existingAnimals);
+            newAnimal = rs.createInstance(existingAnimals, auxDate, auxFood, auxSex, auxWeight, auxHeight, auxCattleBreed);
+        } else if (animalClass == Sheep.class) {
+            char charIsTrained = InputService.readCharInValues(
+                    "Is it trained? Y/N ",
+                    "This option does not exist. Try again: ",
+                    new char[]{'Y', 'N'}
+            );
+            boolean auxIsTrained = charIsTrained == 'Y';
 
-        int breedVal = InputService.readInt(
-                Cattle.CattleBreed.getAll() + "Select cattle breed: ",
-                "This option does not exist. Try again: ",
-                1, Cattle.CattleBreed.values().length
-        );
-        Cattle.CattleBreed auxCattleBreed = Cattle.CattleBreed.getCattleBreed(breedVal);
+            int woolTypeVal = InputService.readInt(
+                    IShearable.FurType.getAll() + "Select fur type: ",
+                    "This option does not exist. Try again: ",
+                    1, IShearable.FurType.values().length
+            );
+            IShearable.FurType auxWoolType = IShearable.FurType.getFurType(woolTypeVal);
 
-        return new Cattle(existingAnimals, animalData.dateOfBirth, animalData.food, animalData.sex, animalData.weightInKg, animalData.heightInCm, auxCattleBreed);
-    }
+            newAnimal = rs.createInstance(existingAnimals, auxDate, auxFood, auxSex, auxWeight, auxHeight, auxIsTrained, auxWoolType);
+        } else if (animalClass == Chicken.class) {
+            int auxEggAmount = InputService.readInt(
+                    "Enter amount of eggs per day: ",
+                    "Invalid value. Try Again: ",
+                    0, 50
+            );
 
-    public static Sheep initSheep(List<Animal> existingAnimals) {
-        System.out.println("Let's create a sheep!");
-        AnimalData animalData = initAnimal(existingAnimals);
+            int eggSizeVal = InputService.readInt(
+                    IEggLayer.EggSize.getAll() + "Select egg size: ",
+                    "Invalid value. Try again: ",
+                    1, IEggLayer.EggSize.values().length
+            );
+            IEggLayer.EggSize auxEggSize = IEggLayer.EggSize.getEggSize(eggSizeVal);
 
-        char charIsTrained = InputService.readCharInValues(
-                "Is it trained? Y/N ",
-                "This option does not exist. Try again: ",
-                new char[]{'Y', 'N'}
-        );
-        boolean auxIsTrained = charIsTrained == 'Y';
+            int coopLocVal = InputService.readInt(
+                    Chicken.CoopLocation.getAll() + "Select coop location: ",
+                    "Invalid value. Try again: ",
+                    1, Chicken.CoopLocation.values().length
+            );
+            Chicken.CoopLocation auxCoopLoc = Chicken.CoopLocation.getCoopLocation(coopLocVal);
 
-        int furTypeVal = InputService.readInt(
-                IShearable.FurType.getAll() + "Select fur type: ",
-                "This option does not exist. Try again: ",
-                1, IShearable.FurType.values().length
-        );
-        IShearable.FurType auxFurType = IShearable.FurType.getFurType(furTypeVal);
+            newAnimal = rs.createInstance(existingAnimals, auxDate, auxFood, auxSex, auxWeight, auxHeight, auxEggAmount, auxEggSize, auxCoopLoc);
+        } else if (animalClass == Goat.class) {
+            int furTypeVal = InputService.readInt(
+                    IShearable.FurType.getAll() + "Select mohair type: ",
+                    "This option does not exist. Try again: ",
+                    1, IShearable.FurType.values().length
+            );
+            IShearable.FurType auxFurType = IShearable.FurType.getFurType(furTypeVal);
 
-        return new Sheep(existingAnimals, animalData.dateOfBirth, animalData.food, animalData.sex, animalData.weightInKg, animalData.heightInCm, auxIsTrained, auxFurType);
-    }
+            newAnimal = rs.createInstance(existingAnimals, auxDate, auxFood, auxSex, auxWeight, auxHeight, auxFurType);
+        } else if (animalClass == Horse.class) {
+            char charIsForCompetition = InputService.readCharInValues(
+                    "Is it trained for competition? Y/N ",
+                    "This option does not exist. Try again: ",
+                    new char[]{'Y', 'N'}
+            );
+            boolean auxIsForCompetition = charIsForCompetition == 'Y';
 
-    public static Chicken initChicken(List<Animal> existingAnimals) {
-        System.out.println("Let's create a chicken!");
-        AnimalData animalData = initAnimal(existingAnimals);
+            float auxSpeed = InputService.readFloat(
+                    "Enter average speed (km/h): ",
+                    "Invalid value. Try again (10-65): ",
+                    10, 65
+            );
 
-        int auxEggAmount = InputService.readInt(
-                "Enter amount of eggs per day: ",
-                "Invalid value. Try Again: ",
-                0, 50
-        );
+            char charIsRideable = InputService.readCharInValues(
+                    "Allows people to ride it? Y/N ",
+                    "This option does not exist. Try again: ",
+                    new char[]{'Y', 'N'}
+            );
+            boolean auxIsRideable = charIsRideable == 'Y';
 
-        int eggSizeVal = InputService.readInt(
-                IEggLayer.EggSize.getAll() + "Select egg size: ",
-                "Invalid value. Try again: ",
-                1, IEggLayer.EggSize.values().length
-        );
-        IEggLayer.EggSize auxEggSize = IEggLayer.EggSize.getEggSize(eggSizeVal);
+            newAnimal = rs.createInstance(existingAnimals, auxDate, auxFood, auxSex, auxWeight, auxHeight, auxIsForCompetition, auxSpeed, auxIsRideable);
+        } else {
+            throw new Exception("This class does not extend class Animal.");
+        }
 
-        int coopLocVal = InputService.readInt(
-                Chicken.CoopLocation.getAll() + "Select coop location: ",
-                "Invalid value. Try again: ",
-                1, Chicken.CoopLocation.values().length
-        );
-        Chicken.CoopLocation auxCoopLoc = Chicken.CoopLocation.getCoopLocation(coopLocVal);
-
-        return new Chicken(existingAnimals, animalData.dateOfBirth, animalData.food, animalData.sex, animalData.weightInKg, animalData.heightInCm, auxEggAmount, auxEggSize, auxCoopLoc);
-    }
-
-    public static Goat initGoat(List<Animal> existingAnimals) {
-        System.out.println("Let's create a goat!");
-        AnimalData animalData = initAnimal(existingAnimals);
-
-        int furTypeVal = InputService.readInt(
-                IShearable.FurType.getAll() + "Select mohair type: ",
-                "This option does not exist. Try again: ",
-                1, IShearable.FurType.values().length
-        );
-        IShearable.FurType auxFurType = IShearable.FurType.getFurType(furTypeVal);
-
-        return new Goat(existingAnimals, animalData.dateOfBirth, animalData.food, animalData.sex, animalData.weightInKg, animalData.heightInCm, auxFurType);
-    }
-
-    public static Horse initHorse(List<Animal> existingAnimals) {
-        System.out.println("Let's create a horse!");
-        AnimalData animalData = initAnimal(existingAnimals);
-
-        char charIsForCompetition = InputService.readCharInValues(
-                "Is it trained for competition? Y/N ",
-                "This option does not exist. Try again: ",
-                new char[]{'Y', 'N'}
-        );
-        boolean auxIsForCompetition = charIsForCompetition == 'Y';
-
-        float auxSpeed = InputService.readFloat(
-                "Enter average speed (km/h): ",
-                "Invalid value. Try again (10-65): ",
-                10, 65
-        );
-
-        char charIsRideable = InputService.readCharInValues(
-                "Allows people to ride it? Y/N ",
-                "This option does not exist. Try again: ",
-                new char[]{'Y', 'N'}
-        );
-        boolean auxIsRideable = charIsRideable == 'Y';
-
-        return new Horse(existingAnimals, animalData.dateOfBirth, animalData.food, animalData.sex, animalData.weightInKg, animalData.heightInCm, auxIsForCompetition, auxSpeed, auxIsRideable);
+        return newAnimal;
     }
 
     public static void breedAnimals(Farm farm) {

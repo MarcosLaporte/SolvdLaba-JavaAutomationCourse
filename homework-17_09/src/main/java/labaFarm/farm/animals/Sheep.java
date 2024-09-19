@@ -13,13 +13,13 @@ public final class Sheep extends Animal implements IShearable {
     public boolean isTrained;
     public final FurType woolType;
 
-    public Sheep(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean isTrained, FurType woolType) {
+    public Sheep(Integer id, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, Boolean isTrained, FurType woolType) {
         super(Species.SHEEP, id, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.isTrained = isTrained;
         this.woolType = woolType;
     }
 
-    public Sheep(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, boolean isTrained, FurType woolType) {
+    public Sheep(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, Boolean isTrained, FurType woolType) {
         super(Species.SHEEP, existingAnimals, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.isTrained = isTrained;
         this.woolType = woolType;

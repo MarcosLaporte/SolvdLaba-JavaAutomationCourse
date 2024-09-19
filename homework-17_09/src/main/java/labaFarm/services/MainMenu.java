@@ -3,16 +3,21 @@ package labaFarm.services;
 import labaFarm.farm.Farm;
 import labaFarm.farm.people.Owner;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.util.*;
+
+import static labaFarm.services.ReflectionService.ClassExclusionPredicate;
 
 public class MainMenu {
     private enum Menu {
-        EXIT, PRINT_FARM, NEW_ANIMAL, NEW_CROP, ANIMAL_GOODS, HARVEST_CROP, BREED_ANIMALS, SELL_GOODS, ADD_EMPLOYEE, FILTER_ANIMALS, PERFORM_ACTION, /*DEEP_FILTER*/;
+        EXIT, PRINT_FARM, NEW_ANIMAL, NEW_CROP, ANIMAL_GOODS, HARVEST_CROP, BREED_ANIMALS,
+        SELL_GOODS, ADD_EMPLOYEE, FILTER_ANIMALS, PERFORM_ACTION, GET_CLASS_INFO;
 
         private final int value;
+
         Menu() {
             this.value = this.ordinal();
         }
@@ -49,6 +54,7 @@ public class MainMenu {
                 case ADD_EMPLOYEE -> FarmService.createNewEmployee(owner);
                 case FILTER_ANIMALS -> FilterService.filterAnimals(farm);
                 case PERFORM_ACTION -> ActionsService.recordAction(farm, owner);
+                case GET_CLASS_INFO -> getClassInfo();
                 default -> System.out.println("This option does not exist.");
             }
 
@@ -73,6 +79,44 @@ public class MainMenu {
         } catch (FileNotFoundException e) {
             System.out.println("Log file not found: " + e.getMessage());
         }
+    }
+
+    private static void getClassInfo() {
+        List<Class<?>> classList = new ArrayList<>();
+        try {
+            classList = ReflectionService.getClassesInPackage("labaFarm.farm",
+                    ClassExclusionPredicate.INTERFACE,
+                    ClassExclusionPredicate.EXCEPTION
+            );
+        } catch (ClassNotFoundException e) {
+            LoggerService.consoleLog(Level.ERROR, e.getMessage());
+        }
+
+        if (classList.isEmpty()) {
+            System.out.println("No classes found in this package.");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        Map<String, Class<?>> classesMap = new HashMap<>();
+        for (Class<?> clazz : classList) {
+            classesMap.put((clazz.getSimpleName()).toLowerCase(), clazz);
+            sb.append(" - ").append(clazz.getSimpleName()).append("\n");
+        }
+
+        System.out.println(sb);
+        Class<?> clazz;
+
+        while(true) {
+            String chosenClass = InputService.readString("Select a class by entering its name: ", 1, 255);
+            clazz = classesMap.get(chosenClass.toLowerCase());
+            if (clazz != null) break;
+
+            System.out.println("This class does not exist. Try again.");
+        }
+
+        ReflectionService<?> reflectionService = new ReflectionService<>(clazz);
+        reflectionService.printClassInfo();
     }
 
 }
