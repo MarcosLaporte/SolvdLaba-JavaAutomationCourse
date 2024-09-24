@@ -57,18 +57,24 @@ public final class Chicken extends Animal implements IEggLayer {
         this.eggSize = this.sex == AnimalSex.F ? eggSize : null;
     }
 
-    public Chicken(Integer id, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, int eggPerDay, EggSize eggSize, CoopLocation coopLocation) {
+    public Chicken(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, int eggPerDay, EggSize eggSize, CoopLocation coopLocation) {
         super(Species.CHICKEN, id, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.setEggPerDay(eggPerDay);
         this.setEggSize(eggSize);
         this.coopLocation = coopLocation;
     }
+    private Chicken(Integer id, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, Integer eggPerDay, EggSize eggSize, CoopLocation coopLocation) {
+        this(id.intValue(), dateOfBirth, food, sex, weightInKg.floatValue(), heightInCm.floatValue(), eggPerDay.intValue(), eggSize, coopLocation);
+    }
 
-    public Chicken(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, int eggPerDay, EggSize eggSize, CoopLocation coopLocation) {
+    public Chicken(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, int eggPerDay, EggSize eggSize, CoopLocation coopLocation) {
         super(Species.CHICKEN, existingAnimals, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.setEggPerDay(eggPerDay);
         this.setEggSize(eggSize);
         this.coopLocation = coopLocation;
+    }
+    private Chicken(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, Integer eggPerDay, EggSize eggSize, CoopLocation coopLocation) {
+        this(existingAnimals, dateOfBirth, food, sex, weightInKg.floatValue(), heightInCm.floatValue(), eggPerDay.intValue(), eggSize, coopLocation);
     }
 
     @Override

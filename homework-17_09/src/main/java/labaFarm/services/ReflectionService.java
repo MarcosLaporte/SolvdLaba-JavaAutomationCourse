@@ -83,6 +83,7 @@ public class ReflectionService<T> {
         Constructor<?>[] constructors = this.clazz.getDeclaredConstructors();
         for (Constructor<?> constructor : constructors) {
             Class<?>[] paramTypes = constructor.getParameterTypes();
+            constructor.setAccessible(true);
 
             if (matchParameterTypes(paramTypes, args)) {
                 try {

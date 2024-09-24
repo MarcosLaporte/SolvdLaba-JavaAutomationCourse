@@ -14,14 +14,20 @@ import java.util.Random;
 public final class Goat extends Animal implements IMilker, IShearable {
     public final FurType mohairType;
 
-    public Goat(Integer id, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, FurType mohairType) {
+    public Goat(int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, FurType mohairType) {
         super(Species.GOAT, id, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.mohairType = mohairType;
     }
+    private Goat(Integer id, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, FurType mohairType) {
+        this(id.intValue(), dateOfBirth, food, sex, weightInKg.floatValue(), heightInCm.floatValue(), mohairType);
+    }
 
-    public Goat(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, FurType mohairType) {
+    public Goat(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm, FurType mohairType) {
         super(Species.GOAT, existingAnimals, dateOfBirth, food, sex, weightInKg, heightInCm);
         this.mohairType = mohairType;
+    }
+    private Goat(List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm, FurType mohairType) {
+        this(existingAnimals, dateOfBirth, food, sex, weightInKg.floatValue(), heightInCm.floatValue(), mohairType);
     }
 
     @Override

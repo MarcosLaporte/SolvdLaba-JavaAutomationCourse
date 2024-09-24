@@ -68,7 +68,7 @@ public abstract class Animal implements IIdentifiable<Animal> {
         this.father = father;
     }
 
-    public Animal(Species species, Integer id, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm) {
+    public Animal(Species species, int id, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm) {
         this.species = species;
         this.id = id;
         this.dateOfBirth = dateOfBirth;
@@ -76,6 +76,9 @@ public abstract class Animal implements IIdentifiable<Animal> {
         this.sex = sex;
         this.weightInKg = Math.abs(weightInKg);
         this.heightInCm = Math.abs(heightInCm);
+    }
+    private Animal(Species species, Integer id, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm) {
+        this(species, id.intValue(), dateOfBirth, food, sex, weightInKg.floatValue(), heightInCm.floatValue());
     }
 
     @Override
@@ -86,11 +89,15 @@ public abstract class Animal implements IIdentifiable<Animal> {
         return maxIdCrop.isPresent() ? maxIdCrop.get().id + 1 : this.species.value * 1000 + 1;
     }
 
-    public Animal(Species species, List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm) {
+    public Animal(Species species, List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, float weightInKg, float heightInCm) {
         this(species, -1, dateOfBirth, food, sex, weightInKg, heightInCm);
 
         this.id = this.getNewId(existingAnimals);
     }
+    private Animal(Species species, List<Animal> existingAnimals, LocalDate dateOfBirth, String food, AnimalSex sex, Float weightInKg, Float heightInCm) {
+        this(species, existingAnimals, dateOfBirth, food, sex, weightInKg.floatValue(), heightInCm.floatValue());
+    }
+
 
     @Override
     public String toString() {
