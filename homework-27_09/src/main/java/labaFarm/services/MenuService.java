@@ -3,7 +3,7 @@ package labaFarm.services;
 import labaFarm.farm.Good;
 import labaFarm.farm.animals.*;
 import labaFarm.farm.crops.CropSector;
-import labaFarm.farm.people.Employee;
+import labaFarm.farm.people.employees.Employee;
 
 import java.util.List;
 import java.util.Map;
@@ -101,6 +101,10 @@ public class MenuService {
     }
 
     public static Employee chooseEmployee(Map<String, Employee> employeeMap) {
+        if (employeeMap.isEmpty()) {
+            System.out.println("No employees to show.");
+            return null;
+        }
         String[] employeesSSN = employeeMap.keySet().toArray(new String[0]);
         System.out.println(Employee.toTable(employeeMap.values().stream().toList()));
 

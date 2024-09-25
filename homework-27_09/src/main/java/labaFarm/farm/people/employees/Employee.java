@@ -1,11 +1,9 @@
-package labaFarm.farm.people;
+package labaFarm.farm.people.employees;
 
+import labaFarm.farm.people.Person;
 import labaFarm.farm.people.interfaces.IFinishShift;
 
-import java.util.ArrayDeque;
-import java.util.List;
-import java.util.Queue;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Predicate;
 
 public abstract class Employee extends Person implements IFinishShift<Employee> {
@@ -110,7 +108,9 @@ public abstract class Employee extends Person implements IFinishShift<Employee> 
     @Override
     public abstract String toString();
 
-    public static String toTable(List<Employee> employees) {
+    public static String toTable(Collection<Employee> employees) {
+        if (employees.isEmpty()) return "No employees in the list.\n";
+
         StringBuilder sb = new StringBuilder();
         for (Employee emp : employees) {
             sb.append(emp);

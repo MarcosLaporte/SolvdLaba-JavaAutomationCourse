@@ -19,8 +19,9 @@ public abstract class Person {
 
     @Override
     public String toString() {
-        return String.format("| %15s | %11s | $%3d |\n",
-                this.fullName, this.ssn, this.age);
+        return "Full name: " + this.fullName +
+                "\nSSN: " + this.ssn +
+                "\nAge: " + this.age + "\n";
     }
 
     @Override

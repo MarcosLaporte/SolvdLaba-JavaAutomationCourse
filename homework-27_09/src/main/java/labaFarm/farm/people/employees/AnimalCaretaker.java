@@ -1,4 +1,4 @@
-package labaFarm.farm.people;
+package labaFarm.farm.people.employees;
 
 import labaFarm.farm.animals.Animal;
 

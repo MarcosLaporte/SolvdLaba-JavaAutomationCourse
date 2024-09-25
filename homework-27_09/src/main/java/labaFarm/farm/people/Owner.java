@@ -2,9 +2,11 @@ package labaFarm.farm.people;
 
 import labaFarm.farm.Farm;
 import labaFarm.farm.exceptions.RepeatedInstanceException;
+import labaFarm.farm.people.employees.Employee;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Owner extends Person {
@@ -49,9 +51,25 @@ public class Owner extends Person {
     }
 
     public void addEmployee(Employee employee) throws RepeatedInstanceException {
-        if (employees.containsKey(employee.getSsn()))
+        if (this.employees.containsKey(employee.getSsn()))
             throw new RepeatedInstanceException("Employee already exists in list.");
 
         this.employees.put(employee.getSsn(), employee);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Owner:\n");
+        sb.append(super.toString());
+        sb.append(Employee.toTable(this.employees.values()));
+        return sb.toString();
+    }
+
+    public void monitorEmployees() {
+        System.out.println("Employees tasks:");
+        for (Employee employee : this.employees.values()) {
+            System.out.println(employee.fullName + ": " + employee.getCurrentTask());
+        }
     }
 }

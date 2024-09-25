@@ -1,4 +1,4 @@
-package labaFarm.farm.people;
+package labaFarm.farm.people.employees;
 
 import java.util.Queue;
 import java.util.Set;
@@ -29,7 +29,7 @@ public class CropsCultivator extends Employee {
 
     @Override
     public String toString() {
-        return String.format("| %-16s | %15s | %11s | $%9.2f |\n",
+        return String.format("| %-16s | %15s | %11s | $%9.2f |  -  |\n",
                 this.type, this.fullName, this.getSsn(), this.getAnnualSalary());
     }
 }

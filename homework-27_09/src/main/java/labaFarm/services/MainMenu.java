@@ -13,8 +13,8 @@ import static labaFarm.services.ReflectionService.ClassExclusionPredicate;
 
 public class MainMenu {
     private enum Menu {
-        EXIT, PRINT_FARM, NEW_ANIMAL, NEW_CROP, ANIMAL_GOODS, HARVEST_CROP, BREED_ANIMALS,
-        SELL_GOODS, ADD_EMPLOYEE, FILTER_ANIMALS, PERFORM_ACTION, GET_CLASS_INFO;
+        EXIT, PRINT_FARM, PRINT_OWNER, NEW_ANIMAL, NEW_CROP, ANIMAL_GOODS, HARVEST_CROP, BREED_ANIMALS,
+        SELL_GOODS, ADD_EMPLOYEE, FILTER_ANIMALS, PERFORM_ACTION, GET_CLASS_INFO, PRINT_THREADS;
 
         private final int value;
 
@@ -45,6 +45,7 @@ public class MainMenu {
             switch (Menu.values()[mainMenuOption]) {
                 case EXIT -> System.out.println("Exiting...");
                 case PRINT_FARM -> System.out.println(farm);
+                case PRINT_OWNER -> System.out.println(owner);
                 case NEW_ANIMAL -> AnimalsService.createNewAnimal(farm);
                 case NEW_CROP -> CropsService.createNewCrop(farm);
                 case ANIMAL_GOODS -> GoodsService.manageAnimalGoods(farm);
@@ -55,6 +56,7 @@ public class MainMenu {
                 case FILTER_ANIMALS -> FilterService.filterAnimals(farm);
                 case PERFORM_ACTION -> ActionsService.recordAction(farm, owner);
                 case GET_CLASS_INFO -> getClassInfo();
+                case PRINT_THREADS -> printActiveThreads();
                 default -> System.out.println("This option does not exist.");
             }
 
@@ -71,7 +73,6 @@ public class MainMenu {
         }
 
         try (Scanner scanner = new Scanner(logFile)) {
-            System.out.println("Errors encountered in App Runtime: ");
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 System.out.println(line);
@@ -119,4 +120,17 @@ public class MainMenu {
         reflectionService.printClassInfo();
     }
 
+    public static void printActiveThreads() {
+        int threadCount = Thread.activeCount();
+        Thread[] threads = new Thread[threadCount];
+        Thread.enumerate(threads);
+
+        System.out.println("Active Threads:");
+        for (Thread thread : threads) {
+            if (thread != null) {
+                System.out.println("Thread Name: " + thread.getName() +
+                        ", State: " + thread.getState());
+            }
+        }
+    }
 }

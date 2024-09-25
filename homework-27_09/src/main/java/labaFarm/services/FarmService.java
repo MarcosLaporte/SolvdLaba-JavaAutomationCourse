@@ -2,9 +2,9 @@ package labaFarm.services;
 
 import labaFarm.farm.Farm;
 import labaFarm.farm.exceptions.RepeatedInstanceException;
-import labaFarm.farm.people.AnimalCaretaker;
-import labaFarm.farm.people.CropsCultivator;
-import labaFarm.farm.people.Employee;
+import labaFarm.farm.people.employees.AnimalCaretaker;
+import labaFarm.farm.people.employees.CropsCultivator;
+import labaFarm.farm.people.employees.Employee;
 import labaFarm.farm.people.Owner;
 import org.apache.logging.log4j.Level;
 
@@ -127,7 +127,6 @@ public class FarmService {
         );
         boolean auxIsVetCertified = charIsVet == 'Y';
 
-        System.out.println("Animals in care list is empty, make sure to add them later on!");
         return new AnimalCaretaker(personData.fullName, personData.ssn, personData.age, employeeData.annualSalary, employeeData.shifts, new TreeSet<>(), auxIsVetCertified);
     }
 
@@ -136,7 +135,6 @@ public class FarmService {
         PersonData personData = initPerson();
         EmployeeData employeeData = initEmployee(Employee.EmployeeType.CULTIVATOR);
 
-        System.out.println("Crops in care list is empty, make sure to add them later on!");
         return new CropsCultivator(personData.fullName, personData.ssn, personData.age, employeeData.annualSalary, employeeData.shifts, new TreeSet<>());
     }
 
