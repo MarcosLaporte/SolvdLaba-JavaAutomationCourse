@@ -4,11 +4,12 @@ import labaFarm.farm.Farm;
 import labaFarm.farm.IActionManager;
 import labaFarm.farm.animals.Animal;
 import labaFarm.farm.crops.CropSector;
-import labaFarm.farm.people.AnimalCaretaker;
-import labaFarm.farm.people.CropsCultivator;
-import labaFarm.farm.people.Employee;
+import labaFarm.farm.people.employees.AnimalCaretaker;
+import labaFarm.farm.people.employees.CropsCultivator;
+import labaFarm.farm.people.employees.Employee;
 import labaFarm.farm.people.Owner;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class ActionsService {
@@ -49,14 +50,20 @@ public class ActionsService {
                 yield actionManager.performAction(owner, getAction.get());
             }
             case ANIMAL_CARETAKER -> {
-                AnimalCaretaker animalCaretaker = (AnimalCaretaker) MenuService.chooseEmployee(FilterService.filterMapByValue(owner.getEmployees(), Employee.caretakerPredicate));
-                IActionManager<AnimalCaretaker, String> actionManager = (e, a) -> String.format("Animal caretaker %s performed: %s", e.fullName, a);
-                yield actionManager.performAction(animalCaretaker, getAction.get());
+                Map<String, Employee> map = FilterService.filterMapByValue(owner.getEmployees(), Employee.caretakerPredicate.and(Employee.idlePredicate));
+                AnimalCaretaker animalCaretaker = (AnimalCaretaker) MenuService.chooseEmployee(map);
+
+                assert animalCaretaker != null : "Animal caretaker is null";
+                animalCaretaker.assignTask(getAction.get(), getDuration.get()*1000);
+                yield "Animal caretaker " + animalCaretaker.fullName + " is performing: " + animalCaretaker.getCurrentTask();
             }
             case CROPS_CULTIVATORS -> {
-                CropsCultivator cropsCultivator = (CropsCultivator) MenuService.chooseEmployee(FilterService.filterMapByValue(owner.getEmployees(), Employee.cultivatorPredicate));
-                IActionManager<CropsCultivator, String> actionManager = (e, a) -> String.format("Cultivator %s performed: %s", e.fullName, a);
-                yield actionManager.performAction(cropsCultivator, getAction.get());
+                Map<String, Employee> map = FilterService.filterMapByValue(owner.getEmployees(), Employee.cultivatorPredicate.and(Employee.idlePredicate));
+                CropsCultivator cropsCultivator = (CropsCultivator) MenuService.chooseEmployee(map);
+
+                assert cropsCultivator != null : "Cultivator is null";
+                cropsCultivator.assignTask(getAction.get(), getDuration.get()*1000);
+                yield "Cultivator " + cropsCultivator.fullName + " is performing: " + cropsCultivator.getCurrentTask();
             }
             case ANIMALS -> {
                 Animal animal = MenuService.chooseAnimal(farm.animals, false);
@@ -70,9 +77,9 @@ public class ActionsService {
             }
         };
 
-        FileService.writeFile("actionsLog.txt", log);
+        FileService.writeFile("actionsLog.txt", log + "\n");
     }
 
-    private static final Supplier<String> getAction = () -> InputService.readString("Enter action to perform: ", 1, 255);
-
+    private static final Supplier<String> getAction = () -> InputService.readString("Enter action or task to perform: ", 1, 255);
+    private static final Supplier<Integer> getDuration = () -> InputService.readInt("Enter duration of task (sec): ", "Invalid value. Try again (1-60): " , 1, 60);
 }

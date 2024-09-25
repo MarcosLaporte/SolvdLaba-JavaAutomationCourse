@@ -2,6 +2,8 @@ package labaFarm.farm.people.employees;
 
 import labaFarm.farm.people.Person;
 import labaFarm.farm.people.interfaces.IFinishShift;
+import labaFarm.services.LoggerService;
+import org.apache.logging.log4j.Level;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -67,6 +69,7 @@ public abstract class Employee extends Person implements IFinishShift<Employee> 
     public Queue<WorkShift> nextShifts;
     public EmployeeType type;
 
+    private Task currentTask;
 
     public double getAnnualSalary() {
         return annualSalary;
@@ -74,6 +77,10 @@ public abstract class Employee extends Person implements IFinishShift<Employee> 
 
     public void setAnnualSalary(double annualSalary) {
         this.annualSalary = annualSalary;
+    }
+
+    public String getCurrentTask() {
+        return this.currentTask != null ? currentTask.getTaskName() : "Idle";
     }
 
     public Employee(String fullName, String ssn, int age, double annualSalary, Queue<WorkShift> nextShifts, EmployeeType type) {
@@ -123,6 +130,7 @@ public abstract class Employee extends Person implements IFinishShift<Employee> 
     }
 
     private transient final IFinishShift<CropsCultivator> iFinishShift = () -> this.nextShifts.remove();
+
     @Override
     public void finishShift() {
         iFinishShift.finishShift();
@@ -130,4 +138,20 @@ public abstract class Employee extends Person implements IFinishShift<Employee> 
 
     public static Predicate<Employee> cultivatorPredicate = employee -> employee.type == EmployeeType.CULTIVATOR;
     public static Predicate<Employee> caretakerPredicate = employee -> employee.type == EmployeeType.ANIMAL_CARETAKER;
+    public static Predicate<Employee> idlePredicate = employee -> employee.currentTask == null;
+
+    public synchronized void assignTask(String taskName, int durationMs) {
+        if (this.currentTask != null) {
+            LoggerService.log(Level.INFO, this.fullName + " is already working on a task.");
+        } else {
+            this.currentTask = new Task(this, taskName, durationMs);
+            Thread taskThread = new Thread(this.currentTask, this.getSsn());
+            taskThread.start();
+        }
+    }
+
+    public synchronized void clearCurrentTask() {
+        this.currentTask = null;
+    }
+
 }
