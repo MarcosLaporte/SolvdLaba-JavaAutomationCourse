@@ -14,7 +14,8 @@ import static labaFarm.services.ReflectionService.ClassExclusionPredicate;
 public class MainMenu {
     private enum Menu {
         EXIT, PRINT_FARM, PRINT_OWNER, NEW_ANIMAL, NEW_CROP, ANIMAL_GOODS, HARVEST_CROP, BREED_ANIMALS,
-        SELL_GOODS, ADD_EMPLOYEE, FILTER_ANIMALS, PERFORM_ACTION, GET_CLASS_INFO, PRINT_THREADS;
+        SELL_GOODS, ADD_EMPLOYEE, FILTER_ANIMALS, PERFORM_ACTION, GET_CLASS_INFO,
+        PRINT_THREADS, TEST_CONNECTION_POOL;
 
         private final int value;
 
@@ -57,6 +58,7 @@ public class MainMenu {
                 case PERFORM_ACTION -> ActionsService.recordAction(farm, owner);
                 case GET_CLASS_INFO -> getClassInfo();
                 case PRINT_THREADS -> printActiveThreads();
+                case TEST_CONNECTION_POOL -> ConnectionService.run();
                 default -> System.out.println("This option does not exist.");
             }
 
