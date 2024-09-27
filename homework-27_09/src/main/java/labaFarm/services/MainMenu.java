@@ -68,17 +68,17 @@ public class MainMenu implements Runnable {
             case PRINT_OWNER -> System.out.println(this.owner);
             case NEW_ANIMAL -> AnimalsService.createNewAnimal(this.farm);
             case NEW_CROP -> CropsService.createNewCrop(this.farm);
-            case ANIMAL_GOODS -> new GoodsService(this.farm).manageAnimalGoods(); //TODO: Make an inner menu in GoodsService
-            case HARVEST_CROP -> new GoodsService(this.farm).trackHarvest(); //TODO: Make an inner menu in GoodsService
+            case ANIMAL_GOODS -> new GoodsService(this.farm).manageAnimalGoods();
+            case HARVEST_CROP -> new GoodsService(this.farm).trackHarvest();
             case BREED_ANIMALS -> AnimalsService.breedAnimals(this.farm);
-            case SELL_GOODS -> new GoodsService(this.farm).sellGoods(); //TODO: Make an inner menu in GoodsService
+            case SELL_GOODS -> new GoodsService(this.farm).sellGoods();
             case ADD_EMPLOYEE -> FarmService.createNewEmployee(this.owner);
             case FILTER_ANIMALS -> FilterService.filterAnimals(this.farm);
             case PERFORM_ACTION -> ActionsService.recordAction(this.farm, this.owner);
             case GET_CLASS_INFO -> getClassInfo();
             case PRINT_THREADS -> printActiveThreads();
             case TRACK_CROP -> {
-                HarvestTracker harvestTracker = new GoodsService(this.farm).trackHarvest(); //TODO: Make an inner menu in GoodsService
+                HarvestTracker harvestTracker = new GoodsService(this.farm).trackHarvest();
                 if (harvestTracker != null) {
                     this.cropTrackerThreads.add(harvestTracker);
                     harvestTracker.start();
