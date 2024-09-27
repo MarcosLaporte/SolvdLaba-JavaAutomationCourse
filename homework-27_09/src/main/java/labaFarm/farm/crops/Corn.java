@@ -1,11 +1,6 @@
 package labaFarm.farm.crops;
 
-import labaFarm.farm.Good;
-import labaFarm.farm.exceptions.UnableToHarvestException;
-
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Random;
 
 public final class Corn extends CropSector {
     public enum KernelType {
@@ -13,7 +8,7 @@ public final class Corn extends CropSector {
 
         private final int value;
         KernelType() {
-            this.value = this.ordinal()+1;
+            this.value = this.ordinal() + 1;
         }
 
         public static KernelType getKernelType(int value) {
@@ -54,16 +49,5 @@ public final class Corn extends CropSector {
     }
     public Corn(List<CropSector> existingCrops, float acres, int daysToGrow, GrowthStage currentGrowthStage, KernelType kernelType) {
         this(existingCrops, acres, daysToGrow, currentGrowthStage, kernelType, 8.5F);
-    }
-
-    @Override
-    public Good harvest(float unitValue) throws UnableToHarvestException {
-        if (this.currentGrowthStage != GrowthStage.HARVEST) throw new UnableToHarvestException("Can't harvest in this stage of growth!");
-        final Random RANDOM = new Random();
-
-        this.currentGrowthStage = GrowthStage.HARVESTED;
-        int plantsAmount = RANDOM.nextInt(2800, 3500) * ((int) this.acres);
-        int quantity = RANDOM.nextInt(1, 2) * plantsAmount;
-        return new Good("Ear of corn", quantity, "Unit", Good.GoodsQuality.randomQualitySupplier.get(), LocalDate.now(), unitValue);
     }
 }

@@ -13,7 +13,17 @@ public class Main {
 
         final Farm farm = owner.farm;
 
-        MainMenu.mainMenu(owner, farm);
+
+        MainMenu mainMenu = new MainMenu(owner, farm);
+        Thread menuThread = new Thread(mainMenu, "Menu-Thread");
+
+        try {
+            menuThread.start();
+            menuThread.join();
+        } catch (InterruptedException e) {
+            System.out.println("Main thread interrupted while waiting for menuThread to finish.");
+        }
+
         System.out.println("\n\n" + farm + "\n\n");
 
         JsonService.saveData("owner.json", owner);

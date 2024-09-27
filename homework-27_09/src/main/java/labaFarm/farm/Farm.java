@@ -58,10 +58,10 @@ public final class Farm {
     @Override
     public String toString() {
         return "Name: " + this.name + "\nLocation: " + this.location + "\nSize: " + this.size + " acres\n" +
-                "\n=========CROPS=========\n" +
-                CropSector.toTable(this.cropSectors) +
                 "\n========ANIMALS========\n" +
                 Animal.toTable(this.animals) +
+                "\n=========CROPS=========\n" +
+                CropSector.toTable(this.cropSectors) +
                 "\n=========GOODS=========\n" +
                 Good.toTable(this.stock.toArrayList()) +
                 "\n======SOLD GOODS=======\n" +
@@ -105,8 +105,14 @@ public final class Farm {
         goodsList.add(good);
     }
 
-    public void addGoodToStock(Good good) throws RepeatedInstanceException {
+    public void addGoodToStock(CropSector ogCrop, Good good) throws RepeatedInstanceException {
         this.addGood(good, this.stock);
+        this.cropSectors.remove(ogCrop);
+    }
+
+    public void addGoodToStock(Animal ogAnimal, Good good) throws RepeatedInstanceException {
+        this.addGood(good, this.stock);
+        this.animals.remove(ogAnimal);
     }
 
     public void sellGood(Good goodToSell) throws MissingGoodException {

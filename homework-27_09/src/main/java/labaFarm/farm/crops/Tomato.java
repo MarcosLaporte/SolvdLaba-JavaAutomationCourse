@@ -1,11 +1,6 @@
 package labaFarm.farm.crops;
 
-import labaFarm.farm.Good;
-import labaFarm.farm.exceptions.UnableToHarvestException;
-
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Random;
 
 public final class Tomato extends CropSector {
     public enum TomatoVariety {
@@ -13,7 +8,7 @@ public final class Tomato extends CropSector {
 
         private final int value;
         TomatoVariety() {
-            this.value = this.ordinal()+1;
+            this.value = this.ordinal() + 1;
         }
 
         public static TomatoVariety getTomatoVariety(int value) {
@@ -43,7 +38,7 @@ public final class Tomato extends CropSector {
         this.variety = variety;
         this.yieldPerPlant = yieldPerPlant;
     }
-    public Tomato(int id, float acres, int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety) {
+    public Tomato(int id, float acres, int daysToGrow, GrowthStage currentGrowthStage, TomatoVariety variety) {
         this(id, acres, daysToGrow, currentGrowthStage, variety, 45);
     }
 
@@ -52,18 +47,7 @@ public final class Tomato extends CropSector {
         this.variety = variety;
         this.yieldPerPlant = yieldPerPlant;
     }
-    public Tomato(List<CropSector> existingCrops, float acres, int daysToGrow, GrowthStage currentGrowthStage,TomatoVariety variety) {
+    public Tomato(List<CropSector> existingCrops, float acres, int daysToGrow, GrowthStage currentGrowthStage, TomatoVariety variety) {
         this(existingCrops, acres, daysToGrow, currentGrowthStage, variety, 45);
-    }
-
-    @Override
-    public Good harvest(float unitValue) throws UnableToHarvestException {
-        if (this.currentGrowthStage != GrowthStage.HARVEST) throw new UnableToHarvestException("Can't harvest in this stage of growth!");
-        final Random RANDOM = new Random();
-
-        this.currentGrowthStage = GrowthStage.HARVESTED;
-        int plantsAmount = (int)(RANDOM.nextInt(4000, 5000) * this.acres);
-        int quantity = this.yieldPerPlant * plantsAmount;
-        return new Good("Tomato", quantity, "Unit", Good.GoodsQuality.randomQualitySupplier.get(), LocalDate.now(), unitValue);
     }
 }

@@ -23,10 +23,6 @@ public class Good {
     public LocalDate productionDate;
     protected float unitValue;
 
-    public void setUnitValue(float unitValue) {
-        this.unitValue = unitValue;
-    }
-
     public float getTotalValue() {
         return this.unitValue * this.quantity;
     }

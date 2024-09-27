@@ -1,6 +1,7 @@
 package labaFarm.services;
 
 import labaFarm.farm.Farm;
+import labaFarm.farm.crops.HarvestTracker;
 import labaFarm.farm.people.Owner;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
@@ -8,14 +9,15 @@ import org.apache.logging.log4j.Level;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static labaFarm.services.ReflectionService.ClassExclusionPredicate;
 
-public class MainMenu {
+public class MainMenu implements Runnable {
     private enum Menu {
         EXIT, PRINT_FARM, PRINT_OWNER, NEW_ANIMAL, NEW_CROP, ANIMAL_GOODS, HARVEST_CROP, BREED_ANIMALS,
         SELL_GOODS, ADD_EMPLOYEE, FILTER_ANIMALS, PERFORM_ACTION, GET_CLASS_INFO,
-        PRINT_THREADS, TEST_CONNECTION_POOL;
+        PRINT_THREADS, TRACK_CROP, TEST_CONNECTION_POOL;
 
         private final int value;
 
@@ -34,7 +36,17 @@ public class MainMenu {
         }
     }
 
-    public static void mainMenu(Owner owner, Farm farm) {
+    private final Owner owner;
+    private final Farm farm;
+
+    public MainMenu(Owner owner, Farm farm) {
+        this.owner = owner;
+        this.farm = farm;
+    }
+
+    private final List<HarvestTracker> cropTrackerThreads = new ArrayList<>();
+    @Override
+    public void run() {
         int mainMenuOption;
         do {
             mainMenuOption = InputService.readInt(
@@ -43,26 +55,49 @@ public class MainMenu {
                     0, Menu.values().length - 1
             );
 
-            switch (Menu.values()[mainMenuOption]) {
-                case EXIT -> System.out.println("Exiting...");
-                case PRINT_FARM -> System.out.println(farm);
-                case PRINT_OWNER -> System.out.println(owner);
-                case NEW_ANIMAL -> AnimalsService.createNewAnimal(farm);
-                case NEW_CROP -> CropsService.createNewCrop(farm);
-                case ANIMAL_GOODS -> GoodsService.manageAnimalGoods(farm);
-                case HARVEST_CROP -> GoodsService.manageHarvest(farm);
-                case BREED_ANIMALS -> AnimalsService.breedAnimals(farm);
-                case SELL_GOODS -> GoodsService.sellGoods(farm);
-                case ADD_EMPLOYEE -> FarmService.createNewEmployee(owner);
-                case FILTER_ANIMALS -> FilterService.filterAnimals(farm);
-                case PERFORM_ACTION -> ActionsService.recordAction(farm, owner);
-                case GET_CLASS_INFO -> getClassInfo();
-                case PRINT_THREADS -> printActiveThreads();
-                case TEST_CONNECTION_POOL -> ConnectionService.run();
-                default -> System.out.println("This option does not exist.");
-            }
+            this.executeOption(Menu.values()[mainMenuOption]);
 
+            this.checkForCropTrackerThreads();
         } while (mainMenuOption != 0);
+    }
+
+    private void executeOption(Menu menuOption) {
+        switch (menuOption) {
+            case EXIT -> System.out.println("Exiting...");
+            case PRINT_FARM -> System.out.println(this.farm);
+            case PRINT_OWNER -> System.out.println(this.owner);
+            case NEW_ANIMAL -> AnimalsService.createNewAnimal(this.farm);
+            case NEW_CROP -> CropsService.createNewCrop(this.farm);
+            case ANIMAL_GOODS -> new GoodsService(this.farm).manageAnimalGoods(); //TODO: Make an inner menu in GoodsService
+            case HARVEST_CROP -> new GoodsService(this.farm).trackHarvest(); //TODO: Make an inner menu in GoodsService
+            case BREED_ANIMALS -> AnimalsService.breedAnimals(this.farm);
+            case SELL_GOODS -> new GoodsService(this.farm).sellGoods(); //TODO: Make an inner menu in GoodsService
+            case ADD_EMPLOYEE -> FarmService.createNewEmployee(this.owner);
+            case FILTER_ANIMALS -> FilterService.filterAnimals(this.farm);
+            case PERFORM_ACTION -> ActionsService.recordAction(this.farm, this.owner);
+            case GET_CLASS_INFO -> getClassInfo();
+            case PRINT_THREADS -> printActiveThreads();
+            case TRACK_CROP -> {
+                HarvestTracker harvestTracker = new GoodsService(this.farm).trackHarvest(); //TODO: Make an inner menu in GoodsService
+                if (harvestTracker != null) {
+                    this.cropTrackerThreads.add(harvestTracker);
+                    harvestTracker.start();
+                }
+            }
+            case TEST_CONNECTION_POOL -> ConnectionService.run();
+            default -> System.out.println("This option does not exist.");
+        }
+    }
+
+    private void checkForCropTrackerThreads() {
+        Iterator<HarvestTracker> iterator = this.cropTrackerThreads.iterator();
+        while (iterator.hasNext()) {
+            HarvestTracker tracker = iterator.next();
+            if (!tracker.isAlive()) {
+                new GoodsService(this.farm).manageHarvest(tracker);
+                iterator.remove();
+            }
+        }
     }
 
     public static void printLogs() {
@@ -123,12 +158,10 @@ public class MainMenu {
     }
 
     public static void printActiveThreads() {
-        int threadCount = Thread.activeCount();
-        Thread[] threads = new Thread[threadCount];
-        Thread.enumerate(threads);
+        Set<Thread> activeThreads = Thread.getAllStackTraces().keySet();
 
         System.out.println("Active Threads:");
-        for (Thread thread : threads) {
+        for (Thread thread : activeThreads) {
             if (thread != null) {
                 System.out.println("Thread Name: " + thread.getName() +
                         ", State: " + thread.getState());

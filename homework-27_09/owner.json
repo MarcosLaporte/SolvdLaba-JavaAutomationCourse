@@ -217,15 +217,6 @@
     ],
     "cropSectors": [
       {
-        "type": "WHEAT",
-        "id": 1001,
-        "acres": 6.0,
-        "daysToGrow": 92,
-        "currentGrowthStage": "SEEDLING",
-        "variety": "HARD_RED_WINTER",
-        "mgOfGluten": 7500
-      },
-      {
         "type": "CORN",
         "id": 2001,
         "acres": 7.0,
@@ -235,52 +226,58 @@
         "avgKernelSize": 8.5
       },
       {
-        "type": "WHEAT",
-        "id": 1002,
-        "acres": 8.0,
-        "daysToGrow": 105,
-        "currentGrowthStage": "VEGETATIVE",
-        "variety": "HARD_WHITE",
-        "mgOfGluten": 7300
-      },
-      {
-        "type": "CORN",
-        "id": 2002,
-        "acres": 11.0,
-        "daysToGrow": 135,
-        "currentGrowthStage": "HARVEST",
-        "kernelType": "WAXY",
-        "avgKernelSize": 7.8
-      },
-      {
-        "type": "TOMATO",
-        "id": 3001,
-        "acres": 9.0,
-        "daysToGrow": 75,
-        "currentGrowthStage": "MATURITY",
-        "variety": "CHERRY",
-        "yieldPerPlant": 45
-      },
-      {
-        "type": "CORN",
-        "id": 2003,
-        "acres": 10.0,
-        "daysToGrow": 120,
-        "currentGrowthStage": "SEEDLING",
-        "kernelType": "DENT",
-        "avgKernelSize": 8.5
-      },
-      {
         "type": "TOMATO",
         "id": 3002,
         "acres": 6.0,
         "daysToGrow": 70,
-        "currentGrowthStage": "HARVEST",
+        "currentGrowthStage": "SEEDLING",
         "variety": "BIG_BEEF",
         "yieldPerPlant": 50
       }
     ],
-    "stock": [],
-    "soldGoods": []
+    "stock": [
+      {
+        "type": "Wheat flour",
+        "quantity": 2500.0,
+        "unitOfMeasure": "Kg",
+        "quality": "MID",
+        "productionDate": "2024-09-26",
+        "unitValue": 2500.0
+      },
+      {
+        "type": "Ear of corn",
+        "quantity": 350.0,
+        "unitOfMeasure": "Unit",
+        "quality": "BAD",
+        "productionDate": "2024-09-26",
+        "unitValue": 500.0
+      },
+      {
+        "type": "Tomato",
+        "quantity": 6.0,
+        "unitOfMeasure": "Unit",
+        "quality": "MID",
+        "productionDate": "2024-09-27",
+        "unitValue": 3000.0
+      },
+      {
+        "type": "Ear of corn",
+        "quantity": 5.0,
+        "unitOfMeasure": "Unit",
+        "quality": "EXCELLENT",
+        "productionDate": "2024-09-27",
+        "unitValue": 632.0
+      }
+    ],
+    "soldGoods": [
+      {
+        "type": "Wheat flour",
+        "quantity": 25.0,
+        "unitOfMeasure": "Kg",
+        "quality": "MID",
+        "productionDate": "2024-09-27",
+        "unitValue": 2000.0
+      }
+    ]
   }
 }

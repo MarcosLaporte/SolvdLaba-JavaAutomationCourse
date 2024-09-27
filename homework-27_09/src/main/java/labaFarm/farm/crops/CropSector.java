@@ -5,19 +5,24 @@ import labaFarm.farm.IIdentifiable;
 import labaFarm.farm.exceptions.UnableToHarvestException;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 public abstract class CropSector implements IIdentifiable<CropSector> {
     public enum CropType {
-        WHEAT, CORN, TOMATO;
+        WHEAT("Wheat flour", "Kg"),
+        CORN("Ear of corn", "Unit"),
+        TOMATO("Tomato", "Unit");
 
         private final int value;
-        CropType() {
-            this.value = this.ordinal()+1;
+        public final String goodTypeProduced;
+        public final String goodUnitOfMeasure;
+        CropType(String typeProduced, String unitOfMeasure) {
+            this.value = this.ordinal() + 1;
+            this.goodTypeProduced = typeProduced;
+            this.goodUnitOfMeasure = unitOfMeasure;
         }
 
         public static String getAll() {
@@ -30,11 +35,15 @@ public abstract class CropSector implements IIdentifiable<CropSector> {
         }
     }
     public enum GrowthStage {
-        SEEDLING, VEGETATIVE, FLOWERING, FRUITING, MATURITY, HARVEST, HARVESTED;
+        SEEDLING, VEGETATIVE, FLOWERING, FRUITING, MATURITY, HARVEST;
 
         private final int value;
         GrowthStage() {
-            this.value = this.ordinal()+1;
+            this.value = this.ordinal() + 1;
+        }
+
+        public int getValue() {
+            return this.value;
         }
 
         public static GrowthStage getGrowthStage(int value) {
@@ -62,7 +71,9 @@ public abstract class CropSector implements IIdentifiable<CropSector> {
     public int daysToGrow;
     public GrowthStage currentGrowthStage;
 
-    public int getId() { return this.id; }
+    public int getId() {
+        return this.id;
+    }
 
     public CropSector(CropType type, int id, float acres, int daysToGrow, GrowthStage currentGrowthStage) {
         this.id = id;
@@ -110,25 +121,30 @@ public abstract class CropSector implements IIdentifiable<CropSector> {
         if (list.isEmpty()) return "No crops in the list.\n";
         StringBuilder sb = new StringBuilder();
 
-        sb.append("+--------+------+-------+--------------+--------------+\n");
+        sb.append("+------+--------+-------+--------------+--------------+\n");
         sb.append(String.format("| %s | %s | %s | %s | %s |\n",
-                StringUtils.center("TYPE", 6),
                 StringUtils.center("ID", 4),
+                StringUtils.center("TYPE", 6),
                 StringUtils.center("ACRES", 5),
                 StringUtils.center("DAYS TO GROW", 12),
                 StringUtils.center("GROWTH STAGE", 12)));
-        sb.append("+--------+------+-------+--------------+--------------+\n");
+        sb.append("+------+--------+-------+--------------+--------------+\n");
         for (CropSector cr : list) {
             sb.append(String.format("| %-4d | %-6s | %-5.2f | %-12d | %-12s |\n",
                     cr.id, cr.type, cr.acres, cr.daysToGrow, cr.currentGrowthStage));
-            sb.append("+--------+------+-------+--------------+--------------+\n");
+            sb.append("+------+--------+-------+--------------+--------------+\n");
         }
 
         return sb.toString();
     }
 
-    public abstract Good harvest(float unitValue) throws UnableToHarvestException;
+    public static Good harvest(CropSector cropSector, float quantity, float unitValue) throws UnableToHarvestException {
+        if (cropSector.currentGrowthStage != GrowthStage.HARVEST)
+            throw new UnableToHarvestException("Can't harvest in this stage of growth!");
 
-    public transient BiFunction<CropSector, CropSector, Integer> compareTo = (x, y) -> (int)(x.acres - y.acres);
+        return new Good(cropSector.type.goodTypeProduced, quantity, cropSector.type.goodUnitOfMeasure, Good.GoodsQuality.randomQualitySupplier.get(), LocalDate.now(), unitValue);
+    }
+
+    public transient BiFunction<CropSector, CropSector, Integer> compareTo = (x, y) -> (int) (x.acres - y.acres);
 
 }

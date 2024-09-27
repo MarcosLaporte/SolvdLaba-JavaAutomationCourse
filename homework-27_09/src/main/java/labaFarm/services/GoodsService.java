@@ -4,6 +4,7 @@ import labaFarm.farm.Farm;
 import labaFarm.farm.Good;
 import labaFarm.farm.animals.*;
 import labaFarm.farm.crops.CropSector;
+import labaFarm.farm.crops.HarvestTracker;
 import labaFarm.farm.exceptions.MissingGoodException;
 import labaFarm.farm.exceptions.RepeatedInstanceException;
 import labaFarm.farm.exceptions.UnableToProduceException;
@@ -12,8 +13,14 @@ import org.apache.logging.log4j.Level;
 import java.util.stream.Stream;
 
 public class GoodsService {
-    public static void manageAnimalGoods(Farm farm) {
-        Animal chosenAn = MenuService.chooseAnimal(farm.animals);
+    private Farm farm;
+
+    public GoodsService(Farm farm) {
+        this.farm = farm;
+    }
+
+    public void manageAnimalGoods() {
+        Animal chosenAn = MenuService.chooseAnimal(this.farm.animals);
         if (chosenAn == null) {
             System.out.println("Back to main menu...");
             return;
@@ -37,7 +44,7 @@ public class GoodsService {
                 }
             };
 
-            farm.addGoodToStock(goodProduced);
+            this.farm.addGoodToStock(chosenAn, goodProduced);
             System.out.println(goodProduced.type + " added to stock!");
         } catch (RepeatedInstanceException e) {
             LoggerService.log(Level.WARN, e.getMessage());
@@ -46,41 +53,58 @@ public class GoodsService {
         }
     }
 
-    public static void manageHarvest(Farm farm) {
-        Stream<CropSector> harvestStream = farm.cropSectors.stream().filter(cr -> cr.currentGrowthStage == CropSector.GrowthStage.HARVEST);
-        CropSector chosenCr = MenuService.chooseCrop(harvestStream.toList());
+    public HarvestTracker trackHarvest() {
+        Stream<CropSector> growingCropStream = this.farm.cropSectors.stream()
+                .filter(cr -> cr.currentGrowthStage != CropSector.GrowthStage.HARVEST && !cropIsTracked(cr));
+        CropSector chosenCr = MenuService.chooseCrop(growingCropStream.toList());
+
         if (chosenCr == null) {
             System.out.println("Back to main menu...");
-            return;
+            return null;
         }
 
-        System.out.println("Harvesting " + chosenCr.type + "...");
+        return new HarvestTracker(chosenCr);
+    }
+
+    private boolean cropIsTracked(CropSector cropSector) {
+        Stream<String> activeThreadsNames = (Thread.getAllStackTraces().keySet()).stream().map(Thread::getName);
+
+        String cropThreadName = HarvestTracker.getThreadName(cropSector);
+        return activeThreadsNames.anyMatch(thread -> thread.equals(cropThreadName));
+    }
+
+    public void manageHarvest(HarvestTracker finishedTracker) {
+        CropSector harvestCrop = finishedTracker.cropSector;
+        System.out.println("\nBefore harvesting " + harvestCrop.type + ", complete this data.");
         try {
-            Good harvestedCrop = chosenCr.harvest(0);
-
             float unitValue = InputService.readFloat(
-                    chosenCr.type + " harvested! Enter each " + harvestedCrop.unitOfMeasure + " value: ",
+                    String.format("Enter market value for one %s of %s: ", harvestCrop.type.goodUnitOfMeasure, harvestCrop.type.goodTypeProduced),
                     "Invalid value. Try again: ",
-                    0.1F, 999999
+                    0.1F, 999_999
             );
-            harvestedCrop.setUnitValue(unitValue);
+            float quantity = InputService.readFloat(
+                    String.format("Enter amount of %s of %s to harvest: ", harvestCrop.type.goodUnitOfMeasure, harvestCrop.type.goodTypeProduced),
+                    "Invalid value. Try again: ",
+                    0.1F, 99_999
+            );
+            Good harvestedCrop = CropSector.harvest(harvestCrop, unitValue, quantity);
 
-            farm.addGoodToStock(harvestedCrop);
+            this.farm.addGoodToStock(harvestCrop, harvestedCrop);
             System.out.println(harvestedCrop.type + " added to stock!");
         } catch (RepeatedInstanceException e) {
             LoggerService.log(Level.WARN, e.getMessage());
         }
     }
 
-    public static void sellGoods(Farm farm) {
-        Good chosenGood = MenuService.chooseGood(farm.getStock().toArrayList());
+    public void sellGoods() {
+        Good chosenGood = MenuService.chooseGood(this.farm.getStock().toArrayList());
         if (chosenGood == null) {
             System.out.println("Back to main menu...");
             return;
         }
 
         try {
-            farm.sellGood(chosenGood);
+            this.farm.sellGood(chosenGood);
         } catch (MissingGoodException e) {
             LoggerService.log(Level.ERROR, e.getMessage());
         }
