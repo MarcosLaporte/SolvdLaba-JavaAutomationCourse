@@ -2,12 +2,11 @@
 <Configuration status="WARN">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%-5p - %m%n"/>
+            <PatternLayout pattern="%n%-5p - %m%n"/>
         </Console>
 
         <File name="FileLogger" fileName="logs/app.log">
             <PatternLayout pattern="%-5p - %m%n"/>
-            <param name="append" value="false" />
         </File>
     </Appenders>
 
