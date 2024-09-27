@@ -99,6 +99,8 @@ public abstract class InputService {
             inputStr = SCANNER.next();
         }
 
+        SCANNER.nextLine(); //Cleans buffer
+
         return inputStr;
     }
 
