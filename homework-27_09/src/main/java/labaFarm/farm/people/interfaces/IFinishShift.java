@@ -1,6 +1,6 @@
 package labaFarm.farm.people.interfaces;
 
-import labaFarm.farm.people.Employee;
+import labaFarm.farm.people.employees.Employee;
 
 @FunctionalInterface
 public interface IFinishShift <T extends Employee> {
