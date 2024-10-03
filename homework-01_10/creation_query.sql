@@ -10,7 +10,6 @@ DROP TABLE IF EXISTS suppliers;
 DROP TABLE IF EXISTS invoices;
 DROP TABLE IF EXISTS repair_tickets;
 DROP TABLE IF EXISTS ticket_status;
-DROP TABLE IF EXISTS computers;
 DROP TABLE IF EXISTS technicians;
 DROP TABLE IF EXISTS customers;
 
@@ -22,22 +21,14 @@ CREATE TABLE IF NOT EXISTS customers (
     address VARCHAR(255) NOT NULL,
     zip INT NOT NULL
 );
+ALTER TABLE customers AUTO_INCREMENT=101;
 
 CREATE TABLE IF NOT EXISTS technicians (
     tech_id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL,
     salary FLOAT NOT NULL CHECK (salary > 0)
 );
-
-CREATE TABLE IF NOT EXISTS computers (
-    comp_id INT AUTO_INCREMENT PRIMARY KEY,
-    owner_id INT NOT NULL,
-    brand VARCHAR(255) NOT NULL,
-    model VARCHAR(255) NOT NULL,
-    sn VARCHAR(255) NOT NULL,
-
-    FOREIGN KEY (owner_id) REFERENCES customers (cust_id)
-);
+ALTER TABLE technicians AUTO_INCREMENT=101;
 
 CREATE TABLE IF NOT EXISTS ticket_status (
     status INT PRIMARY KEY,
@@ -53,16 +44,17 @@ INSERT INTO ticket_status (status, description) VALUES
     (6, 'PAID');
 
 CREATE TABLE IF NOT EXISTS repair_tickets (
-    ticket_id INT AUTO_INCREMENT,
-    comp_id INT NOT NULL UNIQUE,
+    ticket_id INT AUTO_INCREMENT PRIMARY KEY,
+    cust_id INT NOT NULL,
+    computer_desc VARCHAR(255) NOT NULL,
     issue varchar(255) NOT NULL,
     date_submitted DATE NOT NULL,
     status INT NOT NULL DEFAULT 0,
 
-    PRIMARY KEY (ticket_id, comp_id),
-    FOREIGN KEY (comp_id) REFERENCES computers(comp_id),
+    FOREIGN KEY (cust_id) REFERENCES customers(cust_id),
     FOREIGN KEY (status) REFERENCES ticket_status(status)
 );
+ALTER TABLE repair_tickets AUTO_INCREMENT=10001;
 
 CREATE TABLE IF NOT EXISTS invoices (
     inv_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -74,6 +66,7 @@ CREATE TABLE IF NOT EXISTS invoices (
     FOREIGN KEY (ticket_id) REFERENCES repair_tickets (ticket_id),
     FOREIGN KEY (tech_id) REFERENCES technicians(tech_id)
 );
+ALTER TABLE invoices AUTO_INCREMENT=10001;
 
 CREATE TABLE IF NOT EXISTS suppliers (
     supplier_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -82,6 +75,7 @@ CREATE TABLE IF NOT EXISTS suppliers (
     phone_no BIGINT NOT NULL,
     address VARCHAR(255) NOT NULL
 );
+ALTER TABLE suppliers AUTO_INCREMENT=101;
 
 CREATE TABLE IF NOT EXISTS parts (
     part_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -93,6 +87,7 @@ CREATE TABLE IF NOT EXISTS parts (
 
     FOREIGN KEY (supplier_id) REFERENCES suppliers (supplier_id)
 );
+ALTER TABLE parts AUTO_INCREMENT=1001;
 
 CREATE TABLE IF NOT EXISTS repair_tickets_part (
     ticket_id INT NOT NULL,
@@ -104,20 +99,41 @@ CREATE TABLE IF NOT EXISTS repair_tickets_part (
     FOREIGN KEY (part_id) REFERENCES parts(part_id)
 );
 
+DELIMITER $$
+CREATE TRIGGER check_ticket_status
+    BEFORE INSERT ON repair_tickets_part
+    FOR EACH ROW
+    BEGIN
+        DECLARE ticket_status INT;
+
+        SELECT status INTO ticket_status FROM repair_tickets 
+        WHERE ticket_id = NEW.ticket_id;
+
+        IF ticket_status <> 0 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Cannot assign a new part to this Repair Ticket because its invoice has already been sent.';
+        END IF;
+    END$$
+DELIMITER ;
+
+
 CREATE TABLE IF NOT EXISTS jobs (
-    ticket_id INT PRIMARY KEY,
+    job_id INT AUTO_INCREMENT PRIMARY KEY,
+    ticket_id INT NOT NULL UNIQUE,
     date_start DATE NOT NULL,
-    date_finish DATE,
+    date_finish DATE DEFAULT NULL,
 
     -- CHECK (date_finish >= date_start),
 
     FOREIGN KEY (ticket_id) REFERENCES repair_tickets(ticket_id)
 );
+ALTER TABLE jobs AUTO_INCREMENT=10001;
 
 CREATE TABLE IF NOT EXISTS jobs_technicians (
     job_id INT NOT NULL,
     tech_id INT NOT NULL,
     task VARCHAR(255) NOT NULL,
+    done BOOLEAN NOT NULL DEFAULT 0,
 
     PRIMARY KEY (job_id, tech_id),
     FOREIGN KEY (job_id) REFERENCES jobs(job_id),
@@ -134,8 +150,8 @@ CREATE TABLE IF NOT EXISTS payments (
 
 CREATE TABLE IF NOT EXISTS feedbacks (
     job_id INT PRIMARY KEY,
-    cust_comment varchar(255) NOT NULL,
-    rating int NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    cust_comment VARCHAR(255) NOT NULL,
+    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
     date_submit DATE NOT NULL,
 
     FOREIGN KEY (job_id) REFERENCES jobs(job_id)

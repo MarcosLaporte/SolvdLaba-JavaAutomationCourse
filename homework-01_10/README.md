@@ -5,19 +5,20 @@ This project is a **relational database** designed for a computer repair shop. T
 ## Basic workflow
 
 1. **Customer** registers (New `customers` entry).
-2. **Customer** loads **Repair Ticket**, creating a new entry in `computers` (or selecting an existing one), and getting its ID stored in `repair_tickets`, along with the issue with said computer.
+2. **Customer** loads **Repair Ticket**, getting their ID stored in `repair_tickets.cust_id`, along with the description and issue with the computer.
 3. Any **Technician** can check the **Repair Ticket** and (after adding necessary **Parts** in `repair_ticket_parts`, and removing them from `part.stock`) create an **Invoice** for the customer; changing *status* to 1 (invoice sent).
 4. **Customer** then accepts or rejects the invoice and `repair_ticket.status` is changed.
    1. If accepted, and new **Job** entry is created (with automatic values, *date_finish* NULL); new `jobs_technician` with said Job and ID of the technician who made the invoice.
    2. If rejected, the parts taken for the job are returned, if any (`part.stock` is updated again).
 5. `repair_ticket.status` is set to 4 when a technician starts with the job.
 6. Any technician that takes part in that job will be loaded to `jobs_technician`, declaring what task they are assigned.
+7. After every completed task, each technician updates *done* to 1 in their entry in `jobs_technician`.
 7. Once the job is finished, `job.date_finish` is set, `repair_ticket.status` set to 5, and the customer notified.
 8. Customer fulfills **Payment**,  `repair_ticket.status` sets to 6 (paid) and user fills **Feedback**.
 
 ## Diagram
 
-![1727707770956](image/README/1727707770956.png)
+![Model Diagram](CRS_diagram.png)
 
 ## Relationships
 
@@ -30,9 +31,8 @@ This project is a **relational database** designed for a computer repair shop. T
 
 ### One-to-Many
 
-* **Customers to Computers** : One customer can own multiple computers, but each computer is associated with one customer.
 * **Suppliers to Parts** : One supplier can provide multiple parts, but each part is sourced from a single supplier.
-* **Computers to Repair Tickets** : One computer can have multiple repair tickets, but each repair ticket is associated with one computer.
+* **Customers to Repair Tickets** : One customer can have multiple repair tickets, but each repair ticket is associated with one customer.
 
 ### Many-to-Many (with intermediate tables)
 
