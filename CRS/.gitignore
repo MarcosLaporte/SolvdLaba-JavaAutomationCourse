@@ -39,3 +39,6 @@ build/
 
 ### Backup MySQL files ###
 *.bak
+
+### Database Connection Properties ###
+/src/main/resources/db.properties
