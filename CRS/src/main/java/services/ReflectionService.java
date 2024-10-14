@@ -115,26 +115,12 @@ public class ReflectionService<T> {
         Object[] paramValues = new Object[parameters.length];
 
         for (int i = 0; i < parameters.length; i++) {
-            Parameter currentParam = parameters[i];
-            Class<?> paramType = currentParam.getType();
-            String inputMsg = String.format("Enter %s for %s: ", paramType.getSimpleName(), currentParam.getName());
+            Parameter currParam = parameters[i];
+            Class<?> paramType = currParam.getType();
 
-            if (Number.class.isAssignableFrom(paramType)) {
-                Range rangeAnn = currentParam.getAnnotation(Range.class);
-                double min = rangeAnn != null ? rangeAnn.min() : Double.MIN_VALUE;
-                double max = rangeAnn != null ? rangeAnn.max() : Double.MAX_VALUE;
-                String errorMsg = String.format("Invalid value for %s. Try again (%f - %f): ", currentParam.getName(), min, max);
-
-                if (paramType == Byte.class || paramType == Short.class || paramType == Integer.class || paramType == Long.class) {
-                    paramValues[i] = InputService.readInt(inputMsg, errorMsg, (int) min, (int) max);
-                } else if (paramType == Float.class || paramType == Double.class) {
-                    paramValues[i] = InputService.readFloat(inputMsg, errorMsg, (float) min, (float) max);
-                }
-            } else if (paramType == String.class) {
-                paramValues[i] = InputService.readString(inputMsg, 0, 0);
-            } else if (paramType == Date.class) {
-                paramValues[i] = InputService.readValidDate();
-            }
+            Range rangeAnn = currParam.getAnnotation(Range.class);
+            Size sizeAnn = currParam.getAnnotation(Size.class);
+            paramValues[i] = readValue(paramType, currParam.getName(), rangeAnn, sizeAnn);
         }
 
         try {
@@ -155,37 +141,77 @@ public class ReflectionService<T> {
             Class<?> fieldType = currField.getType();
             Object fieldValue = currField.get(ogInstance);
 
-            char enterValue = InputService.readCharInValues(String.format("Do you want to change %s (Current value: %s)? Y/N: ", currField.getName(), fieldValue), "ERROR. Input Y or N: ", new char[]{'Y', 'N'});
+            char enterValue = InputService.readCharInValues(
+                    String.format("Do you want to change %s (Current value: %s)? Y/N: ", currField.getName(), fieldValue),
+                    "ERROR. Input Y or N: ", new char[]{'Y', 'N'}
+            );
             if (enterValue == 'N') {
                 paramValues[i] = fieldValue;
                 continue;
             }
 
-            String inputMsg = String.format("Enter %s for %s: ", fieldType.getSimpleName(), currField.getName());
-
-            if (Number.class.isAssignableFrom(fieldType)) {
-                Range rangeAnn = currField.getAnnotation(Range.class);
-                double min = rangeAnn != null ? rangeAnn.min() : Double.MIN_VALUE;
-                double max = rangeAnn != null ? rangeAnn.max() : Double.MAX_VALUE;
-                String errorMsg = String.format("Invalid value for %s. Try again (%f - %f): ", currField.getName(), min, max);
-
-                if (fieldType == Byte.class || fieldType == Short.class || fieldType == Integer.class || fieldType == Long.class) {
-                    paramValues[i] = InputService.readInt(inputMsg, errorMsg, (int) min, (int) max);
-                } else if (fieldType == Float.class || fieldType == Double.class) {
-                    paramValues[i] = InputService.readFloat(inputMsg, errorMsg, (float) min, (float) max);
-                }
-            } else if (fieldType == String.class) {
-                Size sizeAnn = currField.getAnnotation(Size.class);
-                int min = sizeAnn != null ? sizeAnn.min() : 0;
-                int max = sizeAnn != null ? sizeAnn.max() : Integer.MAX_VALUE;
-
-                paramValues[i] = InputService.readString(inputMsg, min, max);
-            } else if (fieldType == Date.class) {
-                paramValues[i] = InputService.readValidDate();
-            }
+            Range rangeAnn = currField.getAnnotation(Range.class);
+            Size sizeAnn = currField.getAnnotation(Size.class);
+            paramValues[i] = readValue(fieldType, currField.getName(), rangeAnn, sizeAnn);
         }
 
         return paramValues;
+    }
+
+    public Map<String, Object> readValues() throws Exception {
+        List<Field> fields = this.getFieldsByAnnotation(Column.class)
+                .stream().filter(field -> !field.getAnnotation(Column.class).autoIncrement())
+                .toList();
+        Map<String, Object> valuesMap = new HashMap<>();
+
+        for (Field currField : fields) {
+            Class<?> fieldType = currField.getType();
+
+            char enterValue = InputService.readCharInValues(
+                    String.format("Do you want to enter %s value? Y/N: ", currField.getName()),
+                    "ERROR. Input Y or N: ", new char[]{'Y', 'N'}
+            );
+            if (enterValue == 'N')
+                continue;
+
+            Range rangeAnn = currField.getAnnotation(Range.class);
+            Size sizeAnn = currField.getAnnotation(Size.class);
+            valuesMap.put(
+                    currField.getAnnotation(Column.class).name(),
+                    readValue(fieldType, currField.getName(), rangeAnn, sizeAnn)
+            );
+        }
+
+        return valuesMap;
+    }
+
+    private Object readValue(Class<?> fieldType, String fieldName, Range rangeAnn, Size sizeAnn) {
+        String inputMsg = String.format("Enter %s for %s: ", fieldType.getSimpleName(), fieldName);
+
+        if (Number.class.isAssignableFrom(fieldType) || isPrimitiveNumericType(fieldType)) {
+            double min = rangeAnn != null ? rangeAnn.min() : Double.MIN_VALUE;
+            double max = rangeAnn != null ? rangeAnn.max() : Double.MAX_VALUE;
+            String errorMsg = String.format("Invalid value for %s. Try again (%.2f - %.2f): ", fieldName, min, max);
+
+            if (fieldType == Byte.class || fieldType == Short.class || fieldType == Integer.class || fieldType == Long.class ||
+                    fieldType == byte.class || fieldType == short.class || fieldType == int.class || fieldType == long.class) {
+                return InputService.readInt(inputMsg, errorMsg, (int) min, (int) max);
+            } else if (fieldType == Float.class || fieldType == Double.class || fieldType == float.class || fieldType == double.class) {
+                return InputService.readFloat(inputMsg, errorMsg, (float) min, (float) max);
+            }
+        } else if (fieldType == String.class) {
+            int min = sizeAnn != null ? sizeAnn.min() : 0;
+            int max = sizeAnn != null ? sizeAnn.max() : Integer.MAX_VALUE;
+            return InputService.readString(inputMsg, min, max);
+        } else if (fieldType == Date.class) {
+            return InputService.readValidDate();
+        }
+        return null;
+    }
+
+    private static boolean isPrimitiveNumericType(Class<?> fieldType) {
+        return fieldType == int.class || fieldType == long.class || fieldType == double.class ||
+                fieldType == float.class || fieldType == short.class || fieldType == byte.class;
     }
 
     private boolean matchParameterTypes(Class<?>[] paramTypes, Object[] args) {

@@ -1,13 +1,11 @@
 package services;
 
-import entities.Customer;
 import entitiesDAO.GenericDAO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import services.connection.ConnectionManager;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +15,7 @@ import static services.ReflectionService.ClassExclusionPredicate.ANNOTATION;
 
 public class MainMenu {
     private enum Menu {
-        EXIT, GET_ALL, GET, CREATE, UPDATE, DELETE;
+        EXIT, GET_ALL, GET_BY_ID, GET_FIELD_MATCHES, CREATE, UPDATE, DELETE;
 
         private final int value;
 
@@ -52,15 +50,21 @@ public class MainMenu {
                         case EXIT -> {
                         }
                         case GET_ALL -> {
-                            printAllEntities(dao);
+                            printAllValues(dao.getAll());
                         }
-                        case GET -> {
+                        case GET_BY_ID -> {
                             int id = InputService.readInt(
                                     "Enter " + entityClass.getSimpleName() + " ID: ",
                                     "Value out of bounds. Try again: ",
                                     0, 999_999_999
                             );
                             System.out.println(dao.get(id));
+                        }
+                        case GET_FIELD_MATCHES -> {
+                            System.out.println("Fill with fields ");
+                            ReflectionService<Object> rs = GenericDAO.castReflectionService(new ReflectionService<>(entityClass));
+                            List<?> values = dao.getAllMatches(rs.readValues());
+                            printAllValues(values);
                         }
                         case CREATE -> {
                             ReflectionService<Object> rs = GenericDAO.castReflectionService(new ReflectionService<>(entityClass));
@@ -69,7 +73,7 @@ public class MainMenu {
                         }
                         case UPDATE -> {
                             ReflectionService<Object> rs = GenericDAO.castReflectionService(new ReflectionService<>(entityClass));
-                            printAllEntities(dao);
+                            printAllValues(dao.getAll());
                             int id = InputService.readInt(
                                     "Enter " + entityClass.getSimpleName() + " ID: ",
                                     "Value out of bounds. Try again: ",
@@ -84,14 +88,14 @@ public class MainMenu {
                             }
                         }
                         case DELETE -> {
-                            printAllEntities(dao);
+                            printAllValues(dao.getAll());
                             int id = InputService.readInt(
                                     "Enter " + entityClass.getSimpleName() + " ID: ",
                                     "Value out of bounds. Try again: ",
                                     0, 999_999_999
                             );
                             dao.delete(id);
-                            printAllEntities(dao);
+                            printAllValues(dao.getAll());
                         }
                         default -> System.out.println("This option does not exist.");
                     }
@@ -134,9 +138,8 @@ public class MainMenu {
         return entityClass;
     }
 
-    private static void printAllEntities(GenericDAO<Object> dao) {
-        List<?> entityList = dao.getAll();
-        for (Object o : entityList) {
+    private static void printAllValues(List<?> values) {
+        for (Object o : values) {
             System.out.println(o);
         }
     }

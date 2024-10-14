@@ -3,6 +3,7 @@ package entitiesDAO;
 import entities.annotations.Column;
 import entities.annotations.Id;
 import entities.annotations.Table;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import services.connection.ConnectionManager;
 import services.DatabaseService;
@@ -14,9 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class GenericDAO<T> implements IDao<T>, AutoCloseable {
@@ -170,6 +169,25 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
             preparedStatement.executeUpdate();
         } catch (NoSuchElementException e) {
             LoggerService.log(Level.WARN, e.getMessage());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<T> getAllMatches(Map<String, Object> columnValueMap) {
+        Set<String> keys = columnValueMap.keySet();
+        String whereClause = keys.isEmpty() ? StringUtils.EMPTY :
+                " WHERE " + keys.stream()
+                        .map(key -> String.format("%s = '%s'", key, columnValueMap.get(key)))
+                        .collect(Collectors.joining(" AND "));
+
+        String query = "SELECT * FROM " + this.getTableName() + whereClause;
+
+        try (
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery()
+        ) {
+            return DatabaseService.parseResultSet(resultSet, clazz);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
