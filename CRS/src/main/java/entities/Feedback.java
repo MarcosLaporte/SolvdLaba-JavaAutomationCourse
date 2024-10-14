@@ -8,6 +8,7 @@ public class Feedback {
     @Id
     @Column(name = "job_id", autoIncrement = true)
     public int id;
+    public int jobId;
 
     @Column(name = "cust_comment")
     @Size(min = 1, max = 255)
@@ -22,17 +23,19 @@ public class Feedback {
 
     public Feedback(int id, String custComment, int rating, java.sql.Date dateSubmit) {
         this.id = id;
+    public Feedback(int jobId, String custComment, int rating, java.sql.Date dateSubmit) {
+        this.jobId = jobId;
         this.custComment = custComment;
         this.rating = rating;
         this.dateSubmit = dateSubmit;
     }
 
-    private Feedback(Integer id, String custComment, Integer rating, java.sql.Date dateSubmit) {
-        this(id.intValue(), custComment, rating.intValue(), dateSubmit);
+    private Feedback(Integer jobId, String custComment, Integer rating, java.sql.Date dateSubmit) {
+        this(jobId.intValue(), custComment, rating.intValue(), dateSubmit);
     }
 
     public String toString() {
-        return String.format("ID %d - %s", this.id, this.custComment);
+        return String.format("ID %d - %s", this.jobId, this.custComment);
     }
 
 }
