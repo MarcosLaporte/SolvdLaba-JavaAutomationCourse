@@ -26,7 +26,7 @@ public class Customer {
     @Column(name = "zip")
     public int zip;
 
-    public Customer(int id, String fullName, String email, @Range(min = 10000000, max = 99999999) long phoneNo, @Size(min = 1, max = 255) String address, @Range(min = 1, max = 9999999) int zip) {
+    public Customer(int id, @Size(min = 1, max = 255) String fullName, @Size(min = 1, max = 255) String email, @Range(min = 10000000, max = 99999999) long phoneNo, @Size(min = 1, max = 255) String address, @Range(min = 1, max = 9999999) int zip) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
