@@ -1,18 +1,33 @@
 package entities;
 
+import entities.annotations.*;
+
+@Entity
+@Table(name = "payments")
 public class Payment {
-    public int job_id;
-    public java.sql.Date pay_date;
+    @Id
+    @Column(name = "job_id", autoIncrement = true)
+    public int id;
+
+    @Column(name = "pay_date")
+    public java.sql.Date payDate;
+
+    @Column(name = "amount")
     public double amount;
 
-    public Payment(int job_id, java.sql.Date pay_date, double amount) {
-        this.job_id = job_id;
-        this.pay_date = pay_date;
+    public Payment(int id, java.sql.Date payDate, @Range(min = 1) double amount) {
+        this.id = id;
+        this.payDate = payDate;
         this.amount = amount;
     }
 
-    private Payment(Integer job_id, java.sql.Date pay_date, Double amount) {
-        this(job_id.intValue(), pay_date, amount.doubleValue());
+    private Payment(Integer id, java.sql.Date payDate, Double amount) {
+        this(id.intValue(), payDate, amount.doubleValue());
     }
+
+    public String toString() {
+        return String.format("ID %d - %.2f", this.id, this.amount);
+    }
+
 }
 

@@ -1,19 +1,38 @@
 package entities;
 
+
+import entities.annotations.*;
+
+@Entity
+@Table(name = "jobs_technicians")
 public class JobTechnician {
-    public int job_id;
-    public int tech_id;
+    @Id
+    @Column(name = "job_id")
+    public int jobId;
+
+    @Id
+    @Column(name = "tech_id")
+    public int techId;
+
+    @Column(name = "task")
     public String task;
+
+    @Column(name = "done")
     public boolean done;
 
-    public JobTechnician(int job_id, int tech_id, String task, boolean done) {
-        this.job_id = job_id;
-        this.tech_id = tech_id;
+    public JobTechnician(int jobId, int techId, @Size(min = 1, max = 255) String task, boolean done) {
+        this.jobId = jobId;
+        this.techId = techId;
         this.task = task;
         this.done = done;
     }
 
-    private JobTechnician(Integer job_id, Integer tech_id, String task, Boolean done) {
-        this(job_id.intValue(), tech_id.intValue(), task, done.booleanValue());
+    private JobTechnician(Integer jobId, Integer techId, String task, Boolean done) {
+        this(jobId.intValue(), techId.intValue(), task, done.booleanValue());
     }
+
+    public String toString() {
+        return String.format("J%d - T%d", this.jobId, this.techId);
+    }
+
 }

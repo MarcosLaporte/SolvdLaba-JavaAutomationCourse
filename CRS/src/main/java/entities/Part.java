@@ -1,23 +1,45 @@
 package entities;
 
+import entities.annotations.*;
+
+@Entity
+@Table(name = "parts")
 public class Part {
-    public int part_id;
-    public int supplier_id;
+    @Id
+    @Column(name = "part_id", autoIncrement = true)
+    public int id;
+
+    @Column(name = "supplier_id")
+    public int supplierId;
+
+    @Column(name = "name")
     public String name;
+
+    @Column(name = "description")
     public String description;
+
+    @Column(name = "value")
     public double value;
+
+    @Column(name = "stock")
     public int stock;
 
-    public Part(int part_id, int supplier_id, String name, String description, double value, int stock) {
-        this.part_id = part_id;
-        this.supplier_id = supplier_id;
+    public Part(int id, int supplierId, @Size(min = 1, max = 255) String name, @Size(min = 1, max = 255) String description,
+                @Range(min = 1) double value, @Range(min = 1) int stock) {
+        this.id = id;
+        this.supplierId = supplierId;
         this.name = name;
         this.description = description;
         this.value = value;
         this.stock = stock;
     }
 
-    private Part(Integer part_id, Integer supplier_id, String name, String description, Double value, Integer stock) {
-        this(part_id.intValue(), supplier_id.intValue(), name, description, value.doubleValue(), stock.intValue());
+    private Part(Integer id, Integer supplierId, String name, String description, Double value, Integer stock) {
+        this(id.intValue(), supplierId.intValue(), name, description, value.doubleValue(), stock.intValue());
     }
+
+    public String toString() {
+        return String.format("ID %d - %s", this.id, this.name);
+    }
+
 }
