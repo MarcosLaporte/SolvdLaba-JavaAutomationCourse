@@ -61,9 +61,15 @@ public class MainMenu {
                             System.out.println(dao.get(id));
                         }
                         case GET_FIELD_MATCHES -> {
-                            System.out.println("Fill with fields ");
+                            System.out.println("Fill with fields to filter by.");
                             ReflectionService<Object> rs = GenericDAO.castReflectionService(new ReflectionService<>(entityClass));
-                            List<?> values = dao.getAllMatches(rs.readValues());
+                            Map<String, Object> columnValueMap = rs.readValues();
+                            List<?> values = dao.getAllMatches(columnValueMap);
+
+                            System.out.print("Rows found with values");
+                            for (Map.Entry<String, Object> entry : columnValueMap.entrySet())
+                                System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
+                            System.out.println(": ");
                             printAllValues(values);
                         }
                         case CREATE -> {
