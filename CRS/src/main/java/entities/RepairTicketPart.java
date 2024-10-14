@@ -13,9 +13,10 @@ public class RepairTicketPart {
     public int partId;
 
     @Column(name = "quantity")
+    @Range(min = 1)
     public int quantity;
 
-    public RepairTicketPart(int ticketId, int partId, @Range(min = 1) int quantity) {
+    public RepairTicketPart(int ticketId, int partId, int quantity) {
         this.ticketId = ticketId;
         this.partId = partId;
         this.quantity = quantity;

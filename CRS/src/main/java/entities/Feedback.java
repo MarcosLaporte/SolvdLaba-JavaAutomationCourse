@@ -10,15 +10,17 @@ public class Feedback {
     public int id;
 
     @Column(name = "cust_comment")
+    @Size(min = 1, max = 255)
     public String custComment;
 
     @Column(name = "rating")
+    @Range(min = 1, max = 5)
     public int rating;
 
     @Column(name = "date_submit")
     public java.sql.Date dateSubmit;
 
-    public Feedback(int id, @Size(min = 1, max = 255) String custComment, @Range(min = 1, max = 5) int rating, java.sql.Date dateSubmit) {
+    public Feedback(int id, String custComment, int rating, java.sql.Date dateSubmit) {
         this.id = id;
         this.custComment = custComment;
         this.rating = rating;

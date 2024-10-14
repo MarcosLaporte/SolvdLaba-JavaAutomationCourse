@@ -15,12 +15,13 @@ public class JobTechnician {
     public int techId;
 
     @Column(name = "task")
+    @Size(min = 1, max = 255)
     public String task;
 
     @Column(name = "done")
     public boolean done;
 
-    public JobTechnician(int jobId, int techId, @Size(min = 1, max = 255) String task, boolean done) {
+    public JobTechnician(int jobId, int techId, String task, boolean done) {
         this.jobId = jobId;
         this.techId = techId;
         this.task = task;

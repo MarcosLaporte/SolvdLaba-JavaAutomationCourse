@@ -10,12 +10,14 @@ public class Technician {
     int id;
 
     @Column(name = "full_name")
+    @Size(min = 1, max = 255)
     String fullName;
 
     @Column(name = "salary")
+    @Range(min = 1)
     float salary;
 
-    public Technician(int id, @Size(min = 1, max = 255) String fullName, @Range(min = 1) float salary) {
+    public Technician(int id, String fullName, float salary) {
         this.id = id;
         this.fullName = fullName;
         this.salary = salary;

@@ -6,26 +6,28 @@ import entities.annotations.*;
 @Table(name = "repair_tickets")
 public class RepairTicket {
     @Id
-    @Column(name="ticket_id", autoIncrement = true)
+    @Column(name = "ticket_id", autoIncrement = true)
     public int id;
 
-    @Column(name="cust_id")
+    @Column(name = "cust_id")
     public int custId;
 
-    @Column(name="computer_desc")
+    @Column(name = "computer_desc")
+    @Size(min = 1, max = 255)
     public String computerDesc;
 
-    @Column(name="issue")
+    @Column(name = "issue")
+    @Size(min = 1, max = 255)
     public String issue;
 
-    @Column(name="date_submitted")
+    @Column(name = "date_submitted")
     public java.sql.Date dateSubmitted;
 
-    @Column(name="status")
+    @Column(name = "status")
+    @Range(min = 1, max = 6)
     public int status;
 
-    public RepairTicket(int id, int custId, @Size(min = 1, max = 255) String computerDesc, @Size(min = 1, max = 255) String issue,
-                        java.sql.Date dateSubmitted, @Range(min = 1, max = 6) int status) {
+    public RepairTicket(int id, int custId, String computerDesc, String issue, java.sql.Date dateSubmitted, int status) {
         this.id = id;
         this.custId = custId;
         this.computerDesc = computerDesc;

@@ -1,8 +1,6 @@
 package entities;
 
 import entities.annotations.*;
-import entities.annotations.Entity;
-import services.InputService;
 
 @Entity
 @Table(name = "customers")
@@ -12,21 +10,26 @@ public class Customer {
     public int id;
 
     @Column(name = "full_name")
+    @Size(min = 1, max = 255)
     public String fullName;
 
     @Column(name = "email")
+    @Size(min = 1, max = 255)
     public String email;
 
     @Column(name = "phone_no")
+    @Range(min = 10000000, max = 99999999)
     public long phoneNo;
 
     @Column(name = "address")
+    @Size(min = 1, max = 255)
     public String address;
 
     @Column(name = "zip")
+    @Range(min = 1, max = 9999999)
     public int zip;
 
-    public Customer(int id, @Size(min = 1, max = 255) String fullName, @Size(min = 1, max = 255) String email, @Range(min = 10000000, max = 99999999) long phoneNo, @Size(min = 1, max = 255) String address, @Range(min = 1, max = 9999999) int zip) {
+    public Customer(int id, String fullName, String email, long phoneNo, String address, int zip) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -42,15 +45,5 @@ public class Customer {
     @Override
     public String toString() {
         return String.format("ID %d - %s", this.id, this.fullName);
-    }
-
-    public static Customer readCustomer() {
-        String fullName = InputService.readString("Enter customer's full name: ", 1, 255);
-        String email = InputService.readString("Enter customer's email address: ", 1, 255);
-        long phoneNo = InputService.readInt("Enter customer's phone number: ", "Enter a valid number: ", 1, Integer.MAX_VALUE);
-        String address = InputService.readString("Enter customer's address: ", 1, 255);
-        int zip = InputService.readInt("Enter customer's ZIP or Postal code: ", "Enter a valid number: ", 1, Integer.MAX_VALUE);
-
-        return new Customer(-1, fullName, email, phoneNo, address, -1);
     }
 }

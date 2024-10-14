@@ -116,10 +116,17 @@ public class ReflectionService<T> {
 
         for (int i = 0; i < parameters.length; i++) {
             Parameter currParam = parameters[i];
+            Optional<Field> respectiveField =
+                    Arrays.stream(this.getAllFields())
+                            .filter(f -> f.getName().equalsIgnoreCase(currParam.getName()))
+                            .findFirst();
             Class<?> paramType = currParam.getType();
 
-            Range rangeAnn = currParam.getAnnotation(Range.class);
-            Size sizeAnn = currParam.getAnnotation(Size.class);
+            if (respectiveField.isEmpty())
+                throw new IllegalStateException("No matching field found for constructor parameter " + currParam.getName());
+
+            Range rangeAnn = respectiveField.get().getAnnotation(Range.class);
+            Size sizeAnn = respectiveField.get().getAnnotation(Size.class);
             paramValues[i] = readValue(paramType, currParam.getName(), rangeAnn, sizeAnn);
         }
 

@@ -16,12 +16,14 @@ public class Invoice {
     public int techId;
 
     @Column(name = "diagnosis")
+    @Size(min = 1, max = 255)
     public String diagnosis;
 
     @Column(name = "amount")
+    @Range(min = 1)
     public double amount;
 
-    public Invoice(int id, int ticketId, int techId, @Size(min = 1, max = 255) String diagnosis, @Range(min = 1) double amount) {
+    public Invoice(int id, int ticketId, int techId, String diagnosis, double amount) {
         this.id = id;
         this.ticketId = ticketId;
         this.techId = techId;

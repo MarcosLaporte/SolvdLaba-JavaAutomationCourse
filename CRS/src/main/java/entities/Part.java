@@ -13,19 +13,22 @@ public class Part {
     public int supplierId;
 
     @Column(name = "name")
+    @Size(min = 1, max = 255)
     public String name;
 
     @Column(name = "description")
+    @Size(min = 1, max = 255)
     public String description;
 
     @Column(name = "value")
+    @Range(min = 1)
     public double value;
 
     @Column(name = "stock")
+    @Range(min = 1)
     public int stock;
 
-    public Part(int id, int supplierId, @Size(min = 1, max = 255) String name, @Size(min = 1, max = 255) String description,
-                @Range(min = 1) double value, @Range(min = 1) int stock) {
+    public Part(int id, int supplierId, String name, String description, double value, int stock) {
         this.id = id;
         this.supplierId = supplierId;
         this.name = name;

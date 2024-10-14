@@ -13,9 +13,10 @@ public class Payment {
     public java.sql.Date payDate;
 
     @Column(name = "amount")
+    @Range(min = 1)
     public double amount;
 
-    public Payment(int id, java.sql.Date payDate, @Range(min = 1) double amount) {
+    public Payment(int id, java.sql.Date payDate, double amount) {
         this.id = id;
         this.payDate = payDate;
         this.amount = amount;
