@@ -1,12 +1,7 @@
-import entities.Customer;
 import entitiesDAO.GenericDAO;
 import services.MainMenu;
 import services.ReflectionService;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Parameter;
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 import static services.ReflectionService.ClassExclusionPredicate.ANNOTATION;

@@ -3,7 +3,10 @@ package services;
 import entities.Customer;
 import entitiesDAO.GenericDAO;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Level;
+import services.connection.ConnectionManager;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -93,11 +96,23 @@ public class MainMenu {
                         default -> System.out.println("This option does not exist.");
                     }
                 } catch (Exception e) {
+                    try {
+                        ConnectionManager.closePool();
+                    } catch (SQLException ex) {
+                        LoggerService.log(Level.ERROR, ex.getMessage());
+                    }
+
                     throw new RuntimeException(e);
                 }
             }
 
         } while (mainMenuOption != 0);
+
+        try {
+            ConnectionManager.closePool();
+        } catch (SQLException ex) {
+            LoggerService.log(Level.ERROR, ex.getMessage());
+        }
     }
 
     private static Class<?> chooseEntity() {

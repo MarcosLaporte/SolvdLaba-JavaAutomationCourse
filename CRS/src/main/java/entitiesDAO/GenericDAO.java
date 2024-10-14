@@ -4,12 +4,11 @@ import entities.annotations.Column;
 import entities.annotations.Id;
 import entities.annotations.Table;
 import org.apache.logging.log4j.Level;
-import services.ConnectionManager;
+import services.connection.ConnectionManager;
 import services.DatabaseService;
 import services.LoggerService;
 import services.ReflectionService;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,7 +29,7 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
         try {
             this.connection = ConnectionManager.getConnection();
             this.reflectionService = new ReflectionService<>(clazz);
-        } catch (SQLException | IOException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         this.clazz = clazz;
@@ -38,13 +37,7 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
 
     @Override
     public void close() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        ConnectionManager.releaseConnection(connection);
     }
 
     @Override
