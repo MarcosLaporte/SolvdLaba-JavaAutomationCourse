@@ -7,7 +7,6 @@ import entities.annotations.*;
 public class Feedback {
     @Id
     @Column(name = "job_id", autoIncrement = true)
-    public int id;
     public int jobId;
 
     @Column(name = "cust_comment")
@@ -21,8 +20,6 @@ public class Feedback {
     @Column(name = "date_submit")
     public java.sql.Date dateSubmit;
 
-    public Feedback(int id, String custComment, int rating, java.sql.Date dateSubmit) {
-        this.id = id;
     public Feedback(int jobId, String custComment, int rating, java.sql.Date dateSubmit) {
         this.jobId = jobId;
         this.custComment = custComment;
