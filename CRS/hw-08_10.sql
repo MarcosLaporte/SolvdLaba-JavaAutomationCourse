@@ -111,7 +111,7 @@ SELECT
     t.full_name AS 'Diagnosis author',
     COUNT(DISTINCT jt.tech_id) AS 'Amount of techs',
     SUM(DISTINCT rtp.quantity) AS 'Amount of parts',
-    GROUP_CONCAT(DISTINCT p.name) AS 'Parts used',
+    GROUP_CONCAT(DISTINCT CONCAT(p.name, ' (x', rtp.quantity, ')')) AS 'Parts used',
     GROUP_CONCAT(DISTINCT s.full_name) AS 'Suppliers',
     j.date_start AS 'Job start date',
     j.date_finish AS 'Job date finish',
