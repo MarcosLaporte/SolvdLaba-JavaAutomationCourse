@@ -13,27 +13,27 @@ public class Job {
     public int id;
 
     @Column(name = "ticket_id")
-    public int ticket_id;
+    public int ticketId;
 
     @Column(name = "date_start")
-    public java.sql.Date date_start;
+    public java.sql.Date dateStart;
 
     @Column(name = "date_finish", isNullable = true)
-    public java.sql.Date date_finish;
+    public java.sql.Date dateFinish;
 
-    public Job(int id, int ticket_id, java.sql.Date date_start, java.sql.Date date_finish) {
+    public Job(int id, int ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
         this.id = id;
-        this.ticket_id = ticket_id;
-        this.date_start = date_start;
-        this.date_finish = date_finish;
+        this.ticketId = ticketId;
+        this.dateStart = dateStart;
+        this.dateFinish = dateFinish;
     }
 
-    private Job(Integer id, Integer ticket_id, java.sql.Date date_start, java.sql.Date date_finish) {
-        this(id.intValue(), ticket_id.intValue(), date_start, date_finish);
+    private Job(Integer id, Integer ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
+        this(id.intValue(), ticketId.intValue(), dateStart, dateFinish);
     }
 
     public String toString() {
-        return String.format("ID %d - T%d", this.id, this.ticket_id);
+        return String.format("ID %d - T%d", this.id, this.ticketId);
     }
 
 }
