@@ -5,10 +5,10 @@ import entities.annotations.Id;
 import entities.annotations.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
-import services.connection.ConnectionManager;
 import services.DatabaseService;
 import services.LoggerService;
 import services.ReflectionService;
+import services.connection.ConnectionManager;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -23,11 +23,15 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
     public final Class<T> clazz;
 
     private final ReflectionService<T> reflectionService;
+    private final List<Field> entColumns;
 
     public GenericDAO(Class<T> clazz) {
         try {
             this.connection = ConnectionManager.getConnection();
             this.reflectionService = new ReflectionService<>(clazz);
+            entColumns = reflectionService.getFieldsByAnnotation(Column.class)
+                    .stream().filter(field -> !field.getAnnotation(Column.class).autoIncrement())
+                    .toList();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -49,7 +53,8 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
         ) {
             return DatabaseService.parseResultSet(resultSet, clazz);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LoggerService.log(Level.ERROR, e.getMessage());
+            return new ArrayList<>();
         }
     }
 
@@ -67,110 +72,75 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 ResultSet resultSet = preparedStatement.executeQuery()
         ) {
-            return DatabaseService.parseResultSet(resultSet, clazz).getFirst();
-        } catch (NoSuchElementException e) {
-            return null;
+            List<T> parsedResult = DatabaseService.parseResultSet(resultSet, clazz);
+            return parsedResult.isEmpty() ? null : parsedResult.getFirst();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public T getRow(long rowNumber) {
-        String query;
-        try {
-            query = "SELECT * FROM " + this.getTableName() + " ORDER BY " + this.getIdFieldName() + " LIMIT 1 OFFSET " + (rowNumber - 1);
-        } catch (MultipleIdFieldsException e) {
             LoggerService.log(Level.ERROR, e.getMessage());
             return null;
         }
-
-        try (
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
-                ResultSet resultSet = preparedStatement.executeQuery()
-        ) {
-            return DatabaseService.parseResultSet(resultSet, clazz).getFirst();
-        } catch (NoSuchElementException e) {
-            return null;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
-    public long create(T t) {
-        List<Field> fieldList = reflectionService.getFieldsByAnnotation(Column.class)
-                .stream().filter(field -> !field.getAnnotation(Column.class).autoIncrement())
-                .toList();
-
-        String[] columns = fieldList.stream().map(field -> field.getAnnotation(Column.class).name()).toArray(String[]::new);
+    public int create(T t) {
+        String[] columns = entColumns.stream().map(field -> field.getAnnotation(Column.class).name()).toArray(String[]::new);
         String placeholders = String.join(", ", Collections.nCopies(columns.length, "?"));
 
         String query = "INSERT INTO " + this.getTableName() + " (" + String.join(", ", columns) + ") VALUES (" + placeholders + ")";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            for (int i = 0; i < fieldList.size(); i++) {
-                Field field = fieldList.get(i);
-                field.setAccessible(true);
-                Object value = field.get(t);
+            for (int i = 0; i < entColumns.size(); i++) {
+                Object value = reflectionService.getFieldValue(t, entColumns.get(i));
 
                 preparedStatement.setObject(i + 1, value);
             }
 
             return preparedStatement.executeUpdate();
-        } catch (SQLException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            LoggerService.log(Level.ERROR, e.getMessage());
+            return 0;
+        } catch (IllegalAccessException e) {
+            LoggerService.log(Level.FATAL, e.getMessage());
+            return 0;
         }
     }
 
     @Override
-    public void update(long id, Object[] params) {
-        List<Field> fieldList = reflectionService.getFieldsByAnnotation(Column.class)
-                .stream().filter(field -> !field.getAnnotation(Column.class).autoIncrement())
-                .toList();
-
-        if (fieldList.size() != params.length)
-            return;
-
-        String setColumns = fieldList.stream()
-                .map(field -> field.getAnnotation(Column.class).name() + " = ?")
+    public int update(long id, Map<String, Object> params) {
+        String setFields = params.entrySet().stream()
+                .map(entry -> entry.getKey() + " = '" + entry.getValue() + "'")
                 .collect(Collectors.joining(", "));
 
         String query;
         try {
-            query = "UPDATE " + this.getTableName() + " SET " + setColumns + " WHERE " + this.getIdFieldName() + " = " + id;
+            query = "UPDATE " + this.getTableName() + " SET " + setFields + " WHERE " + this.getIdFieldName() + " = " + id;
         } catch (MultipleIdFieldsException e) {
             LoggerService.log(Level.ERROR, e.getMessage());
-            return;
+            return 0;
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            for (int i = 0; i < params.length; i++) {
-                preparedStatement.setObject(i + 1, params[i]);
-            }
-
-            preparedStatement.executeUpdate();
+            return preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LoggerService.log(Level.ERROR, e.getMessage());
+            return 0;
         }
     }
 
     @Override
-    public void delete(long id) {
+    public int delete(long id) {
         String query;
         try {
             query = "DELETE FROM " + this.getTableName() + " WHERE " + this.getIdFieldName() + " = " + id;
         } catch (MultipleIdFieldsException e) {
             LoggerService.log(Level.ERROR, e.getMessage());
-            return;
+            return 0;
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.executeUpdate();
-        } catch (NoSuchElementException e) {
-            LoggerService.log(Level.WARN, e.getMessage());
+            return preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LoggerService.log(Level.ERROR, e.getMessage());
+            return 0;
         }
     }
 
@@ -189,7 +159,8 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
         ) {
             return DatabaseService.parseResultSet(resultSet, clazz);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LoggerService.log(Level.ERROR, e.getMessage());
+            return new ArrayList<>();
         }
     }
 

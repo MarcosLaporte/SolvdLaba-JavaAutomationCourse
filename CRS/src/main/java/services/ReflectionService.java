@@ -137,35 +137,7 @@ public class ReflectionService<T> {
         }
     }
 
-    public Object[] readNewValues(T ogInstance) throws Exception {
-        List<Field> fields = this.getFieldsByAnnotation(Column.class)
-                .stream().filter(field -> !field.getAnnotation(Column.class).autoIncrement())
-                .toList();
-        Object[] paramValues = new Object[fields.size()];
-
-        for (int i = 0; i < fields.size(); i++) {
-            Field currField = fields.get(i);
-            Class<?> fieldType = currField.getType();
-            Object fieldValue = currField.get(ogInstance);
-
-            char enterValue = InputService.readCharInValues(
-                    String.format("Do you want to change %s (Current value: %s)? Y/N: ", currField.getName(), fieldValue),
-                    "ERROR. Input Y or N: ", new char[]{'Y', 'N'}
-            );
-            if (enterValue == 'N') {
-                paramValues[i] = fieldValue;
-                continue;
-            }
-
-            Range rangeAnn = currField.getAnnotation(Range.class);
-            Size sizeAnn = currField.getAnnotation(Size.class);
-            paramValues[i] = readValue(fieldType, currField.getName(), rangeAnn, sizeAnn);
-        }
-
-        return paramValues;
-    }
-
-    public Map<String, Object> readValues() throws Exception {
+    public Map<String, Object> readValues() {
         List<Field> fields = this.getFieldsByAnnotation(Column.class)
                 .stream().filter(field -> !field.getAnnotation(Column.class).autoIncrement())
                 .toList();
@@ -175,8 +147,8 @@ public class ReflectionService<T> {
             Class<?> fieldType = currField.getType();
 
             char enterValue = InputService.readCharInValues(
-                    String.format("Do you want to enter %s value? Y/N: ", currField.getName()),
-                    "ERROR. Input Y or N: ", new char[]{'Y', 'N'}
+                    String.format("Do you want to enter for '%s'? Y/N: ", currField.getName()),
+                    "ERROR. Enter Y or N: ", new char[]{'Y', 'N'}
             );
             if (enterValue == 'N')
                 continue;
@@ -238,12 +210,12 @@ public class ReflectionService<T> {
         return field.get(instance);
     }
 
-    public Object getFieldValue(T instance, Field field) throws Exception {
+    public Object getFieldValue(T instance, Field field) throws IllegalAccessException {
         field.setAccessible(true);
         return field.get(instance);
     }
 
-    public Map<String, Object> getFieldsWithValue(T instance) {
+    public Map<String, Object> getFieldsWithValue(T instance) throws RuntimeException {
         Map<String, Object> fieldMap = new HashMap<>();
         Field[] fields = this.clazz.getDeclaredFields();
         for (Field field : fields) {

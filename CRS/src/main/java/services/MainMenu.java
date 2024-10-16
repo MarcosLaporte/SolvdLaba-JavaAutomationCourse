@@ -47,6 +47,7 @@ public class MainMenu {
 
             Class<?> entityClass = chooseEntity();
             try (GenericDAO<Object> dao = GenericDAO.castDAO(new GenericDAO<>(entityClass))) {
+//            try (GenericDAO<?> dao = new GenericDAO<>(entityClass)) {
                 switch (Menu.values()[mainMenuOption]) {
                     case GET_ALL -> printAllValues(dao.getAll());
                     case GET_BY_ID -> {
@@ -55,7 +56,12 @@ public class MainMenu {
                                 "Value out of bounds. Try again: ",
                                 0, 999_999_999
                         );
-                        System.out.println(dao.get(id));
+
+                        Object entity = dao.get(id);
+                        if (entity == null)
+                            System.out.println(entityClass.getSimpleName() + " ID" + id + " doesn't exist.");
+                        else
+                            System.out.println(entity);
                     }
                     case GET_FIELD_MATCHES -> {
                         System.out.println("Fill with fields to filter by.");
@@ -71,8 +77,12 @@ public class MainMenu {
                     }
                     case CREATE -> {
                         ReflectionService<Object> rs = GenericDAO.castReflectionService(new ReflectionService<>(entityClass));
-                        long newRow = dao.create(rs.readNewInstance());
-                        System.out.println(dao.getRow(newRow));
+//                        ReflectionService<?> rs = new ReflectionService<>(entityClass);
+
+                        if (dao.create(rs.readNewInstance()) > 0)
+                            System.out.println(entityClass.getSimpleName() + " created!");
+                        else
+                            System.out.println("No " + entityClass.getSimpleName() + " was created.");
                     }
                     case UPDATE -> {
                         ReflectionService<Object> rs = GenericDAO.castReflectionService(new ReflectionService<>(entityClass));
@@ -84,11 +94,17 @@ public class MainMenu {
                         );
 
                         Object entity = dao.get(id);
-                        if (entity != null) {
-                            Object[] args = rs.readNewValues(entity);
-                            dao.update(id, args);
-                            System.out.println(dao.getRow(id));
+                        if (entity == null) {
+                            System.out.println(entityClass.getSimpleName() + " ID" + id + " doesn't exist.");
+                            continue;
                         }
+
+                        int rowsAffected = dao.update(id, rs.readValues());
+                        System.out.print(entityClass.getSimpleName() + " ID" + id);
+                        if (rowsAffected > 0)
+                            System.out.println(" updated!");
+                        else
+                            System.out.println(" was not updated.");
                     }
                     case DELETE -> {
                         printAllValues(dao.getAll());
@@ -97,19 +113,24 @@ public class MainMenu {
                                 "Value out of bounds. Try again: ",
                                 0, 999_999_999
                         );
-                        dao.delete(id);
-                        printAllValues(dao.getAll());
+
+                        int rowsAffected = dao.delete(id);
+                        System.out.print(entityClass.getSimpleName() + " ID" + id);
+                        if (rowsAffected > 0)
+                            System.out.println(" deleted!");
+                        else
+                            System.out.println(" was not deleted.");
                     }
                     default -> System.out.println("This option does not exist.");
                 }
             } catch (Exception e) {
+                LoggerService.log(Level.ERROR, e.getMessage());
+
                 try {
                     ConnectionManager.closePool();
                 } catch (SQLException ex) {
                     LoggerService.log(Level.ERROR, ex.getMessage());
                 }
-
-                throw new RuntimeException(e);
             }
 
         } while (true);

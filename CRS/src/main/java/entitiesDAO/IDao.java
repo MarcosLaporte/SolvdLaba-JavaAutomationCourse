@@ -1,17 +1,16 @@
 package entitiesDAO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IDao<T> {
     List<T> getAll();
 
     T get(long id);
 
-    T getRow(long rowNumber);
+    int create(T t);
 
-    long create(T t);
+    int update(long id, Map<String, Object> params);
 
-    void update(long id, Object[] params);
-
-    void delete(long id);
+    int delete(long id);
 }
