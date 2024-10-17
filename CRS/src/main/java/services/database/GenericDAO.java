@@ -117,14 +117,6 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
         return tableAnn != null ? tableAnn.name() : this.clazz.getSimpleName();
     }
 
-    private String getIdFieldName() throws MultipleIdFieldsException {
-        List<Field> idField = reflectionService.getFieldsByAnnotation(Id.class, Column.class);
-        if (idField.size() > 1)
-            throw new MultipleIdFieldsException();
-
-        return idField.isEmpty() ? "id" : (idField.getFirst()).getAnnotation(Column.class).name();
-    }
-
     private static String mapToQueryCondition(Map<String, Object> columnValueMap) {
         String whereClause = StringUtils.EMPTY;
         if (!columnValueMap.keySet().isEmpty()) {
