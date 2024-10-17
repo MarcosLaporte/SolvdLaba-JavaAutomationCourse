@@ -31,11 +31,11 @@ public abstract class InputService {
                 isValid = true;
             } catch (Exception e) {
                 System.out.print(errorMsg);
-                SCANNER.nextLine();
+            } finally {
+                SCANNER.nextLine(); //Cleans buffer
             }
         }
 
-        SCANNER.nextLine(); //Cleans buffer
         return inputNumber;
     }
 
@@ -53,10 +53,11 @@ public abstract class InputService {
             } catch (Exception e) {
                 System.out.print(errorMsg);
                 SCANNER.nextLine();
+            } finally {
+                SCANNER.nextLine(); //Cleans buffer
             }
         }
 
-        SCANNER.nextLine(); //Cleans buffer
         return inputNumber;
     }
 
