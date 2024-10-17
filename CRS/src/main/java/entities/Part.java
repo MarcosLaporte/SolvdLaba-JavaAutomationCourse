@@ -28,6 +28,9 @@ public class Part {
     @Range(min = 1)
     public int stock;
 
+    private Part() {
+    }
+
     public Part(int supplierId, String name, String description, double value, int stock) {
         this.supplierId = supplierId;
         this.name = name;
@@ -47,6 +50,30 @@ public class Part {
 
     private Part(Integer id, Integer supplierId, String name, String description, Double value, Integer stock) {
         this(id.intValue(), supplierId.intValue(), name, description, value.doubleValue(), stock.intValue());
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setSupplierId(int supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 
     public String toString() {

@@ -2,6 +2,8 @@ package entities;
 
 import entities.annotations.*;
 
+import java.sql.Date;
+
 @Entity
 @Table(name = "payments")
 public class Payment {
@@ -16,6 +18,8 @@ public class Payment {
     @Range(min = 1)
     public double amount;
 
+    private Payment() {}
+
     public Payment(int jobId, java.sql.Date payDate, double amount) {
         this.jobId = jobId;
         this.payDate = payDate;
@@ -24,6 +28,18 @@ public class Payment {
 
     private Payment(Integer jobId, java.sql.Date payDate, Double amount) {
         this(jobId.intValue(), payDate, amount.doubleValue());
+    }
+
+    public void setJobId(int jobId) {
+        this.jobId = jobId;
+    }
+
+    public void setPayDate(Date payDate) {
+        this.payDate = payDate;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public String toString() {

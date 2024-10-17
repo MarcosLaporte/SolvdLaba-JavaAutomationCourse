@@ -5,6 +5,8 @@ import entities.annotations.Entity;
 import entities.annotations.Id;
 import entities.annotations.Table;
 
+import java.sql.Date;
+
 @Entity
 @Table(name = "jobs")
 public class Job {
@@ -20,6 +22,9 @@ public class Job {
 
     @Column(name = "date_finish", isNullable = true)
     public java.sql.Date dateFinish;
+
+    private Job() {
+    }
 
     public Job(int ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
         this.ticketId = ticketId;
@@ -38,6 +43,22 @@ public class Job {
 
     private Job(Integer id, Integer ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
         this(id.intValue(), ticketId.intValue(), dateStart, dateFinish);
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTicketId(int ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public void setDateStart(Date dateStart) {
+        this.dateStart = dateStart;
+    }
+
+    public void setDateFinish(Date dateFinish) {
+        this.dateFinish = dateFinish;
     }
 
     public String toString() {

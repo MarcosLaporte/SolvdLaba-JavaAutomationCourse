@@ -29,7 +29,7 @@ public class Customer {
     @Range(min = 1, max = 9999999)
     public int zip;
 
-    public Customer() {
+    private Customer() {
     }
 
     public Customer(String fullName, String email, long phoneNo, String address, int zip) {

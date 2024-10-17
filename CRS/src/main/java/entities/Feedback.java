@@ -2,6 +2,8 @@ package entities;
 
 import entities.annotations.*;
 
+import java.sql.Date;
+
 @Entity
 @Table(name = "feedbacks")
 public class Feedback {
@@ -20,6 +22,9 @@ public class Feedback {
     @Column(name = "date_submit")
     public java.sql.Date dateSubmit;
 
+    private Feedback() {
+    }
+
     public Feedback(int jobId, String custComment, int rating, java.sql.Date dateSubmit) {
         this.jobId = jobId;
         this.custComment = custComment;
@@ -29,6 +34,22 @@ public class Feedback {
 
     private Feedback(Integer jobId, String custComment, Integer rating, java.sql.Date dateSubmit) {
         this(jobId.intValue(), custComment, rating.intValue(), dateSubmit);
+    }
+
+    public void setJobId(int jobId) {
+        this.jobId = jobId;
+    }
+
+    public void setCustComment(String custComment) {
+        this.custComment = custComment;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public void setDateSubmit(Date dateSubmit) {
+        this.dateSubmit = dateSubmit;
     }
 
     public String toString() {

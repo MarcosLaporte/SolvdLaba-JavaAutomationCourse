@@ -17,6 +17,9 @@ public class Technician {
     @Range(min = 1)
     float salary;
 
+    private Technician() {
+    }
+
     public Technician(String fullName, float salary) {
         this.fullName = fullName;
         this.salary = salary;
@@ -33,6 +36,18 @@ public class Technician {
 
     private Technician(Integer id, String fullName, Float salary) {
         this(id.intValue(), fullName, salary.floatValue());
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setSalary(float salary) {
+        this.salary = salary;
     }
 
     public String toString() {

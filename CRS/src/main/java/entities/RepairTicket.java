@@ -2,6 +2,8 @@ package entities;
 
 import entities.annotations.*;
 
+import java.sql.Date;
+
 @Entity
 @Table(name = "repair_tickets")
 public class RepairTicket {
@@ -27,6 +29,9 @@ public class RepairTicket {
     @Range(min = 1, max = 6)
     public int status;
 
+    private RepairTicket() {
+    }
+
     public RepairTicket(int custId, String computerDesc, String issue, java.sql.Date dateSubmitted, int status) {
         this.custId = custId;
         this.computerDesc = computerDesc;
@@ -46,6 +51,30 @@ public class RepairTicket {
 
     private RepairTicket(Integer id, Integer custId, String computerDesc, String issue, java.sql.Date dateSubmitted, Integer status) {
         this(id.intValue(), custId.intValue(), computerDesc, issue, dateSubmitted, status.intValue());
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setCustId(int custId) {
+        this.custId = custId;
+    }
+
+    public void setComputerDesc(String computerDesc) {
+        this.computerDesc = computerDesc;
+    }
+
+    public void setIssue(String issue) {
+        this.issue = issue;
+    }
+
+    public void setDateSubmitted(Date dateSubmitted) {
+        this.dateSubmitted = dateSubmitted;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String toString() {

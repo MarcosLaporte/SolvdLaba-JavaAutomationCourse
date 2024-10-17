@@ -1,6 +1,9 @@
 package entities;
 
-import entities.annotations.*;
+import entities.annotations.Column;
+import entities.annotations.Id;
+import entities.annotations.Range;
+import entities.annotations.Table;
 
 @Table(name = "repair_tickets_part")
 public class RepairTicketPart {
@@ -16,6 +19,9 @@ public class RepairTicketPart {
     @Range(min = 1)
     public int quantity;
 
+    private RepairTicketPart() {
+    }
+
     public RepairTicketPart(int ticketId, int partId, int quantity) {
         this.ticketId = ticketId;
         this.partId = partId;
@@ -24,6 +30,18 @@ public class RepairTicketPart {
 
     private RepairTicketPart(Integer ticketId, Integer partId, Integer quantity) {
         this(ticketId.intValue(), partId.intValue(), quantity.intValue());
+    }
+
+    public void setTicketId(int ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public void setPartId(int partId) {
+        this.partId = partId;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public String toString() {

@@ -25,6 +25,9 @@ public class Supplier {
     @Size(min = 1, max = 255)
     public String address;
 
+    private Supplier() {
+    }
+
     public Supplier(String fullName, String email, long phoneNo, String address) {
         this.fullName = fullName;
         this.email = email;
@@ -43,6 +46,26 @@ public class Supplier {
 
     private Supplier(Integer id, String fullName, String email, Long phoneNo, String address) {
         this(id.intValue(), fullName, email, phoneNo.longValue(), address);
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhoneNo(long phoneNo) {
+        this.phoneNo = phoneNo;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override
