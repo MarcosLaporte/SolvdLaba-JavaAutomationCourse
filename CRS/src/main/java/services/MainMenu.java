@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import services.connection.ConnectionManager;
 import services.database.EntityReflection;
+import services.xml.XMLService;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -32,6 +33,14 @@ public class MainMenu {
     }
 
     public static void run() {
+        char readXml = InputService.readCharInValues(
+                "Do you wish to read XML? (Y/N): ",
+                "This option does not exist. Try again: ", new char[]{'Y', 'N'}
+        );
+        if (readXml == 'Y')
+            XMLService.parse();
+
+        System.out.println("Working on the Database.");
         int mainMenuOption;
         do {
             mainMenuOption = InputService.readInt(

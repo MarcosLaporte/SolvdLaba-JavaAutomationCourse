@@ -6,6 +6,7 @@ import services.FileService;
 import services.LoggerService;
 import services.ReflectionService;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.transform.stream.StreamSource;
@@ -24,7 +25,7 @@ public class XMLService {
 
     public static boolean validateXMLSchema(String xsdPath, String xmlPath) throws IOException {
         try {
-            SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = factory.newSchema(new File(xsdPath));
 
             Validator validator = schema.newValidator();
