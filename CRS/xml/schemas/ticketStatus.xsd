@@ -1,0 +1,16 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="ticketStatuses">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ticketStatus" type="ticketStatusType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="ticketStatusType">
+        <xs:sequence>
+            <xs:element name="status" type="xs:int"/>
+            <xs:element name="description" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

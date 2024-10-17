@@ -4,8 +4,6 @@
         <xs:sequence>
             <xs:element name="customer" type="customerType" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-    <xs:attribute name="class" type="xs:string" fixed="Customer"/>
-    <xs:attribute name="container" type="xs:boolean" fixed="true"/>
     </xs:complexType>
 </xs:element>
 

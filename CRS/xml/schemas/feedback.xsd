@@ -1,0 +1,18 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="feedbacks">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="feedback" type="feedbackType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="feedbackType">
+        <xs:sequence>
+            <xs:element name="jobId" type="xs:int"/>
+            <xs:element name="custComment" type="xs:string"/>
+            <xs:element name="rating" type="xs:int"/>
+            <xs:element name="dateSubmit" type="xs:date"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

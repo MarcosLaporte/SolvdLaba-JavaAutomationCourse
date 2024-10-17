@@ -1,0 +1,17 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="repairTicketParts">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="repairTicketPart" type="repairTicketPartType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="repairTicketPartType">
+        <xs:sequence>
+            <xs:element name="ticketId" type="xs:int"/>
+            <xs:element name="partId" type="xs:int"/>
+            <xs:element name="quantity" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

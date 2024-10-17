@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ticketStatuses>
+    <ticketStatus>
+        <status>0</status>
+        <description>PENDING INVOICE</description>
+    </ticketStatus>
+    <ticketStatus>
+        <status>1</status>
+        <description>INVOICE SENT</description>
+    </ticketStatus>
+    <ticketStatus>
+        <status>2</status>
+        <description>INVOICE ACCEPTED</description>
+    </ticketStatus>
+    <ticketStatus>
+        <status>3</status>
+        <description>INVOICE REJECTED</description>
+    </ticketStatus>
+    <ticketStatus>
+        <status>4</status>
+        <description>WORK IN PROGRESS</description>
+    </ticketStatus>
+    <ticketStatus>
+        <status>5</status>
+        <description>READY</description>
+    </ticketStatus>
+    <ticketStatus>
+        <status>6</status>
+        <description>PAID</description>
+    </ticketStatus>
+</ticketStatuses>

@@ -1,0 +1,18 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="jobTechnicians">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="jobTechnician" type="jobTechnicianType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="jobTechnicianType">
+        <xs:sequence>
+            <xs:element name="jobId" type="xs:int"/>
+            <xs:element name="techId" type="xs:int"/>
+            <xs:element name="task" type="xs:string"/>
+            <xs:element name="done" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

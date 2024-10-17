@@ -1,0 +1,17 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="payments">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="payment" type="paymentType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="paymentType">
+        <xs:sequence>
+            <xs:element name="jobId" type="xs:int"/>
+            <xs:element name="payDate" type="xs:date"/>
+            <xs:element name="amount" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
