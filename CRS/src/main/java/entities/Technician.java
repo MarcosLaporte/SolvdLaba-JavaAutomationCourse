@@ -17,10 +17,18 @@ public class Technician {
     @Range(min = 1)
     float salary;
 
-    public Technician(int id, String fullName, float salary) {
-        this.id = id;
+    public Technician(String fullName, float salary) {
         this.fullName = fullName;
         this.salary = salary;
+    }
+
+    private Technician(String fullName, Float salary) {
+        this(fullName, salary.floatValue());
+    }
+
+    public Technician(int id, String fullName, float salary) {
+        this(fullName, salary);
+        this.id = id;
     }
 
     private Technician(Integer id, String fullName, Float salary) {

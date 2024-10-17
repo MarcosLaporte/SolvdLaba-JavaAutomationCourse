@@ -3,6 +3,7 @@ package services;
 import entities.annotations.Column;
 import entities.annotations.Range;
 import entities.annotations.Size;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 
 import java.io.File;
@@ -30,7 +31,7 @@ public class ReflectionService<T> {
         }
     }
 
-    private final Class<T> clazz;
+    public final Class<T> clazz;
 
     public ReflectionService(Class<T> clazz) {
         this.clazz = clazz;
@@ -107,90 +108,6 @@ public class ReflectionService<T> {
         }
 
         throw new NoSuchMethodException("No constructor matched with given arguments in class " + this.clazz.getSimpleName());
-    }
-
-    public T readNewInstance() throws Exception {
-        Constructor<?> constructor = this.clazz.getConstructors()[0];
-        Parameter[] parameters = constructor.getParameters();
-        Object[] paramValues = new Object[parameters.length];
-
-        for (int i = 0; i < parameters.length; i++) {
-            Parameter currParam = parameters[i];
-            Optional<Field> respectiveField =
-                    Arrays.stream(this.getAllFields())
-                            .filter(f -> f.getName().equalsIgnoreCase(currParam.getName()))
-                            .findFirst();
-            Class<?> paramType = currParam.getType();
-
-            if (respectiveField.isEmpty())
-                throw new IllegalStateException("No matching field found for constructor parameter " + currParam.getName());
-
-            Range rangeAnn = respectiveField.get().getAnnotation(Range.class);
-            Size sizeAnn = respectiveField.get().getAnnotation(Size.class);
-            paramValues[i] = readValue(paramType, currParam.getName(), rangeAnn, sizeAnn);
-        }
-
-        try {
-            return (T) constructor.newInstance(paramValues);
-        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            throw new Exception("Error while invoking constructor: " + e.getCause(), e);
-        }
-    }
-
-    public Map<String, Object> readValues() {
-        List<Field> fields = this.getFieldsByAnnotation(Column.class)
-                .stream().filter(field -> !field.getAnnotation(Column.class).autoIncrement())
-                .toList();
-        Map<String, Object> valuesMap = new HashMap<>();
-
-        for (Field currField : fields) {
-            Class<?> fieldType = currField.getType();
-
-            char enterValue = InputService.readCharInValues(
-                    String.format("Do you want to enter for '%s'? Y/N: ", currField.getName()),
-                    "ERROR. Enter Y or N: ", new char[]{'Y', 'N'}
-            );
-            if (enterValue == 'N')
-                continue;
-
-            Range rangeAnn = currField.getAnnotation(Range.class);
-            Size sizeAnn = currField.getAnnotation(Size.class);
-            valuesMap.put(
-                    currField.getAnnotation(Column.class).name(),
-                    readValue(fieldType, currField.getName(), rangeAnn, sizeAnn)
-            );
-        }
-
-        return valuesMap;
-    }
-
-    private Object readValue(Class<?> fieldType, String fieldName, Range rangeAnn, Size sizeAnn) {
-        String inputMsg = String.format("Enter %s for %s: ", fieldType.getSimpleName(), fieldName);
-
-        if (Number.class.isAssignableFrom(fieldType) || isPrimitiveNumericType(fieldType)) {
-            double min = rangeAnn != null ? rangeAnn.min() : Double.MIN_VALUE;
-            double max = rangeAnn != null ? rangeAnn.max() : Double.MAX_VALUE;
-            String errorMsg = String.format("Invalid value for %s. Try again (%.2f - %.2f): ", fieldName, min, max);
-
-            if (fieldType == Byte.class || fieldType == Short.class || fieldType == Integer.class || fieldType == Long.class ||
-                    fieldType == byte.class || fieldType == short.class || fieldType == int.class || fieldType == long.class) {
-                return InputService.readInt(inputMsg, errorMsg, (int) min, (int) max);
-            } else if (fieldType == Float.class || fieldType == Double.class || fieldType == float.class || fieldType == double.class) {
-                return InputService.readFloat(inputMsg, errorMsg, (float) min, (float) max);
-            }
-        } else if (fieldType == String.class) {
-            int min = sizeAnn != null ? sizeAnn.min() : 0;
-            int max = sizeAnn != null ? sizeAnn.max() : Integer.MAX_VALUE;
-            return InputService.readString(inputMsg, min, max);
-        } else if (fieldType == Date.class) {
-            return InputService.readValidDate();
-        }
-        return null;
-    }
-
-    private static boolean isPrimitiveNumericType(Class<?> fieldType) {
-        return fieldType == int.class || fieldType == long.class || fieldType == double.class ||
-                fieldType == float.class || fieldType == short.class || fieldType == byte.class;
     }
 
     private boolean matchParameterTypes(Class<?>[] paramTypes, Object[] args) {
@@ -306,6 +223,52 @@ public class ReflectionService<T> {
             }
         }
         return fields;
+    }
+
+    public static String toString(Object obj) {
+        if (obj instanceof List)
+            return toString((List<Object>) obj);
+
+        StringBuilder sb = new StringBuilder();
+        Class<?> clazz = obj.getClass();
+        sb.append(clazz.getSimpleName()).append(" { \n");
+
+        for (Field field : clazz.getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                sb.append('\t').append(field.getName()).append(" = ").append(field.get(obj)).append('\n');
+            } catch (IllegalAccessException e) {
+                sb.append('\t').append(field.getName()).append(" = [access denied]\n");
+            }
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+
+    public static String toString(List<Object> objects) {
+        if (objects == null || objects.isEmpty()) {
+            System.out.println("No data to display.");
+            return StringUtils.EMPTY;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        Class<?> clazz = objects.getFirst().getClass();
+        sb.append(clazz.getSimpleName()).append('s').append(" { \n");
+        for (Object obj : objects) {
+            sb.append('\t').append(clazz.getSimpleName()).append(" { \n");
+            for (Field field : clazz.getDeclaredFields()) {
+                field.setAccessible(true);
+                try {
+                    sb.append("\t\t").append(field.getName()).append(" = ").append(field.get(obj)).append('\n');
+                } catch (IllegalAccessException e) {
+                    sb.append("\t\t").append(field.getName()).append(" = [access denied]\n");
+                }
+            }
+            sb.append('\t').append("}\n");
+        }
+        sb.append("}");
+
+        return sb.toString();
     }
 
 }

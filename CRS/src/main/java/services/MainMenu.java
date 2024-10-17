@@ -4,7 +4,9 @@ import entitiesDAO.GenericDAO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import services.connection.ConnectionManager;
+import services.database.EntityReflection;
 
+import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +17,7 @@ import static services.ReflectionService.ClassExclusionPredicate.ANNOTATION;
 
 public class MainMenu {
     private enum Menu {
-        EXIT, GET_ALL, GET_BY_ID, GET_FIELD_MATCHES, CREATE, UPDATE, DELETE;
+        EXIT, GET, CREATE, UPDATE, DELETE;
 
         private final int value;
 
@@ -43,83 +45,58 @@ public class MainMenu {
                     0, Menu.values().length - 1
             );
 
-            if (mainMenuOption == 0) break;
+            if (mainMenuOption == 0) {
+                System.out.println("Exiting...");
+                break;
+            }
 
-            Class<?> entityClass = chooseEntity();
+            Class<?> entityClass = EntityReflection.chooseEntity();
+            if (entityClass == null) {
+                System.out.println("Going back...");
+                continue;
+            }
+
+            System.out.println('\n' + entityClass.getSimpleName() + " selected.");
             try (GenericDAO<Object> dao = GenericDAO.castDAO(new GenericDAO<>(entityClass))) {
+//                ReflectionService<Object> rs = GenericDAO.castReflectionService(new ReflectionService<>(entityClass));
+//                ReflectionService<?> rs = new ReflectionService<>(entityClass);
+                EntityReflection<?> rs = new EntityReflection<>(entityClass);
+
 //            try (GenericDAO<?> dao = new GenericDAO<>(entityClass)) {
                 switch (Menu.values()[mainMenuOption]) {
-                    case GET_ALL -> printAllValues(dao.getAll());
-                    case GET_BY_ID -> {
-                        int id = InputService.readInt(
-                                "Enter " + entityClass.getSimpleName() + " ID: ",
-                                "Value out of bounds. Try again: ",
-                                0, 999_999_999
-                        );
-
-                        Object entity = dao.get(id);
-                        if (entity == null)
-                            System.out.println(entityClass.getSimpleName() + " ID" + id + " doesn't exist.");
-                        else
-                            System.out.println(entity);
-                    }
-                    case GET_FIELD_MATCHES -> {
-                        System.out.println("Fill with fields to filter by.");
-                        ReflectionService<Object> rs = GenericDAO.castReflectionService(new ReflectionService<>(entityClass));
-                        Map<String, Object> columnValueMap = rs.readValues();
-                        List<?> values = dao.getAllMatches(columnValueMap);
+                    case GET -> {
+                        System.out.print("\nFill with fields to filter by.");
+                        Map<String, Object> columnFilters = rs.readConditionValues();
+                        List<?> values = dao.get(columnFilters);
 
                         System.out.print("Rows found with values");
-                        for (Map.Entry<String, Object> entry : columnValueMap.entrySet())
+                        for (Map.Entry<String, Object> entry : columnFilters.entrySet())
                             System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
                         System.out.println(": ");
-                        printAllValues(values);
+                        System.out.println(ReflectionService.toString(values));
                     }
                     case CREATE -> {
-                        ReflectionService<Object> rs = GenericDAO.castReflectionService(new ReflectionService<>(entityClass));
-//                        ReflectionService<?> rs = new ReflectionService<>(entityClass);
-
                         if (dao.create(rs.readNewInstance()) > 0)
                             System.out.println(entityClass.getSimpleName() + " created!");
                         else
                             System.out.println("No " + entityClass.getSimpleName() + " was created.");
                     }
                     case UPDATE -> {
-                        ReflectionService<Object> rs = GenericDAO.castReflectionService(new ReflectionService<>(entityClass));
-                        printAllValues(dao.getAll());
-                        int id = InputService.readInt(
-                                "Enter " + entityClass.getSimpleName() + " ID: ",
-                                "Value out of bounds. Try again: ",
-                                0, 999_999_999
-                        );
+                        System.out.print("\nEnter the new values.");
+                        Map<String, Object> newValues = rs.readNewValues();
 
-                        Object entity = dao.get(id);
-                        if (entity == null) {
-                            System.out.println(entityClass.getSimpleName() + " ID" + id + " doesn't exist.");
-                            continue;
-                        }
+                        System.out.print("\nEnter the conditions to follow.");
+                        Map<String, Object> columnFilters = rs.readConditionValues();
 
-                        int rowsAffected = dao.update(id, rs.readValues());
-                        System.out.print(entityClass.getSimpleName() + " ID" + id);
-                        if (rowsAffected > 0)
-                            System.out.println(" updated!");
-                        else
-                            System.out.println(" was not updated.");
+                        int rowsAffected = dao.update(newValues, columnFilters);
+                        System.out.printf("%d %s updated.\n", rowsAffected, entityClass.getSimpleName());
                     }
                     case DELETE -> {
-                        printAllValues(dao.getAll());
-                        int id = InputService.readInt(
-                                "Enter " + entityClass.getSimpleName() + " ID: ",
-                                "Value out of bounds. Try again: ",
-                                0, 999_999_999
-                        );
+                        System.out.print("\nEnter the conditions to follow.");
+                        Map<String, Object> columnFilters = rs.readConditionValues();
 
-                        int rowsAffected = dao.delete(id);
-                        System.out.print(entityClass.getSimpleName() + " ID" + id);
-                        if (rowsAffected > 0)
-                            System.out.println(" deleted!");
-                        else
-                            System.out.println(" was not deleted.");
+                        int rowsAffected = dao.delete(columnFilters);
+                        System.out.printf("%d %s deleted.\n", rowsAffected, entityClass.getSimpleName());
                     }
                     default -> System.out.println("This option does not exist.");
                 }
@@ -139,31 +116,6 @@ public class MainMenu {
             ConnectionManager.closePool();
         } catch (SQLException ex) {
             LoggerService.log(Level.ERROR, ex.getMessage());
-        }
-    }
-
-    private static Class<?> chooseEntity() {
-        Map<String, Class<?>> classMap = new HashMap<>();
-        StringBuilder classes = new StringBuilder(StringUtils.EMPTY);
-        for (Class<?> clazz : ReflectionService.getClassesInPackage("entities", ABSTRACT, ANNOTATION)) {
-            String className = clazz.getSimpleName();
-            classes.append(" - ").append(className).append('\n');
-            classMap.put(className.toLowerCase(), clazz);
-        }
-
-        System.out.print(classes);
-        String chosenEnt = InputService.readStringInValues(
-                "Enter entity name: ",
-                "Value doesn't exist. Try again: ",
-                classMap.keySet().toArray(new String[0])
-        );
-
-        return classMap.get(chosenEnt.toLowerCase());
-    }
-
-    private static void printAllValues(List<?> values) {
-        for (Object o : values) {
-            System.out.println(o);
         }
     }
 

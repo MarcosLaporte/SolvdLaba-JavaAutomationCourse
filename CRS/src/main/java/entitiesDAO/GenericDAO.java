@@ -5,7 +5,7 @@ import entities.annotations.Id;
 import entities.annotations.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
-import services.DatabaseService;
+import services.database.DatabaseService;
 import services.LoggerService;
 import services.ReflectionService;
 import services.connection.ConnectionManager;
@@ -44,8 +44,8 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
     }
 
     @Override
-    public List<T> getAll() {
-        String query = "SELECT * FROM " + this.getTableName();
+    public List<T> get(Map<String, Object> columnCondition) {
+        String query = "SELECT * FROM " + this.getTableName() + mapToQueryCondition(columnCondition);
 
         try (
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -55,28 +55,6 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
         } catch (SQLException e) {
             LoggerService.log(Level.ERROR, e.getMessage());
             return new ArrayList<>();
-        }
-    }
-
-    @Override
-    public T get(long id) {
-        String query;
-        try {
-            query = "SELECT * FROM " + this.getTableName() + " WHERE " + this.getIdFieldName() + " = " + id;
-        } catch (MultipleIdFieldsException e) {
-            LoggerService.log(Level.ERROR, e.getMessage());
-            return null;
-        }
-
-        try (
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
-                ResultSet resultSet = preparedStatement.executeQuery()
-        ) {
-            List<T> parsedResult = DatabaseService.parseResultSet(resultSet, clazz);
-            return parsedResult.isEmpty() ? null : parsedResult.getFirst();
-        } catch (SQLException e) {
-            LoggerService.log(Level.ERROR, e.getMessage());
-            return null;
         }
     }
 
@@ -105,18 +83,15 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
     }
 
     @Override
-    public int update(long id, Map<String, Object> params) {
-        String setFields = params.entrySet().stream()
-                .map(entry -> entry.getKey() + " = '" + entry.getValue() + "'")
+    public int update(Map<String, Object> newValues, Map<String, Object> columnCondition) {
+        if (newValues.isEmpty())
+            return 0;
+
+        String setFields = newValues.entrySet().stream()
+                .map(entry -> String.format("%s = '%s'", entry.getKey(), entry.getValue()))
                 .collect(Collectors.joining(", "));
 
-        String query;
-        try {
-            query = "UPDATE " + this.getTableName() + " SET " + setFields + " WHERE " + this.getIdFieldName() + " = " + id;
-        } catch (MultipleIdFieldsException e) {
-            LoggerService.log(Level.ERROR, e.getMessage());
-            return 0;
-        }
+        String query = "UPDATE " + this.getTableName() + " SET " + setFields + mapToQueryCondition(columnCondition);
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             return preparedStatement.executeUpdate();
@@ -127,40 +102,14 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
     }
 
     @Override
-    public int delete(long id) {
-        String query;
-        try {
-            query = "DELETE FROM " + this.getTableName() + " WHERE " + this.getIdFieldName() + " = " + id;
-        } catch (MultipleIdFieldsException e) {
-            LoggerService.log(Level.ERROR, e.getMessage());
-            return 0;
-        }
+    public int delete(Map<String, Object> columnCondition) {
+        String query = "DELETE FROM " + this.getTableName() + mapToQueryCondition(columnCondition);
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             return preparedStatement.executeUpdate();
         } catch (SQLException e) {
             LoggerService.log(Level.ERROR, e.getMessage());
             return 0;
-        }
-    }
-
-    public List<T> getAllMatches(Map<String, Object> columnValueMap) {
-        Set<String> keys = columnValueMap.keySet();
-        String whereClause = keys.isEmpty() ? StringUtils.EMPTY :
-                " WHERE " + keys.stream()
-                        .map(key -> String.format("%s = '%s'", key, columnValueMap.get(key)))
-                        .collect(Collectors.joining(" AND "));
-
-        String query = "SELECT * FROM " + this.getTableName() + whereClause;
-
-        try (
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
-                ResultSet resultSet = preparedStatement.executeQuery()
-        ) {
-            return DatabaseService.parseResultSet(resultSet, clazz);
-        } catch (SQLException e) {
-            LoggerService.log(Level.ERROR, e.getMessage());
-            return new ArrayList<>();
         }
     }
 
@@ -175,6 +124,17 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
             throw new MultipleIdFieldsException();
 
         return idField.isEmpty() ? "id" : (idField.getFirst()).getAnnotation(Column.class).name();
+    }
+
+    private static String mapToQueryCondition(Map<String, Object> columnValueMap) {
+        String whereClause = StringUtils.EMPTY;
+        if (!columnValueMap.keySet().isEmpty()) {
+            whereClause = " WHERE " + columnValueMap.entrySet().stream()
+                    .map(entry -> String.format("%s = '%s'", entry.getKey(), entry.getValue()))
+                    .collect(Collectors.joining(" AND "));
+        }
+
+        return whereClause;
     }
 
     @SuppressWarnings("unchecked")

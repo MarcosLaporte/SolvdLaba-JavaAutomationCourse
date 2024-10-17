@@ -27,13 +27,21 @@ public class RepairTicket {
     @Range(min = 1, max = 6)
     public int status;
 
-    public RepairTicket(int id, int custId, String computerDesc, String issue, java.sql.Date dateSubmitted, int status) {
-        this.id = id;
+    public RepairTicket(int custId, String computerDesc, String issue, java.sql.Date dateSubmitted, int status) {
         this.custId = custId;
         this.computerDesc = computerDesc;
         this.issue = issue;
         this.dateSubmitted = dateSubmitted;
         this.status = status;
+    }
+
+    private RepairTicket(Integer custId, String computerDesc, String issue, java.sql.Date dateSubmitted, Integer status) {
+        this(custId.intValue(), computerDesc, issue, dateSubmitted, status.intValue());
+    }
+
+    public RepairTicket(int id, int custId, String computerDesc, String issue, java.sql.Date dateSubmitted, int status) {
+        this(custId, computerDesc, issue, dateSubmitted, status);
+        this.id = id;
     }
 
     private RepairTicket(Integer id, Integer custId, String computerDesc, String issue, java.sql.Date dateSubmitted, Integer status) {

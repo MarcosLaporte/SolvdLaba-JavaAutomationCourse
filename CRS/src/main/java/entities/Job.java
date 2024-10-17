@@ -21,11 +21,19 @@ public class Job {
     @Column(name = "date_finish", isNullable = true)
     public java.sql.Date dateFinish;
 
-    public Job(int id, int ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
-        this.id = id;
+    public Job(int ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
         this.ticketId = ticketId;
         this.dateStart = dateStart;
         this.dateFinish = dateFinish;
+    }
+
+    private Job(Integer ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
+        this(ticketId.intValue(), dateStart, dateFinish);
+    }
+
+    public Job(int id, int ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
+        this(ticketId, dateStart, dateFinish);
+        this.id = id;
     }
 
     private Job(Integer id, Integer ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {

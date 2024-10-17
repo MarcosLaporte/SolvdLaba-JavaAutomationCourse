@@ -29,16 +29,26 @@ public class Customer {
     @Range(min = 1, max = 9999999)
     public int zip;
 
-    public Customer() {}
+    public Customer() {
+    }
 
-    public Customer(int id, String fullName, String email, long phoneNo, String address, int zip) {
-        this.id = id;
+    public Customer(String fullName, String email, long phoneNo, String address, int zip) {
         this.fullName = fullName;
         this.email = email;
         this.phoneNo = phoneNo;
         this.address = address;
         this.zip = zip;
     }
+
+    private Customer(String fullName, String email, Long phoneNo, String address, Integer zip) {
+        this(fullName, email, phoneNo.longValue(), address, zip.intValue());
+    }
+
+    public Customer(int id, String fullName, String email, long phoneNo, String address, int zip) {
+        this(fullName, email, phoneNo, address, zip);
+        this.id = id;
+    }
+
 
     private Customer(Integer id, String fullName, String email, Long phoneNo, String address, Integer zip) {
         this(id.intValue(), fullName, email, phoneNo.longValue(), address, zip.intValue());

@@ -6,7 +6,7 @@ import entities.annotations.*;
 @Table(name = "feedbacks")
 public class Feedback {
     @Id
-    @Column(name = "job_id", autoIncrement = true)
+    @Column(name = "job_id")
     public int jobId;
 
     @Column(name = "cust_comment")

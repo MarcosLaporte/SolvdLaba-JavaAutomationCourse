@@ -25,12 +25,20 @@ public class Supplier {
     @Size(min = 1, max = 255)
     public String address;
 
-    public Supplier(int id, String fullName, String email, long phoneNo, String address) {
-        this.id = id;
+    public Supplier(String fullName, String email, long phoneNo, String address) {
         this.fullName = fullName;
         this.email = email;
         this.phoneNo = phoneNo;
         this.address = address;
+    }
+
+    private Supplier(String fullName, String email, Long phoneNo, String address) {
+        this(fullName, email, phoneNo.longValue(), address);
+    }
+
+    public Supplier(int id, String fullName, String email, long phoneNo, String address) {
+        this(fullName, email, phoneNo, address);
+        this.id = id;
     }
 
     private Supplier(Integer id, String fullName, String email, Long phoneNo, String address) {
