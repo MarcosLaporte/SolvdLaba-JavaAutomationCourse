@@ -1,4 +1,4 @@
-package entitiesDAO;
+package services.database;
 
 import java.util.List;
 import java.util.Map;

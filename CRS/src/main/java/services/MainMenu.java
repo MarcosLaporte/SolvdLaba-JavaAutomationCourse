@@ -1,19 +1,14 @@
 package services;
 
-import entitiesDAO.GenericDAO;
+import services.database.GenericDAO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import services.connection.ConnectionManager;
 import services.database.EntityReflection;
 
-import java.lang.reflect.Field;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static services.ReflectionService.ClassExclusionPredicate.ABSTRACT;
-import static services.ReflectionService.ClassExclusionPredicate.ANNOTATION;
 
 public class MainMenu {
     private enum Menu {

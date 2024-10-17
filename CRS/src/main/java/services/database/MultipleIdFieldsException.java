@@ -1,4 +1,4 @@
-package entitiesDAO;
+package services.database;
 
 public class MultipleIdFieldsException extends Exception {
     public MultipleIdFieldsException() {
