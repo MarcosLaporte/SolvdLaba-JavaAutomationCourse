@@ -1,8 +1,10 @@
-package services;
+package services.xml;
 
 import entities.Customer;
 import org.apache.logging.log4j.Level;
 import org.xml.sax.SAXException;
+import services.FileService;
+import services.LoggerService;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
