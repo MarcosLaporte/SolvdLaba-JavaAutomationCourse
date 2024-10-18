@@ -32,15 +32,7 @@ public class MainMenu {
         }
     }
 
-    public static void run() {
-        char readXml = InputService.readCharInValues(
-                "Do you wish to read XML? (Y/N): ",
-                "This option does not exist. Try again: ", new char[]{'Y', 'N'}
-        );
-        if (readXml == 'Y')
-            XMLService.jaxbParse();
-
-        System.out.println("Working on the Database.");
+    public static void runDatabase() {
         int mainMenuOption;
         do {
             mainMenuOption = InputService.readInt(
@@ -121,6 +113,10 @@ public class MainMenu {
         } catch (SQLException ex) {
             LoggerService.log(Level.ERROR, ex.getMessage());
         }
+    }
+
+    public static void runXml() {
+        XMLService.jaxbParse();
     }
 
     public static void printActiveThreads() {

@@ -3,6 +3,7 @@ package services.xml;
 import entities.lists.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.Level;
 import org.xml.sax.SAXException;
@@ -89,6 +90,14 @@ public class XMLService {
         Unmarshaller unmarshaller = context.createUnmarshaller();
 
         return (T) unmarshaller.unmarshal(file);
+    }
+
+    public static <T> void marshal(File file, T list) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(list.getClass());
+
+        Marshaller marshaller = context.createMarshaller();
+
+        marshaller.marshal(list, file);
     }
 
     public static void jaxbParse() {
