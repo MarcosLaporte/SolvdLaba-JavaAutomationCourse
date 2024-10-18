@@ -1,5 +1,6 @@
 package services.xml;
 
+import entities.*;
 import entities.lists.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -84,7 +85,7 @@ public class XMLService {
         }
     }
 
-    public static <T> T unmarshal(File file, Class<T> clazz) throws JAXBException {
+    private static <T> T unmarshal(File file, Class<T> clazz) throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(clazz);
 
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -92,10 +93,14 @@ public class XMLService {
         return (T) unmarshaller.unmarshal(file);
     }
 
-    public static <T> void marshal(File file, T list) throws JAXBException {
+    private static <T> void marshal(File file, T list) throws JAXBException, IOException {
         JAXBContext context = JAXBContext.newInstance(list.getClass());
 
         Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        if (!file.exists())
+            file.createNewFile();
 
         marshaller.marshal(list, file);
     }
@@ -130,5 +135,60 @@ public class XMLService {
                 LoggerService.log(Level.ERROR, e.getMessage());
             }
         }
+    }
+
+    public static <T> void jaxbSerializeList(T list) throws JAXBException, IOException {
+        File newFile = new File(baseDir + "\\serialized\\" + list.getClass().getSimpleName() + ".xml");
+        marshal(newFile, list);
+    }
+
+    public static Object getListClassInstance(Class<?> clazz, List<?> list) {
+        if (clazz == Customer.class) {
+            CustomerList listClass = new CustomerList();
+            listClass.setCustomerList((List<Customer>) list);
+            return listClass;
+        } else if (clazz == Feedback.class) {
+            FeedbackList listClass = new FeedbackList();
+            listClass.setFeedbackList((List<Feedback>) list);
+            return listClass;
+        } else if (clazz == Invoice.class) {
+            InvoiceList listClass = new InvoiceList();
+            listClass.setInvoiceList((List<Invoice>) list);
+            return listClass;
+        } else if (clazz == Job.class) {
+            JobList listClass = new JobList();
+            listClass.setJobList((List<Job>) list);
+            return listClass;
+        } else if (clazz == JobTechnician.class) {
+            JobTechnicianList listClass = new JobTechnicianList();
+            listClass.setJobTechnicianList((List<JobTechnician>) list);
+            return listClass;
+        } else if (clazz == Part.class) {
+            PartList listClass = new PartList();
+            listClass.setPartList((List<Part>) list);
+            return listClass;
+        } else if (clazz == Payment.class) {
+            PaymentList listClass = new PaymentList();
+            listClass.setPaymentList((List<Payment>) list);
+            return listClass;
+        } else if (clazz == RepairTicket.class) {
+            RepairTicketList listClass = new RepairTicketList();
+            listClass.setRepairTicketList((List<RepairTicket>) list);
+            return listClass;
+        } else if (clazz == RepairTicketPart.class) {
+            RepairTicketPartList listClass = new RepairTicketPartList();
+            listClass.setRepairTicketPartList((List<RepairTicketPart>) list);
+            return listClass;
+        } else if (clazz == Supplier.class) {
+            SupplierList listClass = new SupplierList();
+            listClass.setSupplierList((List<Supplier>) list);
+            return listClass;
+        } else if (clazz == Technician.class) {
+            TechnicianList listClass = new TechnicianList();
+            listClass.setTechnicianList((List<Technician>) list);
+            return listClass;
+        }
+
+        return List.of();
     }
 }

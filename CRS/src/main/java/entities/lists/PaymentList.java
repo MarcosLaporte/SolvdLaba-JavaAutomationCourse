@@ -8,14 +8,14 @@ import java.util.List;
 
 @XmlRootElement(name = "payments")
 public class PaymentList {
-    private List<Payment> payments;
+    private List<Payment> paymentList;
 
     @XmlElement(name = "payment")
-    public List<Payment> getPayments() {
-        return this.payments;
+    public List<Payment> getPaymentList() {
+        return this.paymentList;
     }
 
-    public void setPayments(List<Payment> payments) {
-        this.payments = payments;
+    public void setPaymentList(List<Payment> paymentList) {
+        this.paymentList = paymentList;
     }
 }

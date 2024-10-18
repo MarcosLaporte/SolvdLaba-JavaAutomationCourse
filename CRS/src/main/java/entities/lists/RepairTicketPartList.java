@@ -8,14 +8,14 @@ import java.util.List;
 
 @XmlRootElement(name = "repairTicketParts")
 public class RepairTicketPartList {
-    private List<RepairTicketPart> repairTicketParts;
+    private List<RepairTicketPart> repairTicketPartList;
 
     @XmlElement(name = "repairTicketPart")
-    public List<RepairTicketPart> getRepairTicketParts() {
-        return this.repairTicketParts;
+    public List<RepairTicketPart> getRepairTicketPartList() {
+        return this.repairTicketPartList;
     }
 
-    public void setRepairTicketParts(List<RepairTicketPart> repairTicketParts) {
-        this.repairTicketParts = repairTicketParts;
+    public void setRepairTicketPartList(List<RepairTicketPart> repairTicketPartList) {
+        this.repairTicketPartList = repairTicketPartList;
     }
 }

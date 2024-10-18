@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<technicians>
+    <technician>
+        <id>101</id>
+        <fullName>Anthony Stark</fullName>
+        <salary>99000.0</salary>
+    </technician>
+    <technician>
+        <id>102</id>
+        <fullName>Peter Parker</fullName>
+        <salary>35000.0</salary>
+    </technician>
+    <technician>
+        <id>103</id>
+        <fullName>Reed Richards</fullName>
+        <salary>60000.0</salary>
+    </technician>
+    <technician>
+        <id>104</id>
+        <fullName>Bruce Wayne</fullName>
+        <salary>125000.0</salary>
+    </technician>
+</technicians>

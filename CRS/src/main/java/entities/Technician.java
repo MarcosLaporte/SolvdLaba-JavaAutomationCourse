@@ -12,17 +12,17 @@ public class Technician {
     @XmlElement
     @Id
     @Column(name = "tech_id", autoIncrement = true)
-    int id;
+    public int id;
 
     @XmlElement
     @Column(name = "full_name")
     @Size(min = 1, max = 255)
-    String fullName;
+    public String fullName;
 
     @XmlElement
     @Column(name = "salary")
     @Range(min = 1)
-    float salary;
+    public float salary;
 
     private Technician() {
     }

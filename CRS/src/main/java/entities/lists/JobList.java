@@ -8,14 +8,14 @@ import java.util.List;
 
 @XmlRootElement(name = "jobs")
 public class JobList {
-    private List<Job> jobs;
+    private List<Job> jobList;
 
     @XmlElement(name = "job")
-    public List<Job> getJobs() {
-        return this.jobs;
+    public List<Job> getJobList() {
+        return this.jobList;
     }
 
-    public void setJobs(List<Job> jobs) {
-        this.jobs = jobs;
+    public void setJobList(List<Job> jobList) {
+        this.jobList = jobList;
     }
 }

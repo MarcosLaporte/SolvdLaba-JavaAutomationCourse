@@ -1,6 +1,8 @@
+import jakarta.xml.bind.JAXBException;
 import services.InputService;
 import services.MainMenu;
-import services.xml.XMLService;
+
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,7 +11,7 @@ public class Main {
                 "This option does not exist. Try again: ", new char[]{'1', '2'}
         );
         if (datasource == '1')
-            XMLService.jaxbParse();
+            MainMenu.runXml();
         else
             MainMenu.runDatabase();
     }

@@ -1,12 +1,14 @@
 package services;
 
-import services.database.GenericDAO;
+import jakarta.xml.bind.JAXBException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import services.connection.ConnectionManager;
 import services.database.EntityReflection;
+import services.database.GenericDAO;
 import services.xml.XMLService;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +118,52 @@ public class MainMenu {
     }
 
     public static void runXml() {
-        XMLService.jaxbParse();
+        do {
+            char mainMenuOption = InputService.readCharInValues(
+                    "0. Exit\n1. Read XML\n2. Write XML from Database\nChoose an option: ",
+                    "This option does not exist. Try again: ",
+                    new char[]{'0', '1', '2'}
+            );
+
+            if (mainMenuOption == '0')
+                break;
+            else if (mainMenuOption == '1') {
+                char parseOption = InputService.readCharInValues(
+                        "1. StAX\n2. JAXB\nChoose an option: ",
+                        "This option does not exist. Try again: ",
+                        new char[]{'1', '2'}
+                );
+                if (parseOption == '1')
+                    XMLService.staxParse();
+                else
+                    XMLService.jaxbParse();
+            }else if (mainMenuOption == '2') {
+                Class<?> entityClass = EntityReflection.chooseEntity();
+                if (entityClass == null) continue;
+                EntityReflection<?> rs = new EntityReflection<>(entityClass);
+
+                try (GenericDAO<Object> dao = GenericDAO.castDAO(new GenericDAO<>(entityClass))) {
+                    System.out.print("\nFill with fields to filter by.");
+                    Map<String, Object> columnFilters = rs.readConditionValues();
+
+                    Object list = XMLService.getListClassInstance(
+                            entityClass,
+                            dao.get(columnFilters)
+                    );
+
+                    System.out.print("Rows found with values");
+                    for (Map.Entry<String, Object> entry : columnFilters.entrySet())
+                        System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
+                    System.out.println(": ");
+                    System.out.println(ReflectionService.toString(list));
+
+                    XMLService.jaxbSerializeList(list);
+                } catch (JAXBException | IOException e) {
+                    LoggerService.log(Level.ERROR, e.getMessage());
+                }
+            }
+        } while (true);
+
     }
 
     public static void printActiveThreads() {
