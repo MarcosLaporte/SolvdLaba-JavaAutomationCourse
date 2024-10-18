@@ -2,23 +2,32 @@ package entities;
 
 import entities.annotations.*;
 
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "invoice")
 @Entity
 @Table(name = "invoices")
 public class Invoice {
+    @XmlElement
     @Id
     @Column(name = "inv_id", autoIncrement = true)
     public int id;
 
+    @XmlElement
     @Column(name = "ticket_id")
     public int ticketId;
 
+    @XmlElement
     @Column(name = "tech_id")
     public int techId;
 
+    @XmlElement
     @Column(name = "diagnosis")
     @Size(min = 1, max = 255)
     public String diagnosis;
 
+    @XmlElement
     @Column(name = "amount")
     @Range(min = 1)
     public double amount;

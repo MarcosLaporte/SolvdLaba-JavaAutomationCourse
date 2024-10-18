@@ -1,30 +1,43 @@
 package entities;
 
 import entities.annotations.*;
+import services.xml.DateAdapter;
 
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import java.time.LocalDate;
+
+@XmlRootElement(name = "repairTicket")
 @Entity
 @Table(name = "repair_tickets")
 public class RepairTicket {
+    @XmlElement
     @Id
     @Column(name = "ticket_id", autoIncrement = true)
     public int id;
 
+    @XmlElement
     @Column(name = "cust_id")
     public int custId;
 
+    @XmlElement
     @Column(name = "computer_desc")
     @Size(min = 1, max = 255)
     public String computerDesc;
 
+    @XmlElement
     @Column(name = "issue")
     @Size(min = 1, max = 255)
     public String issue;
 
+    @XmlElement
+    @XmlJavaTypeAdapter(DateAdapter.class)
     @Column(name = "date_submitted")
     public LocalDate dateSubmitted;
 
+    @XmlElement
     @Column(name = "status")
     @Range(min = 1, max = 6)
     public int status;

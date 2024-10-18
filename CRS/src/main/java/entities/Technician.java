@@ -2,17 +2,24 @@ package entities;
 
 import entities.annotations.*;
 
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "technician")
 @Entity
 @Table(name = "technicians")
 public class Technician {
+    @XmlElement
     @Id
     @Column(name = "tech_id", autoIncrement = true)
     int id;
 
+    @XmlElement
     @Column(name = "full_name")
     @Size(min = 1, max = 255)
     String fullName;
 
+    @XmlElement
     @Column(name = "salary")
     @Range(min = 1)
     float salary;

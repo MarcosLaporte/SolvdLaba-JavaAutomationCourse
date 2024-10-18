@@ -4,22 +4,33 @@ import entities.annotations.Column;
 import entities.annotations.Entity;
 import entities.annotations.Id;
 import entities.annotations.Table;
+import services.xml.DateAdapter;
 
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
+@XmlRootElement(name = "job")
 @Entity
 @Table(name = "jobs")
 public class Job {
+    @XmlElement
     @Id
     @Column(name = "job_id", autoIncrement = true)
     public int id;
 
+    @XmlElement
     @Column(name = "ticket_id")
     public int ticketId;
 
+    @XmlElement
+    @XmlJavaTypeAdapter(DateAdapter.class)
     @Column(name = "date_start")
     public LocalDate dateStart;
 
+    @XmlElement
+    @XmlJavaTypeAdapter(DateAdapter.class)
     @Column(name = "date_finish", isNullable = true)
     public LocalDate dateFinish;
 

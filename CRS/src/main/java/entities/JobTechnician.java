@@ -1,23 +1,30 @@
 package entities;
 
-
 import entities.annotations.*;
 
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name = "jobTechnician")
 @Entity
 @Table(name = "jobs_technicians")
 public class JobTechnician {
+    @XmlElement
     @Id
     @Column(name = "job_id")
     public int jobId;
 
+    @XmlElement
     @Id
     @Column(name = "tech_id")
     public int techId;
 
+    @XmlElement
     @Column(name = "task")
     @Size(min = 1, max = 255)
     public String task;
 
+    @XmlElement
     @Column(name = "done")
     public boolean done;
 

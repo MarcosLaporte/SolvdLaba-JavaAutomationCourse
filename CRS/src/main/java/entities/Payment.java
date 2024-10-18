@@ -1,24 +1,34 @@
 package entities;
 
 import entities.annotations.*;
+import services.xml.DateAdapter;
 
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
+@XmlRootElement(name = "payment")
 @Entity
 @Table(name = "payments")
 public class Payment {
+    @XmlElement
     @Id
     @Column(name = "job_id")
     public int jobId;
 
+    @XmlElement
     @Column(name = "pay_date")
+    @XmlJavaTypeAdapter(DateAdapter.class)
     public LocalDate payDate;
 
+    @XmlElement
     @Column(name = "amount")
     @Range(min = 1)
     public double amount;
 
-    private Payment() {}
+    private Payment() {
+    }
 
     public Payment(int jobId, LocalDate payDate, double amount) {
         this.jobId = jobId;

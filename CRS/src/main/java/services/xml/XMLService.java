@@ -1,5 +1,9 @@
 package services.xml;
 
+import entities.lists.*;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.Level;
 import org.xml.sax.SAXException;
 import services.FileService;
@@ -37,7 +41,7 @@ public class XMLService {
         return true;
     }
 
-    public static void parse() {
+    public static void staxParse() {
         String[] xmlFiles = FileService.getFileNames(xmlDir, "xml");
         for (String xml : xmlFiles) {
             String fileNoExt = FileService.stripExtension.apply(xml);
@@ -73,6 +77,46 @@ public class XMLService {
                 System.out.println("-----------------------------------------------------------------------");
                 System.out.println("-----------------------------------------------------------------------");
 
+            } catch (Exception e) {
+                LoggerService.log(Level.ERROR, e.getMessage());
+            }
+        }
+    }
+
+    public static <T> T unmarshal(File file, Class<T> clazz) throws JAXBException {
+        JAXBContext context = JAXBContext.newInstance(clazz);
+
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+
+        return (T) unmarshaller.unmarshal(file);
+    }
+
+    public static void jaxbParse() {
+        String[] xmlFiles = FileService.getFileNames(xmlDir, "xml");
+        for (String xml : xmlFiles) {
+            try {
+                String fileNoExt = FileService.stripExtension.apply(xml);
+                Class<?> clazz = switch (fileNoExt) {
+                    case "customer" -> CustomerList.class;
+                    case "feedback" -> FeedbackList.class;
+                    case "invoice" -> InvoiceList.class;
+                    case "job" -> JobList.class;
+                    case "jobTechnician" -> JobTechnicianList.class;
+                    case "part" -> PartList.class;
+                    case "payment" -> PaymentList.class;
+                    case "repairTicket" -> RepairTicketList.class;
+                    case "repairTicketPart" -> RepairTicketPartList.class;
+                    case "supplier" -> SupplierList.class;
+                    case "technician" -> TechnicianList.class;
+//                    case "ticketStatus" -> {}
+                    default -> throw new IllegalStateException("Unexpected value: " + fileNoExt);
+                };
+
+                System.out.println(
+                        ReflectionService.toString(
+                                unmarshal(new File(xmlDir + xml), clazz)
+                        )
+                );
             } catch (Exception e) {
                 LoggerService.log(Level.ERROR, e.getMessage());
             }

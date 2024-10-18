@@ -4,17 +4,23 @@ import entities.annotations.Column;
 import entities.annotations.Id;
 import entities.annotations.Range;
 import entities.annotations.Table;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "repairTicketPart")
 @Table(name = "repair_tickets_part")
 public class RepairTicketPart {
+    @XmlElement
     @Id
     @Column(name = "ticket_id")
     public int ticketId;
 
+    @XmlElement
     @Id
     @Column(name = "part_id")
     public int partId;
 
+    @XmlElement
     @Column(name = "quantity")
     @Range(min = 1)
     public int quantity;

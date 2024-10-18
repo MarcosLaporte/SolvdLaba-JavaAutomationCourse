@@ -38,7 +38,7 @@ public class MainMenu {
                 "This option does not exist. Try again: ", new char[]{'Y', 'N'}
         );
         if (readXml == 'Y')
-            XMLService.parse();
+            XMLService.jaxbParse();
 
         System.out.println("Working on the Database.");
         int mainMenuOption;
