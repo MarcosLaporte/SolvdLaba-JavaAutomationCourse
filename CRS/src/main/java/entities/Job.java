@@ -5,7 +5,7 @@ import entities.annotations.Entity;
 import entities.annotations.Id;
 import entities.annotations.Table;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "jobs")
@@ -18,30 +18,30 @@ public class Job {
     public int ticketId;
 
     @Column(name = "date_start")
-    public java.sql.Date dateStart;
+    public LocalDate dateStart;
 
     @Column(name = "date_finish", isNullable = true)
-    public java.sql.Date dateFinish;
+    public LocalDate dateFinish;
 
     private Job() {
     }
 
-    public Job(int ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
+    public Job(int ticketId, LocalDate dateStart, LocalDate dateFinish) {
         this.ticketId = ticketId;
         this.dateStart = dateStart;
         this.dateFinish = dateFinish;
     }
 
-    private Job(Integer ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
+    private Job(Integer ticketId, LocalDate dateStart, LocalDate dateFinish) {
         this(ticketId.intValue(), dateStart, dateFinish);
     }
 
-    public Job(int id, int ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
+    public Job(int id, int ticketId, LocalDate dateStart, LocalDate dateFinish) {
         this(ticketId, dateStart, dateFinish);
         this.id = id;
     }
 
-    private Job(Integer id, Integer ticketId, java.sql.Date dateStart, java.sql.Date dateFinish) {
+    private Job(Integer id, Integer ticketId, LocalDate dateStart, LocalDate dateFinish) {
         this(id.intValue(), ticketId.intValue(), dateStart, dateFinish);
     }
 
@@ -53,11 +53,11 @@ public class Job {
         this.ticketId = ticketId;
     }
 
-    public void setDateStart(Date dateStart) {
+    public void setDateStart(LocalDate dateStart) {
         this.dateStart = dateStart;
     }
 
-    public void setDateFinish(Date dateFinish) {
+    public void setDateFinish(LocalDate dateFinish) {
         this.dateFinish = dateFinish;
     }
 

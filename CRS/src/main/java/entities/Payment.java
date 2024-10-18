@@ -2,7 +2,7 @@ package entities;
 
 import entities.annotations.*;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "payments")
@@ -12,7 +12,7 @@ public class Payment {
     public int jobId;
 
     @Column(name = "pay_date")
-    public java.sql.Date payDate;
+    public LocalDate payDate;
 
     @Column(name = "amount")
     @Range(min = 1)
@@ -20,13 +20,13 @@ public class Payment {
 
     private Payment() {}
 
-    public Payment(int jobId, java.sql.Date payDate, double amount) {
+    public Payment(int jobId, LocalDate payDate, double amount) {
         this.jobId = jobId;
         this.payDate = payDate;
         this.amount = amount;
     }
 
-    private Payment(Integer jobId, java.sql.Date payDate, Double amount) {
+    private Payment(Integer jobId, LocalDate payDate, Double amount) {
         this(jobId.intValue(), payDate, amount.doubleValue());
     }
 
@@ -34,7 +34,7 @@ public class Payment {
         this.jobId = jobId;
     }
 
-    public void setPayDate(Date payDate) {
+    public void setPayDate(LocalDate payDate) {
         this.payDate = payDate;
     }
 

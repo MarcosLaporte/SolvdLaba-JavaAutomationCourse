@@ -8,10 +8,11 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+
+import static services.xml.DateAdapter.stringToLocalDate;
 
 public class EntityParser {
 
@@ -105,7 +106,7 @@ public class EntityParser {
                     case "computerDesc" -> currRepairTicket.setComputerDesc(eventReader.getElementText());
                     case "issue" -> currRepairTicket.setIssue(eventReader.getElementText());
                     case "dateSubmitted" ->
-                            currRepairTicket.setDateSubmitted(Date.valueOf(eventReader.getElementText()));
+                            currRepairTicket.setDateSubmitted(stringToLocalDate(eventReader.getElementText()));
                 }
             } else if (event.isEndElement() &&
                     event.asEndElement().getName().getLocalPart().equalsIgnoreCase("repairTicket")) {
@@ -251,9 +252,9 @@ public class EntityParser {
 
                 switch (localName) {
                     case "id" -> currJob.setId(Integer.parseInt(eventReader.getElementText()));
-                    case "ticketId" -> currJob.setId(Integer.parseInt(eventReader.getElementText()));
-                    case "dateStart" -> currJob.setDateStart(Date.valueOf(eventReader.getElementText()));
-                    case "dateFinish" -> currJob.setDateFinish(Date.valueOf(eventReader.getElementText()));
+                    case "ticketId" -> currJob.setTicketId(Integer.parseInt(eventReader.getElementText()));
+                    case "dateStart" -> currJob.setDateStart(stringToLocalDate(eventReader.getElementText()));
+                    case "dateFinish" -> currJob.setDateFinish(stringToLocalDate(eventReader.getElementText()));
                 }
             } else if (event.isEndElement() &&
                     event.asEndElement().getName().getLocalPart().equalsIgnoreCase("job")) {
@@ -309,7 +310,7 @@ public class EntityParser {
 
                 switch (localName) {
                     case "jobId" -> currPayment.setJobId(Integer.parseInt(eventReader.getElementText()));
-                    case "payDate" -> currPayment.setPayDate(Date.valueOf(eventReader.getElementText()));
+                    case "payDate" -> currPayment.setPayDate(stringToLocalDate(eventReader.getElementText()));
                     case "amount" -> currPayment.setAmount(Double.parseDouble(eventReader.getElementText()));
                 }
             } else if (event.isEndElement() &&
@@ -339,7 +340,7 @@ public class EntityParser {
                     case "jobId" -> currFeedback.setJobId(Integer.parseInt(eventReader.getElementText()));
                     case "custComment" -> currFeedback.setCustComment(eventReader.getElementText());
                     case "rating" -> currFeedback.setRating(Integer.parseInt(eventReader.getElementText()));
-                    case "dateSubmit" -> currFeedback.setDateSubmit(Date.valueOf(eventReader.getElementText()));
+                    case "dateSubmit" -> currFeedback.setDateSubmit(stringToLocalDate(eventReader.getElementText()));
                 }
             } else if (event.isEndElement() &&
                     event.asEndElement().getName().getLocalPart().equalsIgnoreCase("feedback")) {

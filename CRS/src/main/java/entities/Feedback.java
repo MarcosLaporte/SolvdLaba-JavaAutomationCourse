@@ -2,7 +2,7 @@ package entities;
 
 import entities.annotations.*;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "feedbacks")
@@ -20,19 +20,19 @@ public class Feedback {
     public int rating;
 
     @Column(name = "date_submit")
-    public java.sql.Date dateSubmit;
+    public LocalDate dateSubmit;
 
     private Feedback() {
     }
 
-    public Feedback(int jobId, String custComment, int rating, java.sql.Date dateSubmit) {
+    public Feedback(int jobId, String custComment, int rating, LocalDate dateSubmit) {
         this.jobId = jobId;
         this.custComment = custComment;
         this.rating = rating;
         this.dateSubmit = dateSubmit;
     }
 
-    private Feedback(Integer jobId, String custComment, Integer rating, java.sql.Date dateSubmit) {
+    private Feedback(Integer jobId, String custComment, Integer rating, LocalDate dateSubmit) {
         this(jobId.intValue(), custComment, rating.intValue(), dateSubmit);
     }
 
@@ -48,7 +48,7 @@ public class Feedback {
         this.rating = rating;
     }
 
-    public void setDateSubmit(Date dateSubmit) {
+    public void setDateSubmit(LocalDate dateSubmit) {
         this.dateSubmit = dateSubmit;
     }
 

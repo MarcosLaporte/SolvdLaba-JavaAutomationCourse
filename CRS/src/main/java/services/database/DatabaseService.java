@@ -34,7 +34,12 @@ public class DatabaseService {
         Object[] values = new Object[columnCount];
 
         for (int i = 0; i < columnCount; i++) {
-            values[i] = resultSet.getObject(i + 1);
+            Object val = resultSet.getObject(i + 1);
+            if (val instanceof java.sql.Date) {
+                values[i] = ((java.sql.Date) val).toLocalDate();
+            } else {
+                values[i] = val;
+            }
         }
 
         return values;

@@ -2,8 +2,8 @@ package entities;
 
 import entities.annotations.*;
 
-import java.sql.Date;
 
+import java.time.LocalDate;
 @Entity
 @Table(name = "repair_tickets")
 public class RepairTicket {
@@ -23,7 +23,7 @@ public class RepairTicket {
     public String issue;
 
     @Column(name = "date_submitted")
-    public java.sql.Date dateSubmitted;
+    public LocalDate dateSubmitted;
 
     @Column(name = "status")
     @Range(min = 1, max = 6)
@@ -32,7 +32,7 @@ public class RepairTicket {
     private RepairTicket() {
     }
 
-    public RepairTicket(int custId, String computerDesc, String issue, java.sql.Date dateSubmitted, int status) {
+    public RepairTicket(int custId, String computerDesc, String issue, LocalDate dateSubmitted, int status) {
         this.custId = custId;
         this.computerDesc = computerDesc;
         this.issue = issue;
@@ -40,16 +40,16 @@ public class RepairTicket {
         this.status = status;
     }
 
-    private RepairTicket(Integer custId, String computerDesc, String issue, java.sql.Date dateSubmitted, Integer status) {
+    private RepairTicket(Integer custId, String computerDesc, String issue, LocalDate dateSubmitted, Integer status) {
         this(custId.intValue(), computerDesc, issue, dateSubmitted, status.intValue());
     }
 
-    public RepairTicket(int id, int custId, String computerDesc, String issue, java.sql.Date dateSubmitted, int status) {
+    public RepairTicket(int id, int custId, String computerDesc, String issue, LocalDate dateSubmitted, int status) {
         this(custId, computerDesc, issue, dateSubmitted, status);
         this.id = id;
     }
 
-    private RepairTicket(Integer id, Integer custId, String computerDesc, String issue, java.sql.Date dateSubmitted, Integer status) {
+    private RepairTicket(Integer id, Integer custId, String computerDesc, String issue, LocalDate dateSubmitted, Integer status) {
         this(id.intValue(), custId.intValue(), computerDesc, issue, dateSubmitted, status.intValue());
     }
 
@@ -69,7 +69,7 @@ public class RepairTicket {
         this.issue = issue;
     }
 
-    public void setDateSubmitted(Date dateSubmitted) {
+    public void setDateSubmitted(LocalDate dateSubmitted) {
         this.dateSubmitted = dateSubmitted;
     }
 

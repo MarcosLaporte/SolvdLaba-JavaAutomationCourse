@@ -7,7 +7,7 @@ import services.InputService;
 import services.ReflectionService;
 
 import java.lang.reflect.*;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -139,7 +139,7 @@ public class EntityReflection<T> {
             int min = sizeAnn != null ? sizeAnn.min() : 0;
             int max = sizeAnn != null ? sizeAnn.max() : Integer.MAX_VALUE;
             return InputService.readString(inputMsg, min, max);
-        } else if (fieldType == Date.class) {
+        } else if (fieldType == LocalDate.class) {
             return InputService.readValidDate();
         }
         return null;
