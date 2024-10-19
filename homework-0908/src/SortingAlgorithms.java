@@ -1,15 +1,16 @@
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Random;
 
 public class SortingAlgorithms {
   public static void main(String[] args) {
     final Random rand = new Random();
-    int[] arr = new int[20];
+    Integer[] arr = new Integer[20];
     for (int i = 0; i < arr.length; i++) {
       arr[i] = rand.nextInt(-100, 100);
     }
-    int[] sortedArrAsc = insertionSort(arr, true);
-    int[] sortedArrDesc = insertionSort(arr, false);
+    Integer[] sortedArrAsc = selectionSort(arr, true);
+    Integer[] sortedArrDesc = selectionSort(arr, false);
 
     System.out.println("Original Array: " + Arrays.toString(arr));
     System.out.println("Sorted Asc Array: " + Arrays.toString(sortedArrAsc));
@@ -25,25 +26,17 @@ public class SortingAlgorithms {
    * @param asc   Whether the array should be sorted in ascending order or not.
    * @return Sorted array.
    */
-  public static int[] insertionSort(int[] array, boolean asc) {
-    final long start = System.nanoTime();
-    int[] arrCopy = Arrays.copyOf(array, array.length);
-
-    for (int i = 1; i < arrCopy.length; i++) {
-      int currEl = arrCopy[i];
+  public static <T extends Comparable<? super T>> void insertionSort(T[] array, boolean asc) {
+    for (int i = 1; i < array.length; i++) {
+      T currEl = array[i];
       int j = i - 1;
 
-      while (j >= 0 && (currEl < arrCopy[j]) == asc) {
-        arrCopy[j + 1] = arrCopy[j];
+      while (j >= 0 && (currEl.compareTo(array[j]) < 0) == asc) {
+        array[j + 1] = array[j];
         j--;
       }
-      arrCopy[j + 1] = currEl;
-      System.out.println("Element sorted: " + currEl);
+      array[j + 1] = currEl;
     }
-
-    final long finish = System.nanoTime();
-    System.out.printf("Time spent: %dms\n", (finish - start)/1000000);
-    return arrCopy;
   }
 
   /**
@@ -54,25 +47,21 @@ public class SortingAlgorithms {
    * @param asc   Whether the array should be sorted in ascending order or not.
    * @return Sorted array.
    */
-  public static int[] selectionSort(int[] array, boolean asc) {
-    int[] arrCopy = Arrays.copyOf(array, array.length);
+public static <T extends Comparable<? super T>> void selectionSort(T[] array, boolean asc) {
+  for (int i = 0; i < array.length; i++) {
+    int minIndex = i;
 
-    for (int i = 0; i < arrCopy.length; i++) {
-      int minIndex = i;
-
-      for (int j = i + 1; j < arrCopy.length; j++) {
-        if ((arrCopy[j] < arrCopy[minIndex]) == asc) {
-          minIndex = j;
-        }
+    for (int j = i + 1; j < array.length; j++) {
+      if ((array[j].compareTo(array[minIndex]) < 0) == asc) {
+        minIndex = j;
       }
-
-      int aux = arrCopy[i];
-      arrCopy[i] = arrCopy[minIndex];
-      arrCopy[minIndex] = aux;
     }
 
-    return arrCopy;
+    T aux = array[i];
+    array[i] = array[minIndex];
+    array[minIndex] = aux;
   }
+}
 
   /**
    * Simple comparison-based sorting. Compares two adjacent elements and re-arranges them in the right order.
@@ -81,20 +70,16 @@ public class SortingAlgorithms {
    * @param asc   Whether the array should be sorted in ascending order or not.
    * @return Sorted Array.
    */
-  public static int[] bubbleSort(int[] array, boolean asc) {
-    int[] arrCopy = Arrays.copyOf(array, array.length);
-
-    for (int i = 0; i < arrCopy.length; i++) {
-      for (int j = 0; j < arrCopy.length - 1; j++) {
-        if ((arrCopy[j] > arrCopy[j + 1]) == asc) {
-          int aux = arrCopy[j];
-          arrCopy[j] = arrCopy[j + 1];
-          arrCopy[j + 1] = aux;
+  public static <T extends Comparable<? super T>> void bubbleSort(T[] array, boolean asc) {
+    for (int i = 0; i < array.length; i++) {
+      for (int j = 0; j < array.length - 1; j++) {
+        if ((array[j].compareTo(array[j + 1]) < 0) == asc) {
+          T aux = array[j];
+          array[j] = array[j + 1];
+          array[j + 1] = aux;
         }
       }
     }
-
-    return arrCopy;
   }
 
 
@@ -106,58 +91,55 @@ public class SortingAlgorithms {
    * @param asc   Whether the array should be sorted in ascending order or not.
    * @return Sorted Array.
    */
-  public static int[] mergeSort(int[] array, boolean asc) {
-    if (array.length < 2) return array;
+public static <T extends Comparable<? super T>> void mergeSort(T[] array, boolean asc) {
+  if (array.length < 2) return;
 
-    int midIndex = array.length / 2;
-    int[] leftHalf = Arrays.copyOf(array, midIndex);
-    int[] rightHalf = Arrays.copyOfRange(array, midIndex, array.length);
+  int midIndex = array.length / 2;
+  T[] leftHalf = Arrays.copyOf(array, midIndex);
+  T[] rightHalf = Arrays.copyOfRange(array, midIndex, array.length);
 
-    leftHalf = mergeSort(leftHalf, asc);
-    rightHalf = mergeSort(rightHalf, asc);
+  mergeSort(leftHalf, asc);
+  mergeSort(rightHalf, asc);
 
-    return merge(leftHalf, rightHalf, asc);
-  }
+  merge(leftHalf, rightHalf, array, asc);
+}
 
-  /**
-   * Merges two sorted halves of an array into a single sorted array.
-   * The merging is done in either ascending or descending order based on the specified boolean flag.
-   *
-   * @param arrLeftHalf  Left half of the array.
-   * @param arrRightHalf Right half of the array.
-   * @param asc          Whether the array should be sorted in ascending order or not.
-   * @return Merged and sorted Array.
-   */
-  private static int[] merge(int[] arrLeftHalf, int[] arrRightHalf, boolean asc) {
-    int indexL = 0, indexR = 0, indexF = 0;
-    int[] finalArray = new int[arrLeftHalf.length + arrRightHalf.length];
+/**
+ * Merges two sorted halves of an array into a single sorted array.
+ * The merging is done in either ascending or descending order based on the specified boolean flag.
+ *
+ * @param arrLeftHalf  Left half of the array.
+ * @param arrRightHalf Right half of the array.
+ * @param finalArray   The original array to be filled with merged values.
+ * @param asc          Whether the array should be sorted in ascending order or not.
+ * @return Merged and sorted Array.
+ */
+private static <T extends Comparable<? super T>> void merge(T[] arrLeftHalf, T[] arrRightHalf, T[] finalArray, boolean asc) {
+  int indexL = 0, indexR = 0, indexF = 0;
 
-    while (indexL < arrLeftHalf.length && indexR < arrRightHalf.length) {
-      if ((arrLeftHalf[indexL] <= arrRightHalf[indexR]) == asc) {
-        finalArray[indexF] = arrLeftHalf[indexL];
-        indexL++;
-      } else {
-        finalArray[indexF] = arrRightHalf[indexR];
-        indexR++;
-      }
-
-      indexF++;
-    }
-
-    while (indexL < arrLeftHalf.length) {
+  while (indexL < arrLeftHalf.length && indexR < arrRightHalf.length) {
+    if ((arrLeftHalf[indexL].compareTo(arrRightHalf[indexR]) <= 0) == asc) {
       finalArray[indexF] = arrLeftHalf[indexL];
       indexL++;
-      indexF++;
-    }
-
-    while (indexR < arrRightHalf.length) {
+    } else {
       finalArray[indexF] = arrRightHalf[indexR];
       indexR++;
-      indexF++;
     }
-
-    return finalArray;
+    indexF++;
   }
+
+  while (indexL < arrLeftHalf.length) {
+    finalArray[indexF] = arrLeftHalf[indexL];
+    indexL++;
+    indexF++;
+  }
+
+  while (indexR < arrRightHalf.length) {
+    finalArray[indexF] = arrRightHalf[indexR];
+    indexR++;
+    indexF++;
+  }
+}
 
   /**
    * Choose a pivot element from the array.
