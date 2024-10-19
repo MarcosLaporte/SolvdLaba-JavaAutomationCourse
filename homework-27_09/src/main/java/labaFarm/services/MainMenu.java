@@ -158,7 +158,9 @@ public class MainMenu implements Runnable {
     }
 
     public static void printActiveThreads() {
-        Set<Thread> activeThreads = Thread.getAllStackTraces().keySet();
+        int threadCount = Thread.activeCount();
+        Thread[] activeThreads = new Thread[threadCount];
+        Thread.enumerate(activeThreads);
 
         System.out.println("Active Threads:");
         for (Thread thread : activeThreads) {
