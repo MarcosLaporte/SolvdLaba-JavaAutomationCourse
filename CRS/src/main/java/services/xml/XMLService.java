@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class XMLService {
-    private static final String baseDir = System.getProperty("user.dir") + "\\xml\\";
+    private static final String baseDir = System.getProperty("user.dir") + "\\files\\xml\\";
     private static final String xmlDir = baseDir + "\\values\\";
     private static final String xsdDir = baseDir + "\\schemas\\";
 
