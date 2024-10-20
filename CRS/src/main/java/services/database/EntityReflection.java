@@ -1,8 +1,6 @@
 package services.database;
 
-import entities.annotations.Column;
-import entities.annotations.Range;
-import entities.annotations.Size;
+import entities.annotations.*;
 import services.InputService;
 import services.ReflectionService;
 
@@ -21,6 +19,7 @@ public class EntityReflection<T> {
 
     public final List<Field> COLUMN_FIELDS;
     public final List<Field> COLUMN_FIELDS_NOT_AI;
+
     public EntityReflection(Class<T> clazz) {
         this.rs = new ReflectionService<>(clazz);
         this.clazz = rs.clazz;
@@ -33,10 +32,11 @@ public class EntityReflection<T> {
 
 
     public static Class<?> chooseEntity() {
-        Class<?>[] classes = ReflectionService.getClassesInPackage("entities", ABSTRACT, ANNOTATION).toArray(Class[]::new);
+        List<Class<?>> classes = ReflectionService.getClassesInPackage("entities", ABSTRACT, ANNOTATION)
+                .stream().filter(clazz -> clazz.getAnnotation(Table.class) != null).toList();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < classes.length; i++) {
-            Class<?> clazz = classes[i];
+        for (int i = 0; i < classes.size(); i++) {
+            Class<?> clazz = classes.get(i);
             sb.append('\n').append(i + 1).append(". ").append(clazz.getSimpleName());
         }
         sb.append("\n0. GO BACK");
@@ -45,13 +45,13 @@ public class EntityReflection<T> {
         int chosenClass = InputService.readInt(
                 "Select class number: ",
                 "Invalid value. Try again: ",
-                0, classes.length
+                0, classes.size()
         );
 
         if (chosenClass == 0)
             return null;
         else
-            return classes[chosenClass - 1];
+            return classes.get(chosenClass - 1);
     }
 
     public T readNewInstance() throws Exception {
@@ -78,7 +78,7 @@ public class EntityReflection<T> {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
-            sb.append(String.format("\n%d. [%s] %s", i+1, field.getType().getSimpleName(), field.getName()));
+            sb.append(String.format("\n%d. [%s] %s", i + 1, field.getType().getSimpleName(), field.getName()));
         }
         sb.append("\n0. CONTINUE");
 
