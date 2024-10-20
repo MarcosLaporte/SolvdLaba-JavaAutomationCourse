@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<customers container="true" class="Customer">
+<customers>
     <customer>
         <id>101</id>
         <fullName>Guy Montag</fullName>
