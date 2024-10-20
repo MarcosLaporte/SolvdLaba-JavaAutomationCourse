@@ -1,0 +1,21 @@
+{
+  "invoices" : [ {
+    "id" : 10001,
+    "ticketId" : 10001,
+    "techId" : 102,
+    "diagnosis" : "Needs new speaker",
+    "amount" : 190.0
+  }, {
+    "id" : 10002,
+    "ticketId" : 10002,
+    "techId" : 104,
+    "diagnosis" : "Add two new SSDs and change speaker.",
+    "amount" : 330.0
+  }, {
+    "id" : 10003,
+    "ticketId" : 10003,
+    "techId" : 102,
+    "diagnosis" : "Change graphics card.",
+    "amount" : 485.0
+  } ]
+}
