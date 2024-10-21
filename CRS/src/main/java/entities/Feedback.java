@@ -1,5 +1,7 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import entities.annotations.*;
 import services.xml.DateAdapter;
 
@@ -12,21 +14,26 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "feedbacks")
 public class Feedback {
+    @JsonProperty
     @XmlElement
     @Id
     @Column(name = "job_id")
     public int jobId;
 
+    @JsonProperty
     @XmlElement
     @Column(name = "cust_comment")
     @Size(min = 1, max = 255)
     public String custComment;
 
+    @JsonProperty
     @XmlElement
     @Column(name = "rating")
     @Range(min = 1, max = 5)
     public int rating;
 
+    @JsonProperty
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @XmlElement
     @XmlJavaTypeAdapter(DateAdapter.class)
     @Column(name = "date_submit")
