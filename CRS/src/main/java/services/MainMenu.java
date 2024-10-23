@@ -272,17 +272,4 @@ public class MainMenu {
         return List.of();
     }
 
-    public static void printActiveThreads() {
-        int threadCount = Thread.activeCount();
-        Thread[] activeThreads = new Thread[threadCount];
-        Thread.enumerate(activeThreads);
-
-        System.out.println("Active Threads:");
-        for (Thread thread : activeThreads) {
-            if (thread != null) {
-                System.out.println("Thread Name: " + thread.getName() +
-                        ", State: " + thread.getState());
-            }
-        }
-    }
 }
