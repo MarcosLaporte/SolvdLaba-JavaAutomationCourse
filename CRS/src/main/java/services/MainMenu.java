@@ -1,5 +1,7 @@
 package services;
 
+import entities.*;
+import entities.lists.*;
 import jakarta.xml.bind.JAXBException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
@@ -14,18 +16,18 @@ import java.util.List;
 import java.util.Map;
 
 public class MainMenu {
-    private enum Menu {
+    private enum DaoMenu {
         EXIT, GET, CREATE, UPDATE, DELETE;
 
         private final int value;
 
-        Menu() {
+        DaoMenu() {
             this.value = this.ordinal();
         }
 
         public static String printMenu() {
             StringBuilder sb = new StringBuilder();
-            for (Menu option : Menu.values()) {
+            for (DaoMenu option : DaoMenu.values()) {
                 String optionStr = StringUtils.replace(String.valueOf(option), "_", " ");
                 sb.append(String.format("%d. %s\n", option.value, optionStr));
             }
@@ -38,9 +40,9 @@ public class MainMenu {
         int mainMenuOption;
         do {
             mainMenuOption = InputService.readInt(
-                    "\n" + Menu.printMenu() + "Choose an option: ",
+                    "\n" + DaoMenu.printMenu() + "Choose an option: ",
                     "This option does not exist. Try again: ",
-                    0, Menu.values().length - 1
+                    0, DaoMenu.values().length - 1
             );
 
             if (mainMenuOption == 0) {
@@ -58,7 +60,7 @@ public class MainMenu {
             try {
                 EntityReflection<Object> rs = new EntityReflection<>(entityClass);
                 MyBatis<Object> dao = new MyBatis<>(entityClass);
-                switch (Menu.values()[mainMenuOption]) {
+                switch (DaoMenu.values()[mainMenuOption]) {
                     case GET -> {
                         System.out.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
@@ -117,7 +119,7 @@ public class MainMenu {
     public static void runXml() {
         do {
             char mainMenuOption = InputService.readCharInValues(
-                    "0. Exit\n1. Read XML\n2. Write XML from Database\nChoose an option: ",
+                    "0. Exit\n1. Read XML files\n2. Write XML from Database\nChoose an option: ",
                     "This option does not exist. Try again: ",
                     new char[]{'0', '1', '2'}
             );
@@ -144,7 +146,7 @@ public class MainMenu {
                     System.out.print("\nFill with fields to filter by.");
                     Map<String, Object> columnFilters = rs.readConditionValues();
 
-                    Object list = XMLService.getListClassInstance(
+                    Object list = getListClassInstance(
                             entityClass,
                             dao.get(columnFilters)
                     );
@@ -162,6 +164,97 @@ public class MainMenu {
             }
         } while (true);
 
+    }
+
+    public static void runJson() {
+        do {
+            char mainMenuOption = InputService.readCharInValues(
+                    "0. Exit\n1. Read JSON files\n2. Write JSON from Database\nChoose an option: ",
+                    "This option does not exist. Try again: ",
+                    new char[]{'0', '1', '2'}
+            );
+
+            if (mainMenuOption == '0')
+                break;
+            else if (mainMenuOption == '1') {
+                    JsonService.parse();
+            } else if (mainMenuOption == '2') {
+                Class<?> entityClass = EntityReflection.chooseEntity();
+                if (entityClass == null) continue;
+                EntityReflection<?> rs = new EntityReflection<>(entityClass);
+
+                try (GenericDAO<Object> dao = GenericDAO.castDAO(new GenericDAO<>(entityClass))) {
+                    System.out.print("\nFill with fields to filter by.");
+                    Map<String, Object> columnFilters = rs.readConditionValues();
+
+                    Object list = getListClassInstance(
+                            entityClass,
+                            dao.get(columnFilters)
+                    );
+
+                    System.out.print("Rows found with values");
+                    for (Map.Entry<String, Object> entry : columnFilters.entrySet())
+                        System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
+                    System.out.println(": ");
+                    System.out.println(ReflectionService.toString(list));
+
+                    JsonService.serializeList(list);
+                } catch (IOException e) {
+                    LoggerService.log(Level.ERROR, e.getMessage());
+                }
+            }
+        } while (true);
+
+    }
+
+    private static Object getListClassInstance(Class<?> clazz, List<?> list) {
+        if (clazz == Customer.class) {
+            CustomerList listClass = new CustomerList();
+            listClass.setCustomerList((List<Customer>) list);
+            return listClass;
+        } else if (clazz == Feedback.class) {
+            FeedbackList listClass = new FeedbackList();
+            listClass.setFeedbackList((List<Feedback>) list);
+            return listClass;
+        } else if (clazz == Invoice.class) {
+            InvoiceList listClass = new InvoiceList();
+            listClass.setInvoiceList((List<Invoice>) list);
+            return listClass;
+        } else if (clazz == Job.class) {
+            JobList listClass = new JobList();
+            listClass.setJobList((List<Job>) list);
+            return listClass;
+        } else if (clazz == JobTechnician.class) {
+            JobTechnicianList listClass = new JobTechnicianList();
+            listClass.setJobTechnicianList((List<JobTechnician>) list);
+            return listClass;
+        } else if (clazz == Part.class) {
+            PartList listClass = new PartList();
+            listClass.setPartList((List<Part>) list);
+            return listClass;
+        } else if (clazz == Payment.class) {
+            PaymentList listClass = new PaymentList();
+            listClass.setPaymentList((List<Payment>) list);
+            return listClass;
+        } else if (clazz == RepairTicket.class) {
+            RepairTicketList listClass = new RepairTicketList();
+            listClass.setRepairTicketList((List<RepairTicket>) list);
+            return listClass;
+        } else if (clazz == RepairTicketPart.class) {
+            RepairTicketPartList listClass = new RepairTicketPartList();
+            listClass.setRepairTicketPartList((List<RepairTicketPart>) list);
+            return listClass;
+        } else if (clazz == Supplier.class) {
+            SupplierList listClass = new SupplierList();
+            listClass.setSupplierList((List<Supplier>) list);
+            return listClass;
+        } else if (clazz == Technician.class) {
+            TechnicianList listClass = new TechnicianList();
+            listClass.setTechnicianList((List<Technician>) list);
+            return listClass;
+        }
+
+        return List.of();
     }
 
     public static void printActiveThreads() {

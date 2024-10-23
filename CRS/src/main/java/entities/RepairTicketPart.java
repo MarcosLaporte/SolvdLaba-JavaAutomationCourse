@@ -1,5 +1,6 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import entities.annotations.Column;
 import entities.annotations.Id;
 import entities.annotations.Range;
@@ -10,16 +11,19 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "repairTicketPart")
 @Table(name = "repair_tickets_part")
 public class RepairTicketPart {
+    @JsonProperty
     @XmlElement
     @Id
     @Column(name = "ticket_id")
     public int ticketId;
 
+    @JsonProperty
     @XmlElement
     @Id
     @Column(name = "part_id")
     public int partId;
 
+    @JsonProperty
     @XmlElement
     @Column(name = "quantity")
     @Range(min = 1)

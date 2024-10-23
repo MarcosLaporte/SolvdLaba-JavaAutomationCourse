@@ -1,6 +1,5 @@
 package services.xml;
 
-import entities.*;
 import entities.lists.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -45,6 +44,10 @@ public class XMLService {
 
     public static void staxParse() {
         String[] xmlFiles = FileService.getFileNames(xmlDir, "xml");
+        if (xmlFiles.length == 0) {
+            System.out.println("No files to read.");
+            return;
+        }
         for (String xml : xmlFiles) {
             String fileNoExt = FileService.stripExtension.apply(xml);
             try {
@@ -107,6 +110,10 @@ public class XMLService {
 
     public static void jaxbParse() {
         String[] xmlFiles = FileService.getFileNames(xmlDir, "xml");
+        if (xmlFiles.length == 0) {
+            System.out.println("No files to read.");
+            return;
+        }
         for (String xml : xmlFiles) {
             try {
                 String fileNoExt = FileService.stripExtension.apply(xml);
@@ -142,53 +149,4 @@ public class XMLService {
         marshal(newFile, list);
     }
 
-    public static Object getListClassInstance(Class<?> clazz, List<?> list) {
-        if (clazz == Customer.class) {
-            CustomerList listClass = new CustomerList();
-            listClass.setCustomerList((List<Customer>) list);
-            return listClass;
-        } else if (clazz == Feedback.class) {
-            FeedbackList listClass = new FeedbackList();
-            listClass.setFeedbackList((List<Feedback>) list);
-            return listClass;
-        } else if (clazz == Invoice.class) {
-            InvoiceList listClass = new InvoiceList();
-            listClass.setInvoiceList((List<Invoice>) list);
-            return listClass;
-        } else if (clazz == Job.class) {
-            JobList listClass = new JobList();
-            listClass.setJobList((List<Job>) list);
-            return listClass;
-        } else if (clazz == JobTechnician.class) {
-            JobTechnicianList listClass = new JobTechnicianList();
-            listClass.setJobTechnicianList((List<JobTechnician>) list);
-            return listClass;
-        } else if (clazz == Part.class) {
-            PartList listClass = new PartList();
-            listClass.setPartList((List<Part>) list);
-            return listClass;
-        } else if (clazz == Payment.class) {
-            PaymentList listClass = new PaymentList();
-            listClass.setPaymentList((List<Payment>) list);
-            return listClass;
-        } else if (clazz == RepairTicket.class) {
-            RepairTicketList listClass = new RepairTicketList();
-            listClass.setRepairTicketList((List<RepairTicket>) list);
-            return listClass;
-        } else if (clazz == RepairTicketPart.class) {
-            RepairTicketPartList listClass = new RepairTicketPartList();
-            listClass.setRepairTicketPartList((List<RepairTicketPart>) list);
-            return listClass;
-        } else if (clazz == Supplier.class) {
-            SupplierList listClass = new SupplierList();
-            listClass.setSupplierList((List<Supplier>) list);
-            return listClass;
-        } else if (clazz == Technician.class) {
-            TechnicianList listClass = new TechnicianList();
-            listClass.setTechnicianList((List<Technician>) list);
-            return listClass;
-        }
-
-        return List.of();
-    }
 }

@@ -1,0 +1,33 @@
+{
+  "jobTechnicians" : [ {
+    "jobId" : 10001,
+    "techId" : 102,
+    "task" : "Take away old RAM",
+    "done" : true
+  }, {
+    "jobId" : 10001,
+    "techId" : 103,
+    "task" : "Place new RAM",
+    "done" : true
+  }, {
+    "jobId" : 10002,
+    "techId" : 102,
+    "task" : "Place new SSDs",
+    "done" : true
+  }, {
+    "jobId" : 10002,
+    "techId" : 103,
+    "task" : "Replace speaker",
+    "done" : true
+  }, {
+    "jobId" : 10002,
+    "techId" : 104,
+    "task" : "Take away old SSD",
+    "done" : true
+  }, {
+    "jobId" : 10003,
+    "techId" : 102,
+    "task" : "Replace graphics card",
+    "done" : true
+  } ]
+}

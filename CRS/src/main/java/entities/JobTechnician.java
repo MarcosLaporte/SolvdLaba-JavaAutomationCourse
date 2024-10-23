@@ -1,5 +1,6 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import entities.annotations.*;
 
 import jakarta.xml.bind.annotation.XmlElement;
@@ -9,21 +10,25 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "jobs_technicians")
 public class JobTechnician {
+    @JsonProperty
     @XmlElement
     @Id
     @Column(name = "job_id")
     public int jobId;
 
+    @JsonProperty
     @XmlElement
     @Id
     @Column(name = "tech_id")
     public int techId;
 
+    @JsonProperty
     @XmlElement
     @Column(name = "task")
     @Size(min = 1, max = 255)
     public String task;
 
+    @JsonProperty
     @XmlElement
     @Column(name = "done")
     public boolean done;
