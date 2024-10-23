@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="entities.Customer">
+    <resultMap id="customerResultMap" type="entities.Customer">
+        <id property="id" column="cust_id"/>
+        <result property="fullName" column="full_name"/>
+        <result property="phoneNo" column="phone_no"/>
+    </resultMap>
+
+    <select id="get" parameterType="map" resultType="entities.Customer" resultMap="customerResultMap">
+        SELECT * FROM customers
+        <where>
+            <foreach collection="_parameter" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </select>
+
+    <insert id="create" parameterType="entities.Customer">
+        INSERT INTO customers (full_name, email, phone_no, address, zip)
+        VALUES (#{full_name}, #{email}, #{phone_no}, #{address}, #{zip});
+    </insert>
+
+    <update id="update" parameterType="map">
+        UPDATE customers
+        <set>
+            <foreach collection="values" index="key" item="value" separator=",">
+                ${key} = #{value}
+            </foreach>
+        </set>
+        <where>
+            <foreach collection="filters" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </update>
+
+    <delete id="delete" parameterType="map">
+        DELETE FROM customers
+        <where>
+            <foreach collection="_parameter" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </delete>
+</mapper>
