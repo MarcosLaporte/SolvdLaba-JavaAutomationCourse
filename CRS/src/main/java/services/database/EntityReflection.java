@@ -30,13 +30,13 @@ public class EntityReflection<T> {
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
     }
 
-
-    public static Class<?> chooseEntity() {
+    @SuppressWarnings("unchecked")
+    public static Class<Object> chooseEntity() {
         List<Class<?>> classes = ReflectionService.getClassesInPackage("entities", ABSTRACT, ANNOTATION)
                 .stream().filter(clazz -> clazz.getAnnotation(Table.class) != null).toList();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < classes.size(); i++) {
-            Class<?> clazz = classes.get(i);
+            Class<Object> clazz = (Class<Object>) classes.get(i);
             sb.append('\n').append(i + 1).append(". ").append(clazz.getSimpleName());
         }
         sb.append("\n0. GO BACK");
@@ -48,7 +48,7 @@ public class EntityReflection<T> {
                 0, classes.size()
         );
 
-        return chosenClass == 0 ? null : classes.get(chosenClass - 1);
+        return chosenClass == 0 ? null : (Class<Object>) classes.get(chosenClass - 1);
     }
 
     public T readNewInstance() throws Exception {

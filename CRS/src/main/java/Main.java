@@ -1,8 +1,5 @@
-import jakarta.xml.bind.JAXBException;
 import services.InputService;
 import services.MainMenu;
-
-import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {

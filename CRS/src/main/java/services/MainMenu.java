@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import services.connection.ConnectionManager;
 import services.database.EntityReflection;
-import services.database.GenericDAO;
+import services.database.MyBatis;
 import services.xml.XMLService;
 
 import java.io.IOException;
@@ -48,19 +48,16 @@ public class MainMenu {
                 break;
             }
 
-            Class<?> entityClass = EntityReflection.chooseEntity();
+            Class<Object> entityClass = EntityReflection.chooseEntity();
             if (entityClass == null) {
                 System.out.println("Going back...");
                 continue;
             }
 
             System.out.println('\n' + entityClass.getSimpleName() + " selected.");
-            try (GenericDAO<Object> dao = GenericDAO.castDAO(new GenericDAO<>(entityClass))) {
-//                ReflectionService<Object> rs = GenericDAO.castReflectionService(new ReflectionService<>(entityClass));
-//                ReflectionService<?> rs = new ReflectionService<>(entityClass);
-                EntityReflection<?> rs = new EntityReflection<>(entityClass);
-
-//            try (GenericDAO<?> dao = new GenericDAO<>(entityClass)) {
+            try {
+                EntityReflection<Object> rs = new EntityReflection<>(entityClass);
+                MyBatis<Object> dao = new MyBatis<>(entityClass);
                 switch (Menu.values()[mainMenuOption]) {
                     case GET -> {
                         System.out.print("\nFill with fields to filter by.");
@@ -137,12 +134,13 @@ public class MainMenu {
                     XMLService.staxParse();
                 else
                     XMLService.jaxbParse();
-            }else if (mainMenuOption == '2') {
-                Class<?> entityClass = EntityReflection.chooseEntity();
+            } else if (mainMenuOption == '2') {
+                Class<Object> entityClass = EntityReflection.chooseEntity();
                 if (entityClass == null) continue;
-                EntityReflection<?> rs = new EntityReflection<>(entityClass);
+                EntityReflection<Object> rs = new EntityReflection<>(entityClass);
 
-                try (GenericDAO<Object> dao = GenericDAO.castDAO(new GenericDAO<>(entityClass))) {
+                try {
+                    MyBatis<Object> dao = new MyBatis<>(entityClass);
                     System.out.print("\nFill with fields to filter by.");
                     Map<String, Object> columnFilters = rs.readConditionValues();
 

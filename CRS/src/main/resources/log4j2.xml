@@ -8,6 +8,10 @@
         <File name="FileLogger" fileName="logs/app.log">
             <PatternLayout pattern="%-5p - %m%n"/>
         </File>
+
+        <File name="SqlSessionFileLogger" fileName="logs/sqlSession.log" append="false">
+            <PatternLayout pattern="%-5p - %m%n"/>
+        </File>
     </Appenders>
 
     <Loggers>
@@ -17,6 +21,10 @@
 
         <Logger name="FileOnlyLogger" level="info" additivity="false">
             <AppenderRef ref="FileLogger"/>
+        </Logger>
+
+        <Logger name="org.apache.ibatis" level="debug" additivity="false">
+            <AppenderRef ref="SqlSessionFileLogger"/>
         </Logger>
 
         <Root level="debug">
