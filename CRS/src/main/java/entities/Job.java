@@ -1,5 +1,7 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import entities.annotations.Column;
 import entities.annotations.Entity;
 import entities.annotations.Id;
@@ -15,20 +17,26 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "jobs")
 public class Job {
+    @JsonProperty
     @XmlElement
     @Id
     @Column(name = "job_id", autoIncrement = true)
     public int id;
 
+    @JsonProperty
     @XmlElement
     @Column(name = "ticket_id")
     public int ticketId;
 
+    @JsonProperty
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @XmlElement
     @XmlJavaTypeAdapter(DateAdapter.class)
     @Column(name = "date_start")
     public LocalDate dateStart;
 
+    @JsonProperty
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @XmlElement
     @XmlJavaTypeAdapter(DateAdapter.class)
     @Column(name = "date_finish", isNullable = true)

@@ -1,5 +1,7 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import entities.annotations.*;
 import services.xml.DateAdapter;
 
@@ -12,16 +14,20 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "payments")
 public class Payment {
+    @JsonProperty
     @XmlElement
     @Id
     @Column(name = "job_id")
     public int jobId;
 
+    @JsonProperty
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @XmlElement
     @Column(name = "pay_date")
     @XmlJavaTypeAdapter(DateAdapter.class)
     public LocalDate payDate;
 
+    @JsonProperty
     @XmlElement
     @Column(name = "amount")
     @Range(min = 1)
