@@ -117,6 +117,7 @@ public class MainMenu {
     }
 
     public static void runXml() {
+        main:
         do {
             char mainMenuOption = InputService.readCharInValues(
                     "0. Exit\n1. Read XML files\n2. Write XML from Database\nChoose an option: ",
@@ -124,49 +125,56 @@ public class MainMenu {
                     new char[]{'0', '1', '2'}
             );
 
-            if (mainMenuOption == '0')
-                break;
-            else if (mainMenuOption == '1') {
-                char parseOption = InputService.readCharInValues(
-                        "1. StAX\n2. JAXB\nChoose an option: ",
-                        "This option does not exist. Try again: ",
-                        new char[]{'1', '2'}
-                );
-                if (parseOption == '1')
-                    XMLService.staxParse();
-                else
-                    XMLService.jaxbParse();
-            } else if (mainMenuOption == '2') {
-                Class<Object> entityClass = EntityReflection.chooseEntity();
-                if (entityClass == null) continue;
-                EntityReflection<Object> rs = new EntityReflection<>(entityClass);
-
-                try {
-                    MyBatis<Object> dao = new MyBatis<>(entityClass);
-                    System.out.print("\nFill with fields to filter by.");
-                    Map<String, Object> columnFilters = rs.readConditionValues();
-
-                    Object list = getListClassInstance(
-                            entityClass,
-                            dao.get(columnFilters)
+            switch (mainMenuOption) {
+                case '0':
+                    break main;
+                case '1':
+                    char parseOption = InputService.readCharInValues(
+                            "1. StAX\n2. JAXB\nChoose an option: ",
+                            "This option does not exist. Try again: ",
+                            new char[]{'1', '2'}
                     );
+                    if (parseOption == '1')
+                        XMLService.staxParse();
+                    else
+                        XMLService.jaxbParse();
 
-                    System.out.print("Rows found with values");
-                    for (Map.Entry<String, Object> entry : columnFilters.entrySet())
-                        System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
-                    System.out.println(": ");
-                    System.out.println(ReflectionService.toString(list));
+                    break;
+                case '2':
+                    Class<Object> entityClass = EntityReflection.chooseEntity();
+                    if (entityClass == null) continue;
+                    EntityReflection<Object> rs = new EntityReflection<>(entityClass);
 
-                    XMLService.jaxbSerializeList(list);
-                } catch (JAXBException | IOException e) {
-                    LoggerService.log(Level.ERROR, e.getMessage());
-                }
+                    try {
+                        MyBatis<Object> dao = new MyBatis<>(entityClass);
+                        System.out.print("\nFill with fields to filter by.");
+                        Map<String, Object> columnFilters = rs.readConditionValues();
+
+                        Object list = getListClassInstance(
+                                entityClass,
+                                dao.get(columnFilters)
+                        );
+
+                        System.out.print("Rows found with values");
+                        for (Map.Entry<String, Object> entry : columnFilters.entrySet())
+                            System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
+                        System.out.println(": ");
+                        System.out.println(ReflectionService.toString(list));
+
+                        XMLService.jaxbSerializeList(list);
+                    } catch (JAXBException | IOException e) {
+                        LoggerService.log(Level.ERROR, e.getMessage());
+                    }
+                    break;
+                default:
+                    LoggerService.consoleLog(Level.WARN, "This option does not exist.");
             }
         } while (true);
 
     }
 
     public static void runJson() {
+        main:
         do {
             char mainMenuOption = InputService.readCharInValues(
                     "0. Exit\n1. Read JSON files\n2. Write JSON from Database\nChoose an option: ",
@@ -174,35 +182,40 @@ public class MainMenu {
                     new char[]{'0', '1', '2'}
             );
 
-            if (mainMenuOption == '0')
-                break;
-            else if (mainMenuOption == '1') {
+            switch (mainMenuOption) {
+                case '0':
+                    break main;
+                case '1':
                     JsonService.parse();
-            } else if (mainMenuOption == '2') {
-                Class<Object> entityClass = EntityReflection.chooseEntity();
-                if (entityClass == null) continue;
-                EntityReflection<Object> rs = new EntityReflection<>(entityClass);
+                    break;
+                case '2':
+                    Class<Object> entityClass = EntityReflection.chooseEntity();
+                    if (entityClass == null) continue;
+                    EntityReflection<Object> rs = new EntityReflection<>(entityClass);
 
-                try {
-                    MyBatis<Object> dao = new MyBatis<>(entityClass);
-                    System.out.print("\nFill with fields to filter by.");
-                    Map<String, Object> columnFilters = rs.readConditionValues();
+                    try {
+                        MyBatis<Object> dao = new MyBatis<>(entityClass);
+                        System.out.print("\nFill with fields to filter by.");
+                        Map<String, Object> columnFilters = rs.readConditionValues();
 
-                    Object list = getListClassInstance(
-                            entityClass,
-                            dao.get(columnFilters)
-                    );
+                        Object list = getListClassInstance(
+                                entityClass,
+                                dao.get(columnFilters)
+                        );
 
-                    System.out.print("Rows found with values");
-                    for (Map.Entry<String, Object> entry : columnFilters.entrySet())
-                        System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
-                    System.out.println(": ");
-                    System.out.println(ReflectionService.toString(list));
+                        System.out.print("Rows found with values");
+                        for (Map.Entry<String, Object> entry : columnFilters.entrySet())
+                            System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
+                        System.out.println(": ");
+                        System.out.println(ReflectionService.toString(list));
 
-                    JsonService.serializeList(list);
-                } catch (IOException e) {
-                    LoggerService.log(Level.ERROR, e.getMessage());
-                }
+                        JsonService.serializeList(list);
+                    } catch (IOException e) {
+                        LoggerService.log(Level.ERROR, e.getMessage());
+                    }
+                    break;
+                default:
+                    LoggerService.consoleLog(Level.WARN, "This option does not exist.");
             }
         } while (true);
 
