@@ -179,11 +179,12 @@ public class MainMenu {
             else if (mainMenuOption == '1') {
                     JsonService.parse();
             } else if (mainMenuOption == '2') {
-                Class<?> entityClass = EntityReflection.chooseEntity();
+                Class<Object> entityClass = EntityReflection.chooseEntity();
                 if (entityClass == null) continue;
-                EntityReflection<?> rs = new EntityReflection<>(entityClass);
+                EntityReflection<Object> rs = new EntityReflection<>(entityClass);
 
-                try (GenericDAO<Object> dao = GenericDAO.castDAO(new GenericDAO<>(entityClass))) {
+                try {
+                    MyBatis<Object> dao = new MyBatis<>(entityClass);
                     System.out.print("\nFill with fields to filter by.");
                     Map<String, Object> columnFilters = rs.readConditionValues();
 
@@ -207,6 +208,7 @@ public class MainMenu {
 
     }
 
+    @SuppressWarnings("unchecked")
     private static Object getListClassInstance(Class<?> clazz, List<?> list) {
         if (clazz == Customer.class) {
             CustomerList listClass = new CustomerList();
