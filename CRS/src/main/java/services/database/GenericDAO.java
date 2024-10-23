@@ -1,7 +1,6 @@
 package services.database;
 
 import entities.annotations.Column;
-import entities.annotations.Id;
 import entities.annotations.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
@@ -131,11 +130,6 @@ public class GenericDAO<T> implements IDao<T>, AutoCloseable {
     @SuppressWarnings("unchecked")
     public static <T> GenericDAO<T> castDAO(GenericDAO<?> dao) {
         return (GenericDAO<T>) dao;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> ReflectionService<T> castReflectionService(ReflectionService<?> rs) {
-        return (ReflectionService<T>) rs;
     }
 
 }

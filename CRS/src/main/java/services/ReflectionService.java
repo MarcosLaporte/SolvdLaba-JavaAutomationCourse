@@ -1,20 +1,17 @@
 package services;
 
-import entities.annotations.Column;
-import entities.annotations.Range;
-import entities.annotations.Size;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.sql.Date;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class ReflectionService<T> {
+@SuppressWarnings("unused")
+public record ReflectionService<T>(Class<T> clazz) {
     public enum ClassExclusionPredicate {
         INTERFACE(clazz -> !clazz.isInterface()),
         EXCEPTION(clazz -> !Exception.class.isAssignableFrom(clazz)),
@@ -31,10 +28,9 @@ public class ReflectionService<T> {
         }
     }
 
-    public final Class<T> clazz;
-
-    public ReflectionService(Class<T> clazz) {
-        this.clazz = clazz;
+    @Override
+    public Class<T> clazz() {
+        return clazz;
     }
 
     public static List<Class<?>> getClassesInPackage(String packageName, ClassExclusionPredicate... classExclusionPredicates) {
@@ -92,6 +88,7 @@ public class ReflectionService<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public T createInstance(Object... args) throws Exception {
         Constructor<?>[] constructors = this.clazz.getDeclaredConstructors();
         for (Constructor<?> constructor : constructors) {
@@ -205,7 +202,7 @@ public class ReflectionService<T> {
         return fields;
     }
 
-    public final List<Field> getFieldsByAnnotation(Class<? extends Annotation>[] includeAnnotations, Class<? extends Annotation>[] excludeAnnotations) {
+    public List<Field> getFieldsByAnnotation(Class<? extends Annotation>[] includeAnnotations, Class<? extends Annotation>[] excludeAnnotations) {
         List<Field> fields = new ArrayList<>();
         for (Field field : this.clazz.getDeclaredFields()) {
             boolean includeMatch = (
@@ -225,6 +222,7 @@ public class ReflectionService<T> {
         return fields;
     }
 
+    @SuppressWarnings("unchecked")
     public static String toString(Object obj) {
         if (obj instanceof List)
             return toString((List<Object>) obj);

@@ -22,7 +22,7 @@ public class EntityReflection<T> {
 
     public EntityReflection(Class<T> clazz) {
         this.rs = new ReflectionService<>(clazz);
-        this.clazz = rs.clazz;
+        this.clazz = rs.clazz();
 
         this.COLUMN_FIELDS = Collections.unmodifiableList(rs.getFieldsByAnnotation(Column.class));
         this.COLUMN_FIELDS_NOT_AI = COLUMN_FIELDS.stream()
@@ -48,10 +48,7 @@ public class EntityReflection<T> {
                 0, classes.size()
         );
 
-        if (chosenClass == 0)
-            return null;
-        else
-            return classes.get(chosenClass - 1);
+        return chosenClass == 0 ? null : classes.get(chosenClass - 1);
     }
 
     public T readNewInstance() throws Exception {
