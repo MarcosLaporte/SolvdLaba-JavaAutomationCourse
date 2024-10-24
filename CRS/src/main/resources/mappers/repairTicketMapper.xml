@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="entities.RepairTicket">
+    <resultMap id="repairTicketResultMap" type="entities.RepairTicket">
+        <id property="id" column="ticket_id"/>
+        <result property="custId" column="cust_id"/>
+        <result property="computerDesc" column="computer_desc"/>
+        <result property="dateSubmitted" column="date_submitted"/>
+    </resultMap>
+
+    <select id="get" parameterType="map" resultType="entities.RepairTicket" resultMap="repairTicketResultMap">
+        SELECT * FROM repair_tickets
+        <where>
+            <foreach collection="_parameter" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </select>
+
+    <insert id="create" parameterType="entities.RepairTicket">
+        INSERT INTO repair_tickets (cust_id, computer_desc, issue, date_submitted, status)
+        VALUES (#{custId}, #{computerDesc}, #{issue}, #{dateSubmitted}, #{status});
+    </insert>
+
+    <update id="update" parameterType="map">
+        UPDATE repair_tickets
+        <set>
+            <foreach collection="values" index="key" item="value" separator=",">
+                ${key} = #{value}
+            </foreach>
+        </set>
+        <where>
+            <foreach collection="filters" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </update>
+
+    <delete id="delete" parameterType="map">
+        DELETE FROM repair_tickets
+        <where>
+            <foreach collection="_parameter" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </delete>
+</mapper>
