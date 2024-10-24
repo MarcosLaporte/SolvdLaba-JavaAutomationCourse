@@ -109,11 +109,6 @@ public class MainMenu {
 
         } while (true);
 
-        try {
-            ConnectionManager.closePool();
-        } catch (SQLException ex) {
-            LoggerService.log(Level.ERROR, ex.getMessage());
-        }
     }
 
     public static void runXml() {
