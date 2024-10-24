@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="entities.Payment">
+    <resultMap id="paymentResultMap" type="entities.Payment">
+        <id property="jobId" column="job_id"/>
+        <result property="payDate" column="pay_date"/>
+    </resultMap>
+
+    <select id="get" parameterType="map" resultType="entities.Payment" resultMap="paymentResultMap">
+        SELECT * FROM payments
+        <where>
+            <foreach collection="_parameter" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </select>
+
+    <insert id="create" parameterType="entities.Payment">
+        INSERT INTO payments (job_id, pay_date, amount)
+        VALUES (#{jobId}, #{payDate}, #{amount});
+    </insert>
+
+    <update id="update" parameterType="map">
+        UPDATE payments
+        <set>
+            <foreach collection="values" index="key" item="value" separator=",">
+                ${key} = #{value}
+            </foreach>
+        </set>
+        <where>
+            <foreach collection="filters" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </update>
+
+    <delete id="delete" parameterType="map">
+        DELETE FROM payments
+        <where>
+            <foreach collection="_parameter" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </delete>
+</mapper>

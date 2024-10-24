@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="entities.Job">
+    <resultMap id="jobResultMap" type="entities.Job">
+        <id property="id" column="job_id"/>
+        <result property="ticketId" column="ticket_id"/>
+        <result property="dateStart" column="date_start"/>
+        <result property="dateFinish" column="date_finish"/>
+    </resultMap>
+
+    <select id="get" parameterType="map" resultType="entities.Job" resultMap="jobResultMap">
+        SELECT * FROM jobs
+        <where>
+            <foreach collection="_parameter" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </select>
+
+    <insert id="create" parameterType="entities.Job">
+        INSERT INTO jobs (ticket_id, date_start, date_finish)
+        VALUES (#{ticketId}, #{dateStart}, #{dateFinish});
+    </insert>
+
+    <update id="update" parameterType="map">
+        UPDATE jobs
+        <set>
+            <foreach collection="values" index="key" item="value" separator=",">
+                ${key} = #{value}
+            </foreach>
+        </set>
+        <where>
+            <foreach collection="filters" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </update>
+
+    <delete id="delete" parameterType="map">
+        DELETE FROM jobs
+        <where>
+            <foreach collection="_parameter" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </delete>
+</mapper>

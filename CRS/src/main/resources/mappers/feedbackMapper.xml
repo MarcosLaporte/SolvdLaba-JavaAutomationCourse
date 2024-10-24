@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="entities.Feedback">
+    <resultMap id="feedbackResultMap" type="entities.Feedback">
+        <id property="jobId" column="job_id"/>
+        <result property="custComment" column="cust_comment"/>
+        <result property="dateSubmit" column="date_submit"/>
+    </resultMap>
+
+    <select id="get" parameterType="map" resultType="entities.Feedback" resultMap="feedbackResultMap">
+        SELECT * FROM feedbacks
+        <where>
+            <foreach collection="_parameter" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </select>
+
+    <insert id="create" parameterType="entities.Feedback">
+        INSERT INTO feedbacks (job_id, cust_comment, email, date_submit)
+        VALUES (#{jobId}, #{custComment}, #{email}, #{date_submit});
+    </insert>
+
+    <update id="update" parameterType="map">
+        UPDATE feedbacks
+        <set>
+            <foreach collection="values" index="key" item="value" separator=",">
+                ${key} = #{value}
+            </foreach>
+        </set>
+        <where>
+            <foreach collection="filters" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </update>
+
+    <delete id="delete" parameterType="map">
+        DELETE FROM feedbacks
+        <where>
+            <foreach collection="_parameter" index="key" item="value" separator=" AND ">
+                ${key} = #{value}
+            </foreach>
+        </where>;
+    </delete>
+</mapper>
