@@ -46,17 +46,17 @@ public class MainMenu {
             );
 
             if (mainMenuOption == 0) {
-                System.out.println("Exiting...");
+                LoggerService.print("Exiting...");
                 break;
             }
 
             Class<Object> entityClass = EntityReflection.chooseEntity();
             if (entityClass == null) {
-                System.out.println("Going back...");
+                LoggerService.print("Going back...");
                 continue;
             }
 
-            System.out.println('\n' + entityClass.getSimpleName() + " selected.");
+            LoggerService.print('\n' + entityClass.getSimpleName() + " selected.");
             try {
                 EntityReflection<Object> rs = new EntityReflection<>(entityClass);
                 MyBatis<Object> dao = new MyBatis<>(entityClass);
@@ -69,14 +69,14 @@ public class MainMenu {
                         System.out.print("Rows found with values");
                         for (Map.Entry<String, Object> entry : columnFilters.entrySet())
                             System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
-                        System.out.println(": ");
-                        System.out.println(ReflectionService.toString(values));
+                        LoggerService.print(": ");
+                        LoggerService.print(ReflectionService.toString(values));
                     }
                     case CREATE -> {
                         if (dao.create(rs.readNewInstance()) > 0)
-                            System.out.println(entityClass.getSimpleName() + " created!");
+                            LoggerService.print(entityClass.getSimpleName() + " created!");
                         else
-                            System.out.println("No " + entityClass.getSimpleName() + " was created.");
+                            LoggerService.print("No " + entityClass.getSimpleName() + " was created.");
                     }
                     case UPDATE -> {
                         System.out.print("\nEnter the new values.");
@@ -95,7 +95,7 @@ public class MainMenu {
                         int rowsAffected = dao.delete(columnFilters);
                         System.out.printf("%d %s deleted.\n", rowsAffected, entityClass.getSimpleName());
                     }
-                    default -> System.out.println("This option does not exist.");
+                    default -> LoggerService.print("This option does not exist.");
                 }
             } catch (Exception e) {
                 LoggerService.log(Level.ERROR, e.getMessage());
@@ -158,8 +158,8 @@ public class MainMenu {
                         System.out.print("Rows found with values");
                         for (Map.Entry<String, Object> entry : columnFilters.entrySet())
                             System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
-                        System.out.println(": ");
-                        System.out.println(ReflectionService.toString(list));
+                        LoggerService.print(": ");
+                        LoggerService.print(ReflectionService.toString(list));
 
                         XMLService.jaxbSerializeList(list);
                     } catch (JAXBException | IOException e) {
@@ -206,8 +206,8 @@ public class MainMenu {
                         System.out.print("Rows found with values");
                         for (Map.Entry<String, Object> entry : columnFilters.entrySet())
                             System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
-                        System.out.println(": ");
-                        System.out.println(ReflectionService.toString(list));
+                        LoggerService.print(": ");
+                        LoggerService.print(ReflectionService.toString(list));
 
                         JsonService.serializeList(list);
                     } catch (IOException e) {

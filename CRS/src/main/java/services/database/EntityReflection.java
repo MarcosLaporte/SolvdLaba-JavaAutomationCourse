@@ -2,6 +2,7 @@ package services.database;
 
 import entities.annotations.*;
 import services.InputService;
+import services.LoggerService;
 import services.ReflectionService;
 
 import java.lang.reflect.*;
@@ -41,7 +42,7 @@ public class EntityReflection<T> {
         }
         sb.append("\n0. GO BACK");
 
-        System.out.println(sb);
+        LoggerService.print(sb);
         int chosenClass = InputService.readInt(
                 "Select class number: ",
                 "Invalid value. Try again: ",
@@ -79,7 +80,7 @@ public class EntityReflection<T> {
         }
         sb.append("\n0. CONTINUE");
 
-        System.out.println(sb);
+        LoggerService.print(sb);
         do {
             int chosenField = InputService.readInt(
                     "Select field to enter value: ",
