@@ -117,7 +117,7 @@ public abstract class InputService {
                     throw new IllegalArgumentException(errorMsg);
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                LoggerService.print(e.getMessage());
                 inputStr = StringUtils.EMPTY;
                 System.out.print("Try again: ");
             }

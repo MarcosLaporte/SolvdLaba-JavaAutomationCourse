@@ -77,7 +77,7 @@ public record ReflectionService<T>(Class<T> clazz) {
 
                     for (ClassExclusionPredicate pred : classExclusionPredicates) {
                         if (!pred.predicate.test(clazz)) {
-//                            System.out.println(clazz.getSimpleName() + " didn't pass predicate: " + pred);
+//                            LoggerService.print(clazz.getSimpleName() + " didn't pass predicate: " + pred);
                             continue main;
                         }
                     }
@@ -245,7 +245,7 @@ public record ReflectionService<T>(Class<T> clazz) {
 
     public static String toString(List<Object> objects) {
         if (objects == null || objects.isEmpty()) {
-            System.out.println("No data to display.");
+            LoggerService.print("No data to display.");
             return StringUtils.EMPTY;
         }
 
