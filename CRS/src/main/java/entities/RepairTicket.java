@@ -48,7 +48,7 @@ public class RepairTicket {
     @JsonProperty
     @XmlElement
     @Column(name = "status")
-    @Range(min = 1, max = 6)
+    @Range(min = 0, max = 6)
     public int status;
 
     private RepairTicket() {
