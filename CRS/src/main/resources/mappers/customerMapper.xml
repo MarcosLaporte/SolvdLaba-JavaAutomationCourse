@@ -21,7 +21,7 @@
 
     <insert id="create" parameterType="entities.Customer">
         INSERT INTO customers (full_name, email, phone_no, address, zip)
-        VALUES (#{full_name}, #{email}, #{phone_no}, #{address}, #{zip});
+        VALUES (#{fullName}, #{email}, #{phoneNo}, #{address}, #{zip});
     </insert>
 
     <update id="update" parameterType="map">

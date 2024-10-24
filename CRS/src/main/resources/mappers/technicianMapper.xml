@@ -20,7 +20,7 @@
 
     <insert id="create" parameterType="entities.Technician">
         INSERT INTO technicians (full_name, salary)
-        VALUES (#{full_name}, #{salary});
+        VALUES (#{fullName}, #{salary});
     </insert>
 
     <update id="update" parameterType="map">
