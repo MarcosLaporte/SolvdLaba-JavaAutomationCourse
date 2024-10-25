@@ -1,5 +1,6 @@
 package services.database;
 
+import entities.Entity;
 import entities.annotations.*;
 import services.InputService;
 import services.LoggerService;
@@ -11,9 +12,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static services.ReflectionService.ClassExclusionPredicate.ABSTRACT;
-import static services.ReflectionService.ClassExclusionPredicate.ANNOTATION;
 
-public class EntityReflection<T> {
+public class EntityReflection<T extends Entity> {
 
     private final ReflectionService<T> rs;
     public final Class<T> clazz;
@@ -23,7 +23,7 @@ public class EntityReflection<T> {
 
     public EntityReflection(Class<T> clazz) {
         this.rs = new ReflectionService<>(clazz);
-        this.clazz = rs.clazz();
+        this.clazz = clazz;
 
         this.COLUMN_FIELDS = Collections.unmodifiableList(rs.getFieldsByAnnotation(Column.class));
         this.COLUMN_FIELDS_NOT_AI = COLUMN_FIELDS.stream()
@@ -31,14 +31,13 @@ public class EntityReflection<T> {
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
     }
 
-    @SuppressWarnings("unchecked")
-    public static Class<Object> chooseEntity() {
-        List<Class<?>> classes = ReflectionService.getClassesInPackage("entities", ABSTRACT, ANNOTATION)
-                .stream().filter(clazz -> clazz.getAnnotation(Table.class) != null).toList();
+    public static Class<? extends Entity> chooseEntity() {
+        List<Class<? extends Entity>> classes = ReflectionService.getSubclassesOf(Entity.class, "entities", ABSTRACT)
+                .stream().filter(clazz -> clazz.getSuperclass() == Entity.class).toList();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < classes.size(); i++) {
-            Class<Object> clazz = (Class<Object>) classes.get(i);
-            sb.append('\n').append(i + 1).append(". ").append(clazz.getSimpleName());
+            sb.append('\n').append(i + 1).append(". ");
+            sb.append(classes.get(i).getSimpleName());
         }
         sb.append("\n0. GO BACK");
 
@@ -49,7 +48,7 @@ public class EntityReflection<T> {
                 0, classes.size()
         );
 
-        return chosenClass == 0 ? null : (Class<Object>) classes.get(chosenClass - 1);
+        return chosenClass == 0 ? null : classes.get(chosenClass - 1);
     }
 
     public T readNewInstance() throws Exception {

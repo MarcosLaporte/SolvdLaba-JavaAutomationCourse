@@ -3,15 +3,16 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="entities.Customer">
-    <resultMap id="customerResultMap" type="entities.Customer">
-        <id property="id" column="cust_id"/>
-        <result property="fullName" column="full_name"/>
-        <result property="phoneNo" column="phone_no"/>
+<mapper namespace="entities.RepairTicket">
+    <resultMap id="repairTicketResultMap" type="entities.RepairTicket">
+        <id property="id" column="ticket_id"/>
+        <result property="custId" column="cust_id"/>
+        <result property="computerDesc" column="computer_desc"/>
+        <result property="dateSubmitted" column="date_submitted"/>
     </resultMap>
 
-    <select id="get" parameterType="map" resultType="entities.Customer" resultMap="customerResultMap">
-        SELECT * FROM customers
+    <select id="get" parameterType="map" resultType="entities.RepairTicket" resultMap="repairTicketResultMap">
+        SELECT * FROM repair_tickets
         <where>
             <foreach collection="_parameter" index="key" item="value" separator=" AND ">
                 ${key} = #{value}
@@ -19,13 +20,13 @@
         </where>;
     </select>
 
-    <insert id="create" parameterType="entities.Customer">
-        INSERT INTO customers (full_name, email, phone_no, address, zip)
-        VALUES (#{fullName}, #{email}, #{phoneNo}, #{address}, #{zip});
+    <insert id="create" parameterType="entities.RepairTicket">
+        INSERT INTO repair_tickets (cust_id, computer_desc, issue, date_submitted, status)
+        VALUES (#{custId}, #{computerDesc}, #{issue}, #{dateSubmitted}, #{status});
     </insert>
 
     <update id="update" parameterType="map">
-        UPDATE customers
+        UPDATE repair_tickets
         <set>
             <foreach collection="values" index="key" item="value" separator=",">
                 ${key} = #{value}
@@ -39,7 +40,7 @@
     </update>
 
     <delete id="delete" parameterType="map">
-        DELETE FROM customers
+        DELETE FROM repair_tickets
         <where>
             <foreach collection="_parameter" index="key" item="value" separator=" AND ">
                 ${key} = #{value}

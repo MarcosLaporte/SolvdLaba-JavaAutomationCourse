@@ -3,15 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="entities.Customer">
-    <resultMap id="customerResultMap" type="entities.Customer">
-        <id property="id" column="cust_id"/>
-        <result property="fullName" column="full_name"/>
-        <result property="phoneNo" column="phone_no"/>
+<mapper namespace="entities.JobTechnician">
+    <resultMap id="jobTechnicianResultMap" type="entities.JobTechnician">
+        <id property="jobId" column="job_id"/>
+        <id property="techId" column="tech_id"/>
     </resultMap>
 
-    <select id="get" parameterType="map" resultType="entities.Customer" resultMap="customerResultMap">
-        SELECT * FROM customers
+    <select id="get" parameterType="map" resultType="entities.JobTechnician" resultMap="jobTechnicianResultMap">
+        SELECT * FROM jobs_technicians
         <where>
             <foreach collection="_parameter" index="key" item="value" separator=" AND ">
                 ${key} = #{value}
@@ -19,13 +18,13 @@
         </where>;
     </select>
 
-    <insert id="create" parameterType="entities.Customer">
-        INSERT INTO customers (full_name, email, phone_no, address, zip)
-        VALUES (#{fullName}, #{email}, #{phoneNo}, #{address}, #{zip});
+    <insert id="create" parameterType="entities.JobTechnician">
+        INSERT INTO jobs_technicians (job_id, tech_id, task, done)
+        VALUES (#{jobId}, #{techId}, #{task}, #{done});
     </insert>
 
     <update id="update" parameterType="map">
-        UPDATE customers
+        UPDATE jobs_technicians
         <set>
             <foreach collection="values" index="key" item="value" separator=",">
                 ${key} = #{value}
@@ -39,7 +38,7 @@
     </update>
 
     <delete id="delete" parameterType="map">
-        DELETE FROM customers
+        DELETE FROM jobs_technicians
         <where>
             <foreach collection="_parameter" index="key" item="value" separator=" AND ">
                 ${key} = #{value}

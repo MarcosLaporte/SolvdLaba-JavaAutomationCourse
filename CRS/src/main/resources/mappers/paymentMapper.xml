@@ -3,15 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="entities.Customer">
-    <resultMap id="customerResultMap" type="entities.Customer">
-        <id property="id" column="cust_id"/>
-        <result property="fullName" column="full_name"/>
-        <result property="phoneNo" column="phone_no"/>
+<mapper namespace="entities.Payment">
+    <resultMap id="paymentResultMap" type="entities.Payment">
+        <id property="jobId" column="job_id"/>
+        <result property="payDate" column="pay_date"/>
     </resultMap>
 
-    <select id="get" parameterType="map" resultType="entities.Customer" resultMap="customerResultMap">
-        SELECT * FROM customers
+    <select id="get" parameterType="map" resultType="entities.Payment" resultMap="paymentResultMap">
+        SELECT * FROM payments
         <where>
             <foreach collection="_parameter" index="key" item="value" separator=" AND ">
                 ${key} = #{value}
@@ -19,13 +18,13 @@
         </where>;
     </select>
 
-    <insert id="create" parameterType="entities.Customer">
-        INSERT INTO customers (full_name, email, phone_no, address, zip)
-        VALUES (#{fullName}, #{email}, #{phoneNo}, #{address}, #{zip});
+    <insert id="create" parameterType="entities.Payment">
+        INSERT INTO payments (job_id, pay_date, amount)
+        VALUES (#{jobId}, #{payDate}, #{amount});
     </insert>
 
     <update id="update" parameterType="map">
-        UPDATE customers
+        UPDATE payments
         <set>
             <foreach collection="values" index="key" item="value" separator=",">
                 ${key} = #{value}
@@ -39,7 +38,7 @@
     </update>
 
     <delete id="delete" parameterType="map">
-        DELETE FROM customers
+        DELETE FROM payments
         <where>
             <foreach collection="_parameter" index="key" item="value" separator=" AND ">
                 ${key} = #{value}

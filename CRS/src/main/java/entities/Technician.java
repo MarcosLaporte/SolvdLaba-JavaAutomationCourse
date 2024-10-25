@@ -7,9 +7,8 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "technician")
-@Entity
 @Table(name = "technicians")
-public class Technician {
+public class Technician extends Entity {
     @JsonProperty
     @XmlElement
     @Id

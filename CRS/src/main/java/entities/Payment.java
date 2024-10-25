@@ -11,9 +11,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
 @XmlRootElement(name = "payment")
-@Entity
 @Table(name = "payments")
-public class Payment {
+public class Payment extends Entity {
     @JsonProperty
     @XmlElement
     @Id

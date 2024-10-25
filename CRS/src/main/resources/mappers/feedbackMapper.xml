@@ -3,15 +3,15 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="entities.Customer">
-    <resultMap id="customerResultMap" type="entities.Customer">
-        <id property="id" column="cust_id"/>
-        <result property="fullName" column="full_name"/>
-        <result property="phoneNo" column="phone_no"/>
+<mapper namespace="entities.Feedback">
+    <resultMap id="feedbackResultMap" type="entities.Feedback">
+        <id property="jobId" column="job_id"/>
+        <result property="custComment" column="cust_comment"/>
+        <result property="dateSubmit" column="date_submit"/>
     </resultMap>
 
-    <select id="get" parameterType="map" resultType="entities.Customer" resultMap="customerResultMap">
-        SELECT * FROM customers
+    <select id="get" parameterType="map" resultType="entities.Feedback" resultMap="feedbackResultMap">
+        SELECT * FROM feedbacks
         <where>
             <foreach collection="_parameter" index="key" item="value" separator=" AND ">
                 ${key} = #{value}
@@ -19,13 +19,13 @@
         </where>;
     </select>
 
-    <insert id="create" parameterType="entities.Customer">
-        INSERT INTO customers (full_name, email, phone_no, address, zip)
-        VALUES (#{fullName}, #{email}, #{phoneNo}, #{address}, #{zip});
+    <insert id="create" parameterType="entities.Feedback">
+        INSERT INTO feedbacks (job_id, cust_comment, email, date_submit)
+        VALUES (#{jobId}, #{custComment}, #{email}, #{date_submit});
     </insert>
 
     <update id="update" parameterType="map">
-        UPDATE customers
+        UPDATE feedbacks
         <set>
             <foreach collection="values" index="key" item="value" separator=",">
                 ${key} = #{value}
@@ -39,7 +39,7 @@
     </update>
 
     <delete id="delete" parameterType="map">
-        DELETE FROM customers
+        DELETE FROM feedbacks
         <where>
             <foreach collection="_parameter" index="key" item="value" separator=" AND ">
                 ${key} = #{value}

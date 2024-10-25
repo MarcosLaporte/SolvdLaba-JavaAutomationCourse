@@ -12,9 +12,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
 @XmlRootElement(name = "repairTicket")
-@Entity
 @Table(name = "repair_tickets")
-public class RepairTicket {
+public class RepairTicket extends Entity {
     @JsonProperty
     @XmlElement
     @Id
@@ -48,7 +47,7 @@ public class RepairTicket {
     @JsonProperty
     @XmlElement
     @Column(name = "status")
-    @Range(min = 1, max = 6)
+    @Range(min = 0, max = 6)
     public int status;
 
     private RepairTicket() {

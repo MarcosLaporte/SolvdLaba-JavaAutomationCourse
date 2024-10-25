@@ -1,16 +1,14 @@
 package entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import entities.annotations.Column;
-import entities.annotations.Id;
-import entities.annotations.Range;
-import entities.annotations.Table;
+import entities.annotations.*;
+
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "repairTicketPart")
 @Table(name = "repair_tickets_part")
-public class RepairTicketPart {
+public class RepairTicketPart extends Entity {
     @JsonProperty
     @XmlElement
     @Id
