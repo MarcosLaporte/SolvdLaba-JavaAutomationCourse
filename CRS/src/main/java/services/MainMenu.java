@@ -46,56 +46,56 @@ public class MainMenu {
             );
 
             if (mainMenuOption == 0) {
-                LoggerService.print("Exiting...");
+                LoggerService.println("Exiting...");
                 break;
             }
 
             Class<Object> entityClass = EntityReflection.chooseEntity();
             if (entityClass == null) {
-                LoggerService.print("Going back...");
+                LoggerService.println("Going back...");
                 continue;
             }
 
-            LoggerService.print('\n' + entityClass.getSimpleName() + " selected.");
+            LoggerService.println('\n' + entityClass.getSimpleName() + " selected.");
             try {
                 EntityReflection<Object> rs = new EntityReflection<>(entityClass);
                 MyBatis<Object> dao = new MyBatis<>(entityClass);
                 switch (DaoMenu.values()[mainMenuOption]) {
                     case GET -> {
-                        System.out.print("\nFill with fields to filter by.");
+                        LoggerService.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
                         List<?> values = dao.get(columnFilters);
 
-                        System.out.print("Rows found with values");
+                        LoggerService.print("Rows found with values");
                         for (Map.Entry<String, Object> entry : columnFilters.entrySet())
-                            System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
-                        LoggerService.print(": ");
-                        LoggerService.print(ReflectionService.toString(values));
+                            LoggerService.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
+                        LoggerService.println(": ");
+                        LoggerService.println(ReflectionService.toString(values));
                     }
                     case CREATE -> {
                         if (dao.create(rs.readNewInstance()) > 0)
-                            LoggerService.print(entityClass.getSimpleName() + " created!");
+                            LoggerService.println(entityClass.getSimpleName() + " created!");
                         else
-                            LoggerService.print("No " + entityClass.getSimpleName() + " was created.");
+                            LoggerService.println("No " + entityClass.getSimpleName() + " was created.");
                     }
                     case UPDATE -> {
-                        System.out.print("\nEnter the new values.");
+                        LoggerService.print("\nEnter the new values.");
                         Map<String, Object> newValues = rs.readNewValues();
 
-                        System.out.print("\nEnter the conditions to follow.");
+                        LoggerService.print("\nEnter the conditions to follow.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
 
                         int rowsAffected = dao.update(newValues, columnFilters);
-                        System.out.printf("%d %s updated.\n", rowsAffected, entityClass.getSimpleName());
+                        LoggerService.println(String.format("%d %s updated.", rowsAffected, entityClass.getSimpleName()));
                     }
                     case DELETE -> {
-                        System.out.print("\nEnter the conditions to follow.");
+                        LoggerService.print("\nEnter the conditions to follow.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
 
                         int rowsAffected = dao.delete(columnFilters);
-                        System.out.printf("%d %s deleted.\n", rowsAffected, entityClass.getSimpleName());
+                        LoggerService.println(String.format("%d %s deleted.", rowsAffected, entityClass.getSimpleName()));
                     }
-                    default -> LoggerService.print("This option does not exist.");
+                    default -> LoggerService.println("This option does not exist.");
                 }
             } catch (Exception e) {
                 LoggerService.log(Level.ERROR, e.getMessage());
@@ -147,7 +147,7 @@ public class MainMenu {
 
                     try {
                         MyBatis<Object> dao = new MyBatis<>(entityClass);
-                        System.out.print("\nFill with fields to filter by.");
+                        LoggerService.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
 
                         Object list = getListClassInstance(
@@ -155,11 +155,11 @@ public class MainMenu {
                                 dao.get(columnFilters)
                         );
 
-                        System.out.print("Rows found with values");
+                        LoggerService.print("Rows found with values");
                         for (Map.Entry<String, Object> entry : columnFilters.entrySet())
-                            System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
-                        LoggerService.print(": ");
-                        LoggerService.print(ReflectionService.toString(list));
+                            LoggerService.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
+                        LoggerService.println(": ");
+                        LoggerService.println(ReflectionService.toString(list));
 
                         XMLService.jaxbSerializeList(list);
                     } catch (JAXBException | IOException e) {
@@ -195,7 +195,7 @@ public class MainMenu {
 
                     try {
                         MyBatis<Object> dao = new MyBatis<>(entityClass);
-                        System.out.print("\nFill with fields to filter by.");
+                        LoggerService.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
 
                         Object list = getListClassInstance(
@@ -203,11 +203,11 @@ public class MainMenu {
                                 dao.get(columnFilters)
                         );
 
-                        System.out.print("Rows found with values");
+                        LoggerService.print("Rows found with values");
                         for (Map.Entry<String, Object> entry : columnFilters.entrySet())
-                            System.out.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
-                        LoggerService.print(": ");
-                        LoggerService.print(ReflectionService.toString(list));
+                            LoggerService.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
+                        LoggerService.println(": ");
+                        LoggerService.println(ReflectionService.toString(list));
 
                         JsonService.serializeList(list);
                     } catch (IOException e) {

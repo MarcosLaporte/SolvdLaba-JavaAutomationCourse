@@ -77,7 +77,7 @@ public record ReflectionService<T>(Class<T> clazz) {
 
                     for (ClassExclusionPredicate pred : classExclusionPredicates) {
                         if (!pred.predicate.test(clazz)) {
-//                            LoggerService.print(clazz.getSimpleName() + " didn't pass predicate: " + pred);
+//                            LoggerService.println(clazz.getSimpleName() + " didn't pass predicate: " + pred);
                             continue main;
                         }
                     }
@@ -111,7 +111,7 @@ public record ReflectionService<T>(Class<T> clazz) {
         if (paramTypes.length != args.length) return false;
         for (int i = 0; i < paramTypes.length; i++) {
             if (args[i] != null && !paramTypes[i].isAssignableFrom(args[i].getClass())) {
-//                System.out.printf("Arg%d (%s) does not match with parameter type (%s)\n", i+1, args[i].getClass(), paramTypes[i]);
+//                LoggerService.println(String.format("Arg%d (%s) does not match with parameter type (%s)", i+1, args[i].getClass(), paramTypes[i]));
                 return false;
             }
         }
@@ -245,7 +245,7 @@ public record ReflectionService<T>(Class<T> clazz) {
 
     public static String toString(List<Object> objects) {
         if (objects == null || objects.isEmpty()) {
-            LoggerService.print("No data to display.");
+            LoggerService.println("No data to display.");
             return StringUtils.EMPTY;
         }
 

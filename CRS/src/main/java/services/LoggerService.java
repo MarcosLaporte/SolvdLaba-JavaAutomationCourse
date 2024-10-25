@@ -10,12 +10,20 @@ public class LoggerService {
     private static final Logger FILE = LogManager.getLogger("FileOnlyLogger");
     private static final Logger SOUT = LogManager.getLogger("Sout");
 
-    public static void log(Level level, String message) {
-        log(level, message, LOGGER);
-    }
-
     public static void print(Object message) {
         SOUT.info(message);
+    }
+
+    public static void println(Object message) {
+        SOUT.info("{}\n", message);
+    }
+
+    public static void println() {
+        SOUT.info('\n');
+    }
+
+    public static void log(Level level, String message) {
+        log(level, message, LOGGER);
     }
 
     public static void consoleLog(Level level, String message) {

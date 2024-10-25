@@ -15,7 +15,7 @@ public class JsonService {
         String[] jsonFiles = FileService.getFileNames(baseDir, "json");
 
         if (jsonFiles.length == 0) {
-            LoggerService.print("No files to read.");
+            LoggerService.println("No files to read.");
             return;
         }
 
@@ -24,7 +24,7 @@ public class JsonService {
 
         for (String json : jsonFiles) {
             try {
-                LoggerService.print(json);
+                LoggerService.println(json);
                 String fileNoExt = FileService.stripExtension.apply(json);
                 Class<?> clazz = switch (fileNoExt) {
                     case "CustomerList" -> CustomerList.class;
@@ -43,9 +43,9 @@ public class JsonService {
                 };
 
                 Object readValue = objectMapper.readValue(new File(baseDir + json), clazz);
-                LoggerService.print(ReflectionService.toString(readValue));
-                LoggerService.print("----------------------------------");
-                LoggerService.print("----------------------------------");
+                LoggerService.println(ReflectionService.toString(readValue));
+                LoggerService.println("----------------------------------");
+                LoggerService.println("----------------------------------");
             } catch (IOException | IllegalStateException e) {
                 LoggerService.log(Level.ERROR, e.getMessage());
             }

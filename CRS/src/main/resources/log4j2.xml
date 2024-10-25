@@ -14,7 +14,7 @@
         </File>
 
         <Console name="PlainConsoleAppender" target="SYSTEM_OUT">
-            <PatternLayout pattern="%msg%n"/>
+            <PatternLayout pattern="%msg"/>
         </Console>
     </Appenders>
 

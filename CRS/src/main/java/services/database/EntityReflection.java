@@ -42,7 +42,7 @@ public class EntityReflection<T> {
         }
         sb.append("\n0. GO BACK");
 
-        LoggerService.print(sb);
+        LoggerService.println(sb);
         int chosenClass = InputService.readInt(
                 "Select class number: ",
                 "Invalid value. Try again: ",
@@ -80,7 +80,7 @@ public class EntityReflection<T> {
         }
         sb.append("\n0. CONTINUE");
 
-        LoggerService.print(sb);
+        LoggerService.println(sb);
         do {
             int chosenField = InputService.readInt(
                     "Select field to enter value: ",

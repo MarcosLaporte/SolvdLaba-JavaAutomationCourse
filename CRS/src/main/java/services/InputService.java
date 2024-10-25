@@ -19,7 +19,7 @@ public abstract class InputService {
     }
 
     public static int readInt(String msg, String errorMsg, int min, int max) {
-        System.out.print(msg);
+        LoggerService.print(msg);
         int inputNumber = min;
         boolean isValid = false;
 
@@ -30,7 +30,7 @@ public abstract class InputService {
 
                 isValid = true;
             } catch (Exception e) {
-                System.out.print(errorMsg);
+                LoggerService.print(errorMsg);
             } finally {
                 SCANNER.nextLine(); //Cleans buffer
             }
@@ -40,7 +40,7 @@ public abstract class InputService {
     }
 
     public static float readFloat(String msg, String errorMsg, float min, float max) {
-        System.out.print(msg);
+        LoggerService.print(msg);
         float inputNumber = min;
         boolean isValid = false;
 
@@ -51,7 +51,7 @@ public abstract class InputService {
 
                 isValid = true;
             } catch (Exception e) {
-                System.out.print(errorMsg);
+                LoggerService.print(errorMsg);
                 SCANNER.nextLine();
             } finally {
                 SCANNER.nextLine(); //Cleans buffer
@@ -62,10 +62,10 @@ public abstract class InputService {
     }
 
     public static char readCharInValues(String msg, String errorMsg, char[] availableValues) {
-        System.out.print(msg);
+        LoggerService.print(msg);
         char inputChar = Character.toUpperCase(SCANNER.next().charAt(0));
         while (!ArrayUtils.contains(availableValues, inputChar)) {
-            System.out.print(errorMsg);
+            LoggerService.print(errorMsg);
             inputChar = Character.toUpperCase(SCANNER.next().charAt(0));
         }
 
@@ -74,7 +74,7 @@ public abstract class InputService {
     }
 
     public static String readString(String msg, int minLength, int maxLength) {
-        System.out.print(msg);
+        LoggerService.print(msg);
         String inputStr;
 
         do {
@@ -86,7 +86,7 @@ public abstract class InputService {
             } catch (Exception e) {
                 LoggerService.consoleLog(Level.WARN, e.getMessage());
                 inputStr = StringUtils.EMPTY;
-                System.out.print("Try again: ");
+                LoggerService.print("Try again: ");
             }
         } while (StringUtils.isEmpty(inputStr));
 
@@ -94,10 +94,10 @@ public abstract class InputService {
     }
 
     public static String readStringInValues(String msg, String errorMsg, String[] availableValues) {
-        System.out.print(msg);
+        LoggerService.print(msg);
         String inputStr = SCANNER.next();
         while (!ArrayUtils.contains(availableValues, inputStr)) {
-            System.out.print(errorMsg);
+            LoggerService.print(errorMsg);
             inputStr = SCANNER.next();
         }
 
@@ -107,7 +107,7 @@ public abstract class InputService {
     }
 
     public static String readStringFollowsCondition(String msg, String errorMsg, Predicate<String> condition) {
-        System.out.print(msg);
+        LoggerService.print(msg);
         String inputStr;
 
         do {
@@ -117,9 +117,9 @@ public abstract class InputService {
                     throw new IllegalArgumentException(errorMsg);
                 }
             } catch (Exception e) {
-                LoggerService.print(e.getMessage());
+                LoggerService.println(e.getMessage());
                 inputStr = StringUtils.EMPTY;
-                System.out.print("Try again: ");
+                LoggerService.print("Try again: ");
             }
         } while (StringUtils.isEmpty(inputStr));
 
@@ -159,7 +159,7 @@ public abstract class InputService {
                 isValid = true;
 
             } catch (DateTimeException | IllegalArgumentException e) {
-                System.out.printf("'%d-%d-%d' Invalid date. Please try again.", year, month, day);
+                LoggerService.println(String.format("'%d-%d-%d' Invalid date. Please try again.", year, month, day));
             }
         }
 
