@@ -58,9 +58,8 @@ public class MainMenu {
             }
 
             System.out.println('\n' + entityClass.getSimpleName() + " selected.");
-            try {
+            try (MyBatis<T> dao = new MyBatis<>(entityClass)) {
                 EntityReflection<T> rs = new EntityReflection<>(entityClass);
-                MyBatis<T> dao = new MyBatis<>(entityClass);
                 switch (DaoMenu.values()[mainMenuOption]) {
                     case GET -> {
                         System.out.print("\nFill with fields to filter by.");
@@ -141,8 +140,7 @@ public class MainMenu {
                     if (entityClass == null) continue;
                     EntityReflection<? extends Entity> rs = new EntityReflection<>(entityClass);
 
-                    try {
-                        MyBatis<? extends Entity> dao = new MyBatis<>(entityClass);
+                    try (MyBatis<? extends Entity> dao = new MyBatis<>(entityClass)) {
                         System.out.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
 
@@ -186,8 +184,7 @@ public class MainMenu {
                     if (entityClass == null) continue;
                     EntityReflection<? extends Entity> rs = new EntityReflection<>(entityClass);
 
-                    try {
-                        MyBatis<? extends Entity> dao = new MyBatis<>(entityClass);
+                    try (MyBatis<? extends Entity> dao = new MyBatis<>(entityClass)) {
                         System.out.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
 

@@ -11,51 +11,50 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MyBatis<T> implements IDao<T> {
-    private final SqlSessionFactory sessionFactory;
+public class MyBatis<T> implements IDao<T>, AutoCloseable {
+    private final SqlSession session;
     public final Class<T> clazz;
 
     public MyBatis(Class<T> clazz) throws IOException {
         Reader reader = Resources.getResourceAsReader("mybatis-config.xml");
-        this.sessionFactory = new SqlSessionFactoryBuilder().build(reader);
+        SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(reader);
+        this.session = sessionFactory.openSession();
         this.clazz = clazz;
     }
 
     @Override
+    public void close() {
+        if (this.session != null)
+            this.session.close();
+    }
+
+    @Override
     public List<T> get(Map<String, Object> columnCondition) {
-        try (SqlSession session = sessionFactory.openSession()) {
-            return session.selectList(clazz.getName() + ".get", columnCondition);
-        }
+        return this.session.selectList(clazz.getName() + ".get", columnCondition);
     }
 
     @Override
     public int create(T t) {
-        try (SqlSession session = sessionFactory.openSession()) {
-            int rows = session.insert(clazz.getName() + ".create", t);
-            session.commit();
-            return rows;
-        }
+        int rows = this.session.insert(clazz.getName() + ".create", t);
+        this.session.commit();
+        return rows;
     }
 
     @Override
     public int update(Map<String, Object> newValues, Map<String, Object> columnCondition) {
-        try (SqlSession session = sessionFactory.openSession()) {
-            Map<String, Map<String, Object>> paramsMap = new HashMap<>();
-            paramsMap.put("values", newValues);
-            paramsMap.put("filters", columnCondition);
+        Map<String, Map<String, Object>> paramsMap = new HashMap<>();
+        paramsMap.put("values", newValues);
+        paramsMap.put("filters", columnCondition);
 
-            int rows = session.update(clazz.getName() + ".update", paramsMap);
-            session.commit();
-            return rows;
-        }
+        int rows = this.session.update(clazz.getName() + ".update", paramsMap);
+        this.session.commit();
+        return rows;
     }
 
     @Override
     public int delete(Map<String, Object> columnCondition) {
-        try (SqlSession session = sessionFactory.openSession()) {
-            int rows = session.delete(clazz.getName() + ".delete", columnCondition);
-            session.commit();
-            return rows;
-        }
+        int rows = this.session.delete(clazz.getName() + ".delete", columnCondition);
+        this.session.commit();
+        return rows;
     }
 }
