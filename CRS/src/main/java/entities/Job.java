@@ -2,10 +2,7 @@ package entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import entities.annotations.Column;
-import entities.annotations.Entity;
-import entities.annotations.Id;
-import entities.annotations.Table;
+import entities.annotations.*;
 import services.xml.DateAdapter;
 
 import jakarta.xml.bind.annotation.XmlElement;
@@ -14,9 +11,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
 @XmlRootElement(name = "job")
-@Entity
 @Table(name = "jobs")
-public class Job {
+public class Job extends Entity {
     @JsonProperty
     @XmlElement
     @Id

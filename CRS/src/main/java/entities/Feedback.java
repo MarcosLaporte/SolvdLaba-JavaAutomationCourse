@@ -11,9 +11,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
 @XmlRootElement(name = "feedback")
-@Entity
 @Table(name = "feedbacks")
-public class Feedback {
+public class Feedback extends Entity {
     @JsonProperty
     @XmlElement
     @Id

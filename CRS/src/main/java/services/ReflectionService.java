@@ -28,11 +28,6 @@ public record ReflectionService<T>(Class<T> clazz) {
         }
     }
 
-    @Override
-    public Class<T> clazz() {
-        return clazz;
-    }
-
     public static List<Class<?>> getClassesInPackage(String packageName, ClassExclusionPredicate... classExclusionPredicates) {
         List<Class<?>> classes = new ArrayList<>();
         String path = packageName.replace('.', '/');

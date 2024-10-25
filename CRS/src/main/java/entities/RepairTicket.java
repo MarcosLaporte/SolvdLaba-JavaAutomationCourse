@@ -12,9 +12,8 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
 @XmlRootElement(name = "repairTicket")
-@Entity
 @Table(name = "repair_tickets")
-public class RepairTicket {
+public class RepairTicket extends Entity {
     @JsonProperty
     @XmlElement
     @Id

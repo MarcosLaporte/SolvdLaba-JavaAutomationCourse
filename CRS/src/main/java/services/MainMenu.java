@@ -36,7 +36,7 @@ public class MainMenu {
         }
     }
 
-    public static void runDatabase() {
+    public static <T extends Entity> void runDatabase() {
         int mainMenuOption;
         do {
             mainMenuOption = InputService.readInt(
@@ -50,7 +50,8 @@ public class MainMenu {
                 break;
             }
 
-            Class<Object> entityClass = EntityReflection.chooseEntity();
+            @SuppressWarnings("unchecked")
+            Class<T> entityClass = (Class<T>) EntityReflection.chooseEntity();
             if (entityClass == null) {
                 System.out.println("Going back...");
                 continue;
@@ -58,8 +59,8 @@ public class MainMenu {
 
             System.out.println('\n' + entityClass.getSimpleName() + " selected.");
             try {
-                EntityReflection<Object> rs = new EntityReflection<>(entityClass);
-                MyBatis<Object> dao = new MyBatis<>(entityClass);
+                EntityReflection<T> rs = new EntityReflection<>(entityClass);
+                MyBatis<T> dao = new MyBatis<>(entityClass);
                 switch (DaoMenu.values()[mainMenuOption]) {
                     case GET -> {
                         System.out.print("\nFill with fields to filter by.");
@@ -136,19 +137,16 @@ public class MainMenu {
 
                     break;
                 case '2':
-                    Class<Object> entityClass = EntityReflection.chooseEntity();
+                    Class<? extends Entity> entityClass = EntityReflection.chooseEntity();
                     if (entityClass == null) continue;
-                    EntityReflection<Object> rs = new EntityReflection<>(entityClass);
+                    EntityReflection<? extends Entity> rs = new EntityReflection<>(entityClass);
 
                     try {
-                        MyBatis<Object> dao = new MyBatis<>(entityClass);
+                        MyBatis<? extends Entity> dao = new MyBatis<>(entityClass);
                         System.out.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
 
-                        Object list = getListClassInstance(
-                                entityClass,
-                                dao.get(columnFilters)
-                        );
+                        Object list = getListClassInstance(entityClass, dao.get(columnFilters));
 
                         System.out.print("Rows found with values");
                         for (Map.Entry<String, Object> entry : columnFilters.entrySet())
@@ -184,19 +182,16 @@ public class MainMenu {
                     JsonService.parse();
                     break;
                 case '2':
-                    Class<Object> entityClass = EntityReflection.chooseEntity();
+                    Class<? extends Entity> entityClass = EntityReflection.chooseEntity();
                     if (entityClass == null) continue;
-                    EntityReflection<Object> rs = new EntityReflection<>(entityClass);
+                    EntityReflection<? extends Entity> rs = new EntityReflection<>(entityClass);
 
                     try {
-                        MyBatis<Object> dao = new MyBatis<>(entityClass);
+                        MyBatis<? extends Entity> dao = new MyBatis<>(entityClass);
                         System.out.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
 
-                        Object list = getListClassInstance(
-                                entityClass,
-                                dao.get(columnFilters)
-                        );
+                        Object list = getListClassInstance(entityClass, dao.get(columnFilters));
 
                         System.out.print("Rows found with values");
                         for (Map.Entry<String, Object> entry : columnFilters.entrySet())
@@ -217,7 +212,7 @@ public class MainMenu {
     }
 
     @SuppressWarnings("unchecked")
-    private static Object getListClassInstance(Class<?> clazz, List<?> list) {
+    private static <T extends Entity> Object getListClassInstance(Class<T> clazz, List<?> list) {
         if (clazz == Customer.class) {
             CustomerList listClass = new CustomerList();
             listClass.setCustomerList((List<Customer>) list);
