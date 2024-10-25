@@ -63,11 +63,12 @@ public record ReflectionService<T>(Class<T> clazz) {
                     addClassesFromDirectory(file, subPackageName, classes, classExclusionPredicates);
                 } else if (file.getName().endsWith(".java")) {
                     String className = file.getName().substring(0, file.getName().length() - 5);
-                    Class<?> clazz = null;
+                    Class<?> clazz;
                     try {
                         clazz = Class.forName(packageName + "." + className);
                     } catch (ClassNotFoundException e) {
                         LoggerService.log(Level.WARN, String.format("%s.%s not found.", packageName, className));
+                        continue;
                     }
 
                     for (ClassExclusionPredicate pred : classExclusionPredicates) {
