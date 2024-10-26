@@ -99,12 +99,6 @@ public class MainMenu {
                 }
             } catch (Exception e) {
                 LoggerService.log(Level.ERROR, e.getMessage());
-
-                try {
-                    ConnectionManager.closePool();
-                } catch (SQLException ex) {
-                    LoggerService.log(Level.ERROR, ex.getMessage());
-                }
             }
 
         } while (true);
