@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Level;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.function.Predicate;
@@ -124,6 +125,27 @@ public abstract class InputService {
         } while (StringUtils.isEmpty(inputStr));
 
         return inputStr;
+    }
+
+    public static int selectIndexFromList(List<String> items, boolean allowCancel) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < items.size(); i++) {
+            sb.append('\n').append(i + 1).append(". ");
+            sb.append(items.get(i));
+        }
+
+        int min = 1;
+        if (allowCancel) {
+            sb.append("\n0. Cancel");
+            min = 0;
+        }
+
+        LoggerService.println(sb);
+        return InputService.readInt(
+                "Select an item from the list: ",
+                "Invalid value. Try again: ",
+                min, items.size()
+        ) - 1;
     }
 
     public static LocalDate readValidDate() {

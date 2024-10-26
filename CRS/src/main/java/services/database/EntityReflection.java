@@ -3,7 +3,6 @@ package services.database;
 import entities.Entity;
 import entities.annotations.*;
 import services.InputService;
-import services.LoggerService;
 import services.ReflectionService;
 
 import java.lang.reflect.*;
@@ -34,21 +33,10 @@ public class EntityReflection<T extends Entity> {
     public static Class<? extends Entity> chooseEntity() {
         List<Class<? extends Entity>> classes = ReflectionService.getSubclassesOf(Entity.class, "entities", ABSTRACT)
                 .stream().filter(clazz -> clazz.getSuperclass() == Entity.class).toList();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < classes.size(); i++) {
-            sb.append('\n').append(i + 1).append(". ");
-            sb.append(classes.get(i).getSimpleName());
-        }
-        sb.append("\n0. GO BACK");
 
-        LoggerService.println(sb);
-        int chosenClass = InputService.readInt(
-                "Select class number: ",
-                "Invalid value. Try again: ",
-                0, classes.size()
-        );
+        int classIndex = InputService.selectIndexFromList(classes.stream().map(Class::getSimpleName).toList(), true);
 
-        return chosenClass == 0 ? null : classes.get(chosenClass - 1);
+        return classIndex == -1 ? null : classes.get(classIndex);
     }
 
     public T readNewInstance() throws Exception {
@@ -72,25 +60,16 @@ public class EntityReflection<T extends Entity> {
     public Map<String, Object> readValues(Field[] fields) {
         Map<String, Object> valuesMap = new HashMap<>();
 
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < fields.length; i++) {
-            Field field = fields[i];
-            sb.append(String.format("\n%d. [%s] %s", i + 1, field.getType().getSimpleName(), field.getName()));
-        }
-        sb.append("\n0. CONTINUE");
-
-        LoggerService.println(sb);
         do {
-            int chosenField = InputService.readInt(
-                    "Select field to enter value: ",
-                    "Invalid value. Try again: ",
-                    0, fields.length
+            int fieldIndex = InputService.selectIndexFromList(
+                    Arrays.stream(fields).map(f -> String.format("[%s] %s", f.getType().getSimpleName(), f.getName())).toList(),
+                    true
             );
 
-            if (chosenField == 0)
+            if (fieldIndex == -1)
                 break;
 
-            Field currField = fields[chosenField - 1];
+            Field currField = fields[fieldIndex];
             Range rangeAnn = currField.getAnnotation(Range.class);
             Size sizeAnn = currField.getAnnotation(Size.class);
             valuesMap.put(

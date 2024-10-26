@@ -3,7 +3,6 @@ package services;
 import entities.*;
 import entities.lists.*;
 import jakarta.xml.bind.JAXBException;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Level;
 import services.connection.ConnectionManager;
 import services.database.EntityReflection;
@@ -12,40 +11,28 @@ import services.xml.XMLService;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class MainMenu {
     private enum DaoMenu {
-        EXIT, GET, CREATE, UPDATE, DELETE;
+        GET, CREATE, UPDATE, DELETE;
 
-        private final int value;
+        public static DaoMenu readAction() {
+            int menuIndex = InputService.selectIndexFromList (
+                    Arrays.stream(DaoMenu.values()).map(DaoMenu::toString).toList(),
+                    true
+            );
 
-        DaoMenu() {
-            this.value = this.ordinal();
-        }
-
-        public static String printMenu() {
-            StringBuilder sb = new StringBuilder();
-            for (DaoMenu option : DaoMenu.values()) {
-                String optionStr = StringUtils.replace(String.valueOf(option), "_", " ");
-                sb.append(String.format("%d. %s\n", option.value, optionStr));
-            }
-
-            return sb.toString();
+            return menuIndex != -1 ? DaoMenu.values()[menuIndex] : null;
         }
     }
 
     public static <T extends Entity> void runDatabase() {
-        int mainMenuOption;
         do {
-            mainMenuOption = InputService.readInt(
-                    "\n" + DaoMenu.printMenu() + "Choose an option: ",
-                    "This option does not exist. Try again: ",
-                    0, DaoMenu.values().length - 1
-            );
-
-            if (mainMenuOption == 0) {
+            DaoMenu daoAction = DaoMenu.readAction();
+            if (daoAction == null) {
                 LoggerService.println("Exiting...");
                 break;
             }
@@ -60,7 +47,7 @@ public class MainMenu {
             LoggerService.println('\n' + entityClass.getSimpleName() + " selected.");
             try (MyBatis<T> dao = new MyBatis<>(entityClass)) {
                 EntityReflection<T> rs = new EntityReflection<>(entityClass);
-                switch (DaoMenu.values()[mainMenuOption]) {
+                switch (daoAction) {
                     case GET -> {
                         LoggerService.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
@@ -95,7 +82,6 @@ public class MainMenu {
                         int rowsAffected = dao.delete(columnFilters);
                         LoggerService.println(String.format("%d %s deleted.", rowsAffected, entityClass.getSimpleName()));
                     }
-                    default -> LoggerService.println("This option does not exist.");
                 }
             } catch (Exception e) {
                 LoggerService.log(Level.ERROR, e.getMessage());
