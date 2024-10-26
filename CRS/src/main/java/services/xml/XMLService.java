@@ -36,7 +36,7 @@ public class XMLService {
             Validator validator = schema.newValidator();
             validator.validate(new StreamSource(new File(xmlPath)));
         } catch (SAXException e) {
-            System.out.println("Validation Error: " + e.getMessage());
+            LoggerService.println("Validation Error: " + e.getMessage());
             return false;
         }
         return true;
@@ -45,7 +45,7 @@ public class XMLService {
     public static void staxParse() {
         String[] xmlFiles = FileService.getFileNames(xmlDir, "xml");
         if (xmlFiles.length == 0) {
-            System.out.println("No files to read.");
+            LoggerService.println("No files to read.");
             return;
         }
         for (String xml : xmlFiles) {
@@ -78,9 +78,9 @@ public class XMLService {
                     default -> throw new IllegalStateException("Unexpected value: " + fileNoExt);
                 };
 
-                System.out.println(ReflectionService.toString(objs));
-                System.out.println("-----------------------------------------------------------------------");
-                System.out.println("-----------------------------------------------------------------------");
+                LoggerService.println(ReflectionService.toString(objs));
+                LoggerService.println("-----------------------------------------------------------------------");
+                LoggerService.println("-----------------------------------------------------------------------");
 
             } catch (Exception e) {
                 LoggerService.log(Level.ERROR, e.getMessage());
@@ -111,7 +111,7 @@ public class XMLService {
     public static void jaxbParse() {
         String[] xmlFiles = FileService.getFileNames(xmlDir, "xml");
         if (xmlFiles.length == 0) {
-            System.out.println("No files to read.");
+            LoggerService.println("No files to read.");
             return;
         }
         for (String xml : xmlFiles) {
@@ -133,7 +133,7 @@ public class XMLService {
                     default -> throw new IllegalStateException("Unexpected value: " + fileNoExt);
                 };
 
-                System.out.println(
+                LoggerService.println(
                         ReflectionService.toString(
                                 unmarshal(new File(xmlDir + xml), clazz)
                         )
