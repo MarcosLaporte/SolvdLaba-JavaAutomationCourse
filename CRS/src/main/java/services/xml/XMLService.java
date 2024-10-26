@@ -10,6 +10,7 @@ import org.xml.sax.SAXException;
 import services.FileService;
 import services.LoggerService;
 import services.ReflectionService;
+import services.database.IDao;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLEventReader;
@@ -22,11 +23,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
-public class XMLService {
+public class XMLService<T> implements IDao<T> {
     private static final String baseDir = System.getProperty("user.dir") + "\\files\\xml\\";
     private static final String xmlDir = baseDir + "\\values\\";
     private static final String xsdDir = baseDir + "\\schemas\\";
+
+    public final Class<T> clazz;
+
+    public XMLService(Class<T> clazz) {
+        this.clazz = clazz;
+    }
 
     public static boolean validateXMLSchema(String xsdPath, String xmlPath) throws IOException {
         try {
@@ -149,4 +157,23 @@ public class XMLService {
         marshal(newFile, list);
     }
 
+    @Override
+    public List<T> get(Map<String, Object> columnCondition) {
+        return List.of();
+    }
+
+    @Override
+    public int create(T t) {
+        return 0;
+    }
+
+    @Override
+    public int update(Map<String, Object> newValues, Map<String, Object> columnCondition) {
+        return 0;
+    }
+
+    @Override
+    public int delete(Map<String, Object> columnCondition) {
+        return 0;
+    }
 }

@@ -127,7 +127,7 @@ public abstract class InputService {
         return inputStr;
     }
 
-    public static int selectIndexFromList(List<String> items, boolean allowCancel) {
+    public static int selectIndexFromList(String selectMessage, List<String> items, String cancelMessage) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < items.size(); i++) {
             sb.append('\n').append(i + 1).append(". ");
@@ -135,17 +135,21 @@ public abstract class InputService {
         }
 
         int min = 1;
-        if (allowCancel) {
-            sb.append("\n0. Cancel");
+        if (cancelMessage != null) {
             min = 0;
+            sb.append("\n0. ").append(cancelMessage);
         }
 
         LoggerService.println(sb);
         return InputService.readInt(
-                "Select an item from the list: ",
+                selectMessage,
                 "Invalid value. Try again: ",
                 min, items.size()
         ) - 1;
+    }
+
+    public static int selectIndexFromList(List<String> items, String cancelMessage) {
+        return selectIndexFromList("Select an item from the list: ", items, cancelMessage);
     }
 
     public static LocalDate readValidDate() {

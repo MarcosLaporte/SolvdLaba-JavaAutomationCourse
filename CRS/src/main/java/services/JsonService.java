@@ -4,12 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import entities.lists.*;
 import org.apache.logging.log4j.Level;
+import services.database.IDao;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-public class JsonService {
+public class JsonService<T> implements IDao<T> {
     private static final String baseDir = System.getProperty("user.dir") + "\\files\\json\\";
+
+    public final Class<T> clazz;
+
+    public JsonService(Class<T> clazz) {
+        this.clazz = clazz;
+    }
 
     public static void parse() {
         String[] jsonFiles = FileService.getFileNames(baseDir, "json");
@@ -60,5 +69,25 @@ public class JsonService {
 
         objectMapper.writerWithDefaultPrettyPrinter()
                 .writeValue(newFile, list);
+    }
+
+    @Override
+    public List<T> get(Map<String, Object> columnCondition) {
+        return List.of();
+    }
+
+    @Override
+    public int create(T t) {
+        return 0;
+    }
+
+    @Override
+    public int update(Map<String, Object> newValues, Map<String, Object> columnCondition) {
+        return 0;
+    }
+
+    @Override
+    public int delete(Map<String, Object> columnCondition) {
+        return 0;
     }
 }

@@ -34,7 +34,7 @@ public class EntityReflection<T extends Entity> {
         List<Class<? extends Entity>> classes = ReflectionService.getSubclassesOf(Entity.class, "entities", ABSTRACT)
                 .stream().filter(clazz -> clazz.getSuperclass() == Entity.class).toList();
 
-        int classIndex = InputService.selectIndexFromList(classes.stream().map(Class::getSimpleName).toList(), true);
+        int classIndex = InputService.selectIndexFromList(classes.stream().map(Class::getSimpleName).toList(), "CANCEL");
 
         return classIndex == -1 ? null : classes.get(classIndex);
     }
@@ -63,7 +63,7 @@ public class EntityReflection<T extends Entity> {
         do {
             int fieldIndex = InputService.selectIndexFromList(
                     Arrays.stream(fields).map(f -> String.format("[%s] %s", f.getType().getSimpleName(), f.getName())).toList(),
-                    true
+                    "FINISH"
             );
 
             if (fieldIndex == -1)

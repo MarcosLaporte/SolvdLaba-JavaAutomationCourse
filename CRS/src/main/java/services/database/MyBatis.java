@@ -5,13 +5,14 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MyBatis<T> implements IDao<T>, AutoCloseable {
+public class MyBatis<T> implements IDao<T>, Closeable {
     private final SqlSession session;
     public final Class<T> clazz;
 
