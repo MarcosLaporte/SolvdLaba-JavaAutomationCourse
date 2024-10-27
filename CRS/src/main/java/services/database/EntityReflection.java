@@ -79,8 +79,9 @@ public class EntityReflection<T extends Entity> {
         return valuesMap;
     }
 
-    public Map<String, Object> readNewValues() {
-        return readValues(COLUMN_FIELDS_NOT_AI.toArray(Field[]::new));
+    public Map<String, Object> readNewValues(boolean readAutoIncrementFields) {
+        List<Field> fields = readAutoIncrementFields ? COLUMN_FIELDS : COLUMN_FIELDS_NOT_AI;
+        return readValues(fields.toArray(Field[]::new));
     }
 
     public Map<String, Object> readConditionValues() {

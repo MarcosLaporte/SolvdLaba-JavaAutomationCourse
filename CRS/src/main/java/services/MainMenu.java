@@ -90,7 +90,7 @@ public class MainMenu {
                     }
                     case UPDATE -> {
                         LoggerService.print("\nEnter the new values.");
-                        Map<String, Object> newValues = rs.readNewValues();
+                        Map<String, Object> newValues = rs.readNewValues(datasource != Datasource.DATABASE);
 
                         if (newValues.isEmpty()) {
                             LoggerService.println("No new values entered. Going back.");
