@@ -92,6 +92,11 @@ public class MainMenu {
                         LoggerService.print("\nEnter the new values.");
                         Map<String, Object> newValues = rs.readNewValues();
 
+                        if (newValues.isEmpty()) {
+                            LoggerService.println("No new values entered. Going back.");
+                            break;
+                        }
+
                         LoggerService.print("\nEnter the conditions to follow.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
 
