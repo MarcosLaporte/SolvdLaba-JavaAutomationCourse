@@ -71,7 +71,7 @@ public class MainMenu {
                     case GET -> {
                         LoggerService.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
-                        List<T> values = dao.get(Map.of());
+                        List<T> values = dao.get(columnFilters);
 
                         if (!columnFilters.isEmpty()){
                             LoggerService.print("Rows found with values");
