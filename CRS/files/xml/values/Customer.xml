@@ -2,7 +2,7 @@
 <customers>
     <customer>
         <id>101</id>
-        <fullName>Guy Montag</fullName>
+        <fullName>TEST</fullName>
         <email>guymontag@salamander.com</email>
         <phoneNo>3058917290</phoneNo>
         <address>123 Main St, New York</address>
@@ -23,14 +23,6 @@
         <phoneNo>9227571255</phoneNo>
         <address>789 Pine Rd, Shooters Hill</address>
         <zip>67890</zip>
-    </customer>
-    <customer>
-        <id>104</id>
-        <fullName>Sherlock Holmes</fullName>
-        <email>test@gmail.com</email>
-        <phoneNo>1986512698</phoneNo>
-        <address>221B Baker Street, London</address>
-        <zip>11111</zip>
     </customer>
     <customer>
         <id>105</id>

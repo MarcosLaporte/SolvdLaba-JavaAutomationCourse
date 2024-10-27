@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <payments>
     <payment>
         <jobId>10001</jobId>
         <payDate>2024-10-04</payDate>
-        <amount>190</amount>
+        <amount>190.0</amount>
     </payment>
     <payment>
         <jobId>10002</jobId>
         <payDate>2024-10-08</payDate>
-        <amount>330</amount>
+        <amount>330.0</amount>
     </payment>
     <payment>
         <jobId>10003</jobId>
         <payDate>2024-10-09</payDate>
-        <amount>485</amount>
+        <amount>485.0</amount>
     </payment>
 </payments>

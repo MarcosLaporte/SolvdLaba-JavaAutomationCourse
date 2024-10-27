@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <repairTickets>
     <repairTicket>
         <id>10001</id>
@@ -12,7 +12,7 @@
         <id>10002</id>
         <custId>103</custId>
         <computerDesc>Lenovo Ideapad 5</computerDesc>
-        <issue>Upgrade SSD and doesn&#39;t play sound</issue>
+        <issue>Upgrade SSD and doesn't play sound</issue>
         <dateSubmitted>2024-10-05</dateSubmitted>
         <status>6</status>
     </repairTicket>
@@ -20,8 +20,16 @@
         <id>10003</id>
         <custId>105</custId>
         <computerDesc>Vengeance i5100 IC i9</computerDesc>
-        <issue>Video output doesn&#39;t work.</issue>
+        <issue>Video output doesn't work.</issue>
         <dateSubmitted>2024-10-07</dateSubmitted>
         <status>6</status>
+    </repairTicket>
+    <repairTicket>
+        <id>10007</id>
+        <custId>102</custId>
+        <computerDesc>TEST</computerDesc>
+        <issue>UPDATED</issue>
+        <dateSubmitted>2024-10-24</dateSubmitted>
+        <status>0</status>
     </repairTicket>
 </repairTickets>

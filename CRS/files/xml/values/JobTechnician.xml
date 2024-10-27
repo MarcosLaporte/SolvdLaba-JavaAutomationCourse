@@ -1,39 +1,39 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <jobTechnicians>
     <jobTechnician>
         <jobId>10001</jobId>
         <techId>102</techId>
         <task>Take away old RAM</task>
-        <done>1</done>
+        <done>true</done>
     </jobTechnician>
     <jobTechnician>
         <jobId>10001</jobId>
         <techId>103</techId>
         <task>Place new RAM</task>
-        <done>1</done>
+        <done>true</done>
     </jobTechnician>
     <jobTechnician>
         <jobId>10002</jobId>
         <techId>102</techId>
         <task>Place new SSDs</task>
-        <done>1</done>
+        <done>true</done>
     </jobTechnician>
     <jobTechnician>
         <jobId>10002</jobId>
         <techId>103</techId>
         <task>Replace speaker</task>
-        <done>1</done>
+        <done>true</done>
     </jobTechnician>
     <jobTechnician>
         <jobId>10002</jobId>
         <techId>104</techId>
         <task>Take away old SSD</task>
-        <done>1</done>
+        <done>true</done>
     </jobTechnician>
     <jobTechnician>
         <jobId>10003</jobId>
         <techId>102</techId>
         <task>Replace graphics card</task>
-        <done>1</done>
+        <done>true</done>
     </jobTechnician>
 </jobTechnicians>

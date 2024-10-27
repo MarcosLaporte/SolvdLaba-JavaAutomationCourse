@@ -1,24 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <invoices>
     <invoice>
         <id>10001</id>
         <ticketId>10001</ticketId>
         <techId>102</techId>
         <diagnosis>Needs new speaker</diagnosis>
-        <amount>190</amount>
+        <amount>190.0</amount>
     </invoice>
     <invoice>
         <id>10002</id>
         <ticketId>10002</ticketId>
         <techId>104</techId>
         <diagnosis>Add two new SSDs and change speaker.</diagnosis>
-        <amount>330</amount>
+        <amount>330.0</amount>
     </invoice>
     <invoice>
         <id>10003</id>
         <ticketId>10003</ticketId>
         <techId>102</techId>
         <diagnosis>Change graphics card.</diagnosis>
-        <amount>485</amount>
+        <amount>485.0</amount>
     </invoice>
 </invoices>
