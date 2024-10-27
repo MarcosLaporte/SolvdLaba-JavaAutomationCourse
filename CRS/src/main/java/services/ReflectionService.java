@@ -85,7 +85,7 @@ public record ReflectionService<T>(Class<T> clazz) {
     }
 
     @SuppressWarnings("unchecked")
-    public T createInstance(Object... args) throws Exception {
+    public T createInstance(Object... args) throws RuntimeException, NoSuchMethodException {
         Constructor<?>[] constructors = this.clazz.getDeclaredConstructors();
         for (Constructor<?> constructor : constructors) {
             Class<?>[] paramTypes = constructor.getParameterTypes();
@@ -95,7 +95,7 @@ public record ReflectionService<T>(Class<T> clazz) {
                 try {
                     return (T) constructor.newInstance(args);
                 } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-                    throw new Exception("Error while invoking constructor: " + e.getCause(), e);
+                    throw new RuntimeException("Error while invoking constructor: " + e.getCause(), e);
                 }
             }
         }

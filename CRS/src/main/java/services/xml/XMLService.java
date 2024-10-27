@@ -1,5 +1,6 @@
 package services.xml;
 
+import entities.*;
 import entities.lists.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -7,33 +8,51 @@ import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.Level;
 import org.xml.sax.SAXException;
-import services.FileService;
 import services.LoggerService;
 import services.ReflectionService;
+import services.database.EntityReflection;
 import services.database.IDao;
 
 import javax.xml.XMLConstants;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class XMLService<T> implements IDao<T> {
+import static java.util.Map.entry;
+
+public class XMLService<T extends Entity> implements IDao<T> {
     private static final String baseDir = System.getProperty("user.dir") + "\\files\\xml\\";
     private static final String xmlDir = baseDir + "\\values\\";
     private static final String xsdDir = baseDir + "\\schemas\\";
 
+    private static final Map<Class<? extends Entity>, Class<?>> ENTITY_CONTAINER_MAP =
+            Map.ofEntries(
+                    entry(Customer.class, CustomerList.class),
+                    entry(Feedback.class, FeedbackList.class),
+                    entry(Invoice.class, InvoiceList.class),
+                    entry(Job.class, JobList.class),
+                    entry(JobTechnician.class, JobTechnicianList.class),
+                    entry(Part.class, PartList.class),
+                    entry(Payment.class, PaymentList.class),
+                    entry(RepairTicket.class, RepairTicketList.class),
+                    entry(RepairTicketPart.class, RepairTicketPartList.class),
+                    entry(Supplier.class, SupplierList.class),
+                    entry(Technician.class, TechnicianList.class)
+            );
+
+    private final EntityReflection<T> entRef;
     public final Class<T> clazz;
 
     public XMLService(Class<T> clazz) {
         this.clazz = clazz;
+        this.entRef = new EntityReflection<>(this.clazz);
     }
 
     public static boolean validateXMLSchema(String xsdPath, String xmlPath) throws IOException {
@@ -50,62 +69,25 @@ public class XMLService<T> implements IDao<T> {
         return true;
     }
 
-    public static void staxParse() {
-        String[] xmlFiles = FileService.getFileNames(xmlDir, "xml");
-        if (xmlFiles.length == 0) {
-            LoggerService.println("No files to read.");
-            return;
-        }
-        for (String xml : xmlFiles) {
-            String fileNoExt = FileService.stripExtension.apply(xml);
-            try {
-                String xsdPath = xsdDir + fileNoExt + ".xsd";
-                validateXMLSchema(xsdPath, xmlDir + xml);
-            } catch (IOException e) {
-                LoggerService.log(Level.ERROR, xml + " does not follow Schema.\n" + e.getMessage());
-                continue;
-            }
+    @SuppressWarnings("unchecked")
+    private List<T> parse(String fileName) throws JAXBException {
+        File file = new File(xmlDir + fileName);
 
-            try {
-                XMLInputFactory factory = XMLInputFactory.newInstance();
-                XMLEventReader eventReader = factory.createXMLEventReader(new FileInputStream(xmlDir + xml));
+        if (!file.exists())
+            return new ArrayList<>();
 
-                List<?> objs = switch (fileNoExt) {
-                    case "customer" -> EntityParser.parseCustomers(eventReader);
-                    case "feedback" -> EntityParser.parseFeedbacks(eventReader);
-                    case "invoice" -> EntityParser.parseInvoices(eventReader);
-                    case "job" -> EntityParser.parseJobs(eventReader);
-                    case "jobTechnician" -> EntityParser.parseJobTechnicians(eventReader);
-                    case "part" -> EntityParser.parseParts(eventReader);
-                    case "payment" -> EntityParser.parsePayments(eventReader);
-                    case "repairTicket" -> EntityParser.parseRepairTickets(eventReader);
-                    case "repairTicketPart" -> EntityParser.parseRepairTicketParts(eventReader);
-                    case "supplier" -> EntityParser.parseSuppliers(eventReader);
-                    case "technician" -> EntityParser.parseTechnicians(eventReader);
-//                    case "ticketStatus" -> {}
-                    default -> throw new IllegalStateException("Unexpected value: " + fileNoExt);
-                };
-
-                LoggerService.println(ReflectionService.toString(objs));
-                LoggerService.println("-----------------------------------------------------------------------");
-                LoggerService.println("-----------------------------------------------------------------------");
-
-            } catch (Exception e) {
-                LoggerService.log(Level.ERROR, e.getMessage());
-            }
-        }
-    }
-
-    private static <T> T unmarshal(File file, Class<T> clazz) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(clazz);
-
+        JAXBContext context = JAXBContext.newInstance(ENTITY_CONTAINER_MAP.get(this.clazz));
         Unmarshaller unmarshaller = context.createUnmarshaller();
+        IEntityList<T> entityContainer = (IEntityList<T>) unmarshaller.unmarshal(file);
 
-        return (T) unmarshaller.unmarshal(file);
+        return entityContainer.getList();
     }
 
-    private static <T> void marshal(File file, T list) throws JAXBException, IOException {
-        JAXBContext context = JAXBContext.newInstance(list.getClass());
+    @SuppressWarnings({"rawtypes", "unchecked", "ResultOfMethodCallIgnored"})
+    private void serializeList(List<T> list) throws JAXBException, IOException {
+        Class<IEntityList> containerClass = (Class<IEntityList>) ENTITY_CONTAINER_MAP.get(this.clazz);
+        JAXBContext context = JAXBContext.newInstance(containerClass);
+        File file = new File(xmlDir + this.clazz.getSimpleName() + ".xml");
 
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -113,67 +95,92 @@ public class XMLService<T> implements IDao<T> {
         if (!file.exists())
             file.createNewFile();
 
-        marshaller.marshal(list, file);
-    }
-
-    public static void jaxbParse() {
-        String[] xmlFiles = FileService.getFileNames(xmlDir, "xml");
-        if (xmlFiles.length == 0) {
-            LoggerService.println("No files to read.");
-            return;
+        ReflectionService<IEntityList> rs = new ReflectionService<>(containerClass);
+        IEntityList<T> entityContainer = null;
+        try {
+            entityContainer = rs.createInstance(list);
+        } catch (NoSuchMethodException e) {
+            LoggerService.log(Level.ERROR, "Unable to create container for " + clazz.getSimpleName());
         }
-        for (String xml : xmlFiles) {
-            try {
-                String fileNoExt = FileService.stripExtension.apply(xml);
-                Class<?> clazz = switch (fileNoExt) {
-                    case "customer" -> CustomerList.class;
-                    case "feedback" -> FeedbackList.class;
-                    case "invoice" -> InvoiceList.class;
-                    case "job" -> JobList.class;
-                    case "jobTechnician" -> JobTechnicianList.class;
-                    case "part" -> PartList.class;
-                    case "payment" -> PaymentList.class;
-                    case "repairTicket" -> RepairTicketList.class;
-                    case "repairTicketPart" -> RepairTicketPartList.class;
-                    case "supplier" -> SupplierList.class;
-                    case "technician" -> TechnicianList.class;
-//                    case "ticketStatus" -> {}
-                    default -> throw new IllegalStateException("Unexpected value: " + fileNoExt);
-                };
 
-                LoggerService.println(
-                        ReflectionService.toString(
-                                unmarshal(new File(xmlDir + xml), clazz)
-                        )
-                );
-            } catch (Exception e) {
-                LoggerService.log(Level.ERROR, e.getMessage());
-            }
-        }
-    }
-
-    public static <T> void jaxbSerializeList(T list) throws JAXBException, IOException {
-        File newFile = new File(baseDir + "\\serialized\\" + list.getClass().getSimpleName() + ".xml");
-        marshal(newFile, list);
+        marshaller.marshal(entityContainer, file);
     }
 
     @Override
-    public List<T> get(Map<String, Object> columnCondition) {
-        return List.of();
+    public List<T> get(Map<String, Object> fieldValueFilters) {
+        try {
+            List<T> elements = parse(this.clazz.getSimpleName() + ".xml");
+
+            return this.entRef.filterListByFields(elements, fieldValueFilters);
+        } catch (JAXBException e) {
+            LoggerService.log(Level.ERROR, e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public int create(T t) {
-        return 0;
+        List<T> elements = this.get(Map.of());
+        elements.add(t);
+
+        try {
+            serializeList(elements);
+            return 1;
+        } catch (IOException | JAXBException e) {
+            LoggerService.log(Level.ERROR, e.getMessage());
+            return 0;
+        }
     }
 
     @Override
-    public int update(Map<String, Object> newValues, Map<String, Object> columnCondition) {
-        return 0;
+    public int update(Map<String, Object> newValues, Map<String, Object> fieldValueFilters) {
+        List<T> elements = this.get(Map.of());
+        List<T> elementsToUpdate = entRef.filterListByFields(elements, fieldValueFilters);
+        Map<String, Field> fieldMap = this.entRef.matchColumnField();
+        int updateCount = 0;
+
+        for (T currentEl : elements) {
+            if (!elementsToUpdate.contains(currentEl))
+                continue;
+
+            for (String column : fieldMap.keySet()) {
+                if (!newValues.containsKey(column))
+                    continue;
+
+                updateCount++;
+                try {
+                    Field f = fieldMap.get(column);
+                    f.setAccessible(true);
+                    f.set(currentEl, newValues.get(column));
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException("Error updating field: " + column, e);
+                }
+            }
+        }
+
+        try {
+            serializeList(elements);
+        } catch (IOException | JAXBException e) {
+            LoggerService.log(Level.ERROR, e.getMessage());
+        }
+
+        return updateCount;
     }
 
+
     @Override
-    public int delete(Map<String, Object> columnCondition) {
-        return 0;
+    public int delete(Map<String, Object> fieldValueFilters) {
+        List<T> elements = this.get(Map.of());
+        List<T> elementsToDelete = entRef.filterListByFields(elements, fieldValueFilters);
+
+        try {
+            elementsToDelete.forEach(elements::remove);
+            serializeList(elements);
+        } catch (IOException | JAXBException e) {
+            LoggerService.log(Level.ERROR, e.getMessage());
+        }
+
+        return elementsToDelete.size();
     }
+
 }

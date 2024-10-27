@@ -8,16 +8,25 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlRootElement(name = "jobTechnicians")
-public class JobTechnicianList {
+public class JobTechnicianList implements IEntityList<JobTechnician> {
     @JsonProperty("jobTechnicians")
     private List<JobTechnician> jobTechnicianList;
 
+    private JobTechnicianList() {
+    }
+
+    private JobTechnicianList(List<JobTechnician> jobTechnicianList) {
+        this.jobTechnicianList = jobTechnicianList;
+    }
+
     @XmlElement(name = "jobTechnician")
-    public List<JobTechnician> getJobTechnicianList() {
+    @Override
+    public List<JobTechnician> getList() {
         return this.jobTechnicianList;
     }
 
-    public void setJobTechnicianList(List<JobTechnician> jobTechnicianList) {
+    @Override
+    public void setList(List<JobTechnician> jobTechnicianList) {
         this.jobTechnicianList = jobTechnicianList;
     }
 }

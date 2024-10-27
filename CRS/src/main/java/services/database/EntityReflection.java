@@ -51,11 +51,7 @@ public class EntityReflection<T extends Entity> {
             paramValues[i] = readValue(currField.getType(), currField.getName(), rangeAnn, sizeAnn);
         }
 
-        try {
             return rs.createInstance(paramValues);
-        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            throw new Exception("Error while invoking constructor: " + e.getCause(), e);
-        }
     }
 
     public Map<String, Object> readValues(Field[] fields) {
