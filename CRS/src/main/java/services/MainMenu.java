@@ -107,6 +107,15 @@ public class MainMenu {
                         LoggerService.print("\nEnter the conditions to follow.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
 
+                        if (columnFilters.isEmpty()) {
+                            LoggerService.consoleLog(Level.WARN, "No filters selected. This will delete the entire table.");
+                            char confirmContinue = InputService.readCharInValues("Continue? Y/N: ", "ERROR. Input Y or N: ", new char[]{'Y', 'N'});
+                            if (confirmContinue == 'N'){
+                                LoggerService.println("Operation cancelled.");
+                                break;
+                            }
+                        }
+
                         int rowsAffected = dao.delete(columnFilters);
                         LoggerService.println(String.format("%d %s deleted.", rowsAffected, entityClass.getSimpleName()));
                     }
