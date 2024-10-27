@@ -1,5 +1,6 @@
 package services.database;
 
+import entities.Entity;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MyBatis<T> implements IDao<T>, Closeable {
+public class MyBatis<T extends Entity> implements IDao<T>, Closeable {
     private final SqlSession session;
     public final Class<T> clazz;
 
@@ -30,8 +31,8 @@ public class MyBatis<T> implements IDao<T>, Closeable {
     }
 
     @Override
-    public List<T> get(Map<String, Object> columnCondition) {
-        return this.session.selectList(clazz.getName() + ".get", columnCondition);
+    public List<T> get(Map<String, Object> fieldValueFilters) {
+        return this.session.selectList(clazz.getName() + ".get", fieldValueFilters);
     }
 
     @Override
@@ -42,10 +43,10 @@ public class MyBatis<T> implements IDao<T>, Closeable {
     }
 
     @Override
-    public int update(Map<String, Object> newValues, Map<String, Object> columnCondition) {
+    public int update(Map<String, Object> newValues, Map<String, Object> fieldValueFilters) {
         Map<String, Map<String, Object>> paramsMap = new HashMap<>();
         paramsMap.put("values", newValues);
-        paramsMap.put("filters", columnCondition);
+        paramsMap.put("filters", fieldValueFilters);
 
         int rows = this.session.update(clazz.getName() + ".update", paramsMap);
         this.session.commit();
@@ -53,8 +54,8 @@ public class MyBatis<T> implements IDao<T>, Closeable {
     }
 
     @Override
-    public int delete(Map<String, Object> columnCondition) {
-        int rows = this.session.delete(clazz.getName() + ".delete", columnCondition);
+    public int delete(Map<String, Object> fieldValueFilters) {
+        int rows = this.session.delete(clazz.getName() + ".delete", fieldValueFilters);
         this.session.commit();
         return rows;
     }

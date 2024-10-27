@@ -27,7 +27,7 @@ public class EntityReflection<T extends Entity> {
         this.COLUMN_FIELDS = Collections.unmodifiableList(rs.getFieldsByAnnotation(Column.class));
         this.COLUMN_FIELDS_NOT_AI = COLUMN_FIELDS.stream()
                 .filter(field -> !field.getAnnotation(Column.class).autoIncrement())
-                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+                .toList();
     }
 
     public static Class<? extends Entity> chooseEntity() {
@@ -39,11 +39,12 @@ public class EntityReflection<T extends Entity> {
         return classIndex == -1 ? null : classes.get(classIndex);
     }
 
-    public T readNewInstance() throws Exception {
-        Object[] paramValues = new Object[COLUMN_FIELDS_NOT_AI.size()];
+    public T readNewInstance(boolean readAutoIncrementFields) throws Exception {
+        List<Field> fields = readAutoIncrementFields ? COLUMN_FIELDS : COLUMN_FIELDS_NOT_AI;
+        Object[] paramValues = new Object[fields.size()];
 
-        for (int i = 0; i < COLUMN_FIELDS_NOT_AI.size(); i++) {
-            Field currField = COLUMN_FIELDS_NOT_AI.get(i);
+        for (int i = 0; i < fields.size(); i++) {
+            Field currField = fields.get(i);
 
             Range rangeAnn = currField.getAnnotation(Range.class);
             Size sizeAnn = currField.getAnnotation(Size.class);

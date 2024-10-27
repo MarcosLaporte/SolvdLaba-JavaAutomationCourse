@@ -71,16 +71,19 @@ public class MainMenu {
                     case GET -> {
                         LoggerService.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
-                        List<?> values = dao.get(columnFilters);
+                        List<T> values = dao.get(Map.of());
 
-                        LoggerService.print("Rows found with values");
-                        for (Map.Entry<String, Object> entry : columnFilters.entrySet())
-                            LoggerService.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
-                        LoggerService.println(": ");
+                        if (!columnFilters.isEmpty()){
+                            LoggerService.print("Rows found with values");
+                            for (Map.Entry<String, Object> entry : columnFilters.entrySet())
+                                LoggerService.print(" [" + entry.getKey() + " = " + entry.getValue() + ']');
+                            LoggerService.println(": ");
+                        }
+
                         LoggerService.println(ReflectionService.toString(values));
                     }
                     case CREATE -> {
-                        if (dao.create(rs.readNewInstance()) > 0)
+                        if (dao.create(rs.readNewInstance(datasource != DatasourceMenu.DATABASE)) > 0)
                             LoggerService.println(entityClass.getSimpleName() + " created!");
                         else
                             LoggerService.println("No " + entityClass.getSimpleName() + " was created.");
@@ -104,7 +107,7 @@ public class MainMenu {
                     }
                 }
             } catch (Exception e) {
-                LoggerService.log(Level.ERROR, e.getMessage());
+                LoggerService.log(Level.ERROR, e.getMessage() != null ? e.getMessage() : e.getClass().toString());
             } finally {
                 try {
                     if (dao != null && Closeable.class.isAssignableFrom(dao.getClass()))
