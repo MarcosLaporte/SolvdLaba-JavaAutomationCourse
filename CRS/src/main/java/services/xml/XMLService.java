@@ -8,10 +8,9 @@ import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.Level;
 import org.xml.sax.SAXException;
+import services.FileDao;
 import services.LoggerService;
 import services.ReflectionService;
-import services.database.EntityReflection;
-import services.database.IDao;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
@@ -20,17 +19,14 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Map.entry;
 
-public class XMLService<T extends Entity> implements IDao<T> {
-    private static final String baseDir = System.getProperty("user.dir") + "\\files\\xml\\";
-    private static final String xmlDir = baseDir + "\\values\\";
-    private static final String xsdDir = baseDir + "\\schemas\\";
+public class XMLService<T extends Entity> extends FileDao<T> {
+    private static final String baseDir = System.getProperty("user.dir") + "\\files\\xml\\values\\";
 
     private static final Map<Class<? extends Entity>, Class<?>> ENTITY_CONTAINER_MAP =
             Map.ofEntries(
@@ -47,12 +43,8 @@ public class XMLService<T extends Entity> implements IDao<T> {
                     entry(Technician.class, TechnicianList.class)
             );
 
-    private final EntityReflection<T> entRef;
-    public final Class<T> clazz;
-
     public XMLService(Class<T> clazz) {
-        this.clazz = clazz;
-        this.entRef = new EntityReflection<>(this.clazz);
+        super(clazz, baseDir);
     }
 
     public static boolean validateXMLSchema(String xsdPath, String xmlPath) throws IOException {
@@ -70,8 +62,9 @@ public class XMLService<T extends Entity> implements IDao<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private List<T> parse(String fileName) throws JAXBException {
-        File file = new File(xmlDir + fileName);
+    @Override
+    protected List<T> parse(String fileName) throws JAXBException {
+        File file = new File(baseDir + fileName);
 
         if (!file.exists())
             return new ArrayList<>();
@@ -84,10 +77,11 @@ public class XMLService<T extends Entity> implements IDao<T> {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked", "ResultOfMethodCallIgnored"})
-    private void serializeList(List<T> list) throws JAXBException, IOException {
+    @Override
+    protected void serializeList(List<T> list) throws JAXBException, IOException {
         Class<IEntityList> containerClass = (Class<IEntityList>) ENTITY_CONTAINER_MAP.get(this.clazz);
         JAXBContext context = JAXBContext.newInstance(containerClass);
-        File file = new File(xmlDir + this.clazz.getSimpleName() + ".xml");
+        File file = new File(baseDir + this.clazz.getSimpleName() + ".xml");
 
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -105,82 +99,4 @@ public class XMLService<T extends Entity> implements IDao<T> {
 
         marshaller.marshal(entityContainer, file);
     }
-
-    @Override
-    public List<T> get(Map<String, Object> fieldValueFilters) {
-        try {
-            List<T> elements = parse(this.clazz.getSimpleName() + ".xml");
-
-            return this.entRef.filterListByFields(elements, fieldValueFilters);
-        } catch (JAXBException e) {
-            LoggerService.log(Level.ERROR, e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
-    @Override
-    public int create(T t) {
-        List<T> elements = this.get(Map.of());
-        elements.add(t);
-
-        try {
-            serializeList(elements);
-            return 1;
-        } catch (IOException | JAXBException e) {
-            LoggerService.log(Level.ERROR, e.getMessage());
-            return 0;
-        }
-    }
-
-    @Override
-    public int update(Map<String, Object> newValues, Map<String, Object> fieldValueFilters) {
-        List<T> elements = this.get(Map.of());
-        List<T> elementsToUpdate = entRef.filterListByFields(elements, fieldValueFilters);
-        Map<String, Field> fieldMap = this.entRef.matchColumnField();
-        int updateCount = 0;
-
-        for (T currentEl : elements) {
-            if (!elementsToUpdate.contains(currentEl))
-                continue;
-
-            for (String column : fieldMap.keySet()) {
-                if (!newValues.containsKey(column))
-                    continue;
-
-                updateCount++;
-                try {
-                    Field f = fieldMap.get(column);
-                    f.setAccessible(true);
-                    f.set(currentEl, newValues.get(column));
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException("Error updating field: " + column, e);
-                }
-            }
-        }
-
-        try {
-            serializeList(elements);
-        } catch (IOException | JAXBException e) {
-            LoggerService.log(Level.ERROR, e.getMessage());
-        }
-
-        return updateCount;
-    }
-
-
-    @Override
-    public int delete(Map<String, Object> fieldValueFilters) {
-        List<T> elements = this.get(Map.of());
-        List<T> elementsToDelete = entRef.filterListByFields(elements, fieldValueFilters);
-
-        try {
-            elementsToDelete.forEach(elements::remove);
-            serializeList(elements);
-        } catch (IOException | JAXBException e) {
-            LoggerService.log(Level.ERROR, e.getMessage());
-        }
-
-        return elementsToDelete.size();
-    }
-
 }
