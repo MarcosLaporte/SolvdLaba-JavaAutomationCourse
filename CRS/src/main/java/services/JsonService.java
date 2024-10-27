@@ -41,10 +41,10 @@ public class JsonService<T extends Entity> implements IDao<T> {
     }
 
     private void serializeList(List<T> list) throws IOException {
-        File newFile = new File(baseDir + this.clazz.getSimpleName() + ".json");
+        File file = new File(baseDir + this.clazz.getSimpleName() + ".json");
 
         MAPPER.writerWithDefaultPrettyPrinter()
-                .writeValue(newFile, list);
+                .writeValue(file, list);
     }
 
     @Override
@@ -107,7 +107,6 @@ public class JsonService<T extends Entity> implements IDao<T> {
 
         return updateCount;
     }
-
 
     @Override
     public int delete(Map<String, Object> fieldValueFilters) {

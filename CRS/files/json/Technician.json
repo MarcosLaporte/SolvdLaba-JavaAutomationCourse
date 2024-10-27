@@ -1,0 +1,17 @@
+[ {
+  "id" : 101,
+  "fullName" : "Anthony Stark",
+  "salary" : 99000.0
+}, {
+  "id" : 102,
+  "fullName" : "Peter Parker",
+  "salary" : 35000.0
+}, {
+  "id" : 103,
+  "fullName" : "Reed Richards",
+  "salary" : 60000.0
+}, {
+  "id" : 104,
+  "fullName" : "Bruce Wayne",
+  "salary" : 125000.0
+} ]
