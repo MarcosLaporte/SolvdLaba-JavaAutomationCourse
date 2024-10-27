@@ -14,38 +14,39 @@ import java.util.List;
 import java.util.Map;
 
 public class MainMenu {
-    private enum DaoMenu {
+    private enum CRUD {
         GET, CREATE, UPDATE, DELETE;
 
-        public static DaoMenu readAction() {
+        public static CRUD readAction() {
             int menuIndex = InputService.selectIndexFromList(
                     "Select an action to perform: ",
-                    Arrays.stream(DaoMenu.values()).map(DaoMenu::toString).toList(),
-                    "CANCEL"
+                    Arrays.stream(CRUD.values()).map(CRUD::toString).toList(),
+                    "EXIT"
             );
 
-            return menuIndex != -1 ? DaoMenu.values()[menuIndex] : null;
+            return menuIndex != -1 ? CRUD.values()[menuIndex] : null;
         }
     }
 
-    private enum DatasourceMenu {
+    public enum Datasource {
         DATABASE, XML, JSON;
 
-        public static DatasourceMenu readDatasource() {
+        public static Datasource readDatasource() {
             int index = InputService.selectIndexFromList(
-                    Arrays.stream(DatasourceMenu.values()).map(DatasourceMenu::toString).toList(),
+                    "Select a datasource: ",
+                    Arrays.stream(Datasource.values()).map(Datasource::toString).toList(),
                     null
             );
 
-            return DatasourceMenu.values()[index];
+            return Datasource.values()[index];
         }
     }
 
-    public static <T extends Entity> void start() {
+    public static <T extends Entity> void start(Datasource datasource) {
         while (true) {
-            DaoMenu daoAction = DaoMenu.readAction();
+            CRUD operation = CRUD.readAction();
 
-            if (daoAction == null) {
+            if (operation == null) {
                 LoggerService.println("Exiting...");
                 break;
             }
@@ -57,7 +58,6 @@ public class MainMenu {
                 continue;
             }
 
-            DatasourceMenu datasource = DatasourceMenu.readDatasource();
             IDao<T> dao = null;
             try {
                 dao = switch (datasource) {
@@ -67,7 +67,7 @@ public class MainMenu {
                 };
 
                 EntityReflection<T> rs = new EntityReflection<>(entityClass);
-                switch (daoAction) {
+                switch (operation) {
                     case GET -> {
                         LoggerService.print("\nFill with fields to filter by.");
                         Map<String, Object> columnFilters = rs.readConditionValues();
@@ -83,7 +83,7 @@ public class MainMenu {
                         LoggerService.println(ReflectionService.toString(values));
                     }
                     case CREATE -> {
-                        if (dao.create(rs.readNewInstance(datasource != DatasourceMenu.DATABASE)) > 0)
+                        if (dao.create(rs.readNewInstance(datasource != Datasource.DATABASE)) > 0)
                             LoggerService.println(entityClass.getSimpleName() + " created!");
                         else
                             LoggerService.println("No " + entityClass.getSimpleName() + " was created.");
