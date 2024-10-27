@@ -2,92 +2,126 @@ package services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import entities.lists.*;
+import entities.Entity;
 import org.apache.logging.log4j.Level;
+import services.database.EntityReflection;
 import services.database.IDao;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class JsonService<T> implements IDao<T> {
+public class JsonService<T extends Entity> implements IDao<T> {
     private static final String baseDir = System.getProperty("user.dir") + "\\files\\json\\";
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private final EntityReflection<T> entRef;
+
+    static {
+        MAPPER.registerModule(new JavaTimeModule());
+    }
 
     public final Class<T> clazz;
 
     public JsonService(Class<T> clazz) {
         this.clazz = clazz;
+        this.entRef = new EntityReflection<>(this.clazz);
     }
 
-    public static void parse() {
-        String[] jsonFiles = FileService.getFileNames(baseDir, "json");
+    private List<T> parse(String fileName) throws IOException {
+        File file = new File(baseDir + fileName);
+        if (!file.exists())
+            return new ArrayList<>();
 
-        if (jsonFiles.length == 0) {
-            LoggerService.println("No files to read.");
-            return;
-        }
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-
-        for (String json : jsonFiles) {
-            try {
-                LoggerService.println(json);
-                String fileNoExt = FileService.stripExtension.apply(json);
-                Class<?> clazz = switch (fileNoExt) {
-                    case "CustomerList" -> CustomerList.class;
-                    case "FeedbackList" -> FeedbackList.class;
-                    case "InvoiceList" -> InvoiceList.class;
-                    case "JobList" -> JobList.class;
-                    case "JobTechnicianList" -> JobTechnicianList.class;
-                    case "PartList" -> PartList.class;
-                    case "PaymentList" -> PaymentList.class;
-                    case "RepairTicketList" -> RepairTicketList.class;
-                    case "RepairTicketPartList" -> RepairTicketPartList.class;
-                    case "SupplierList" -> SupplierList.class;
-                    case "TechnicianList" -> TechnicianList.class;
-//                    case "TicketStatus" -> {}
-                    default -> throw new IllegalStateException("Unexpected value: " + fileNoExt);
-                };
-
-                Object readValue = objectMapper.readValue(new File(baseDir + json), clazz);
-                LoggerService.println(ReflectionService.toString(readValue));
-                LoggerService.println("----------------------------------");
-                LoggerService.println("----------------------------------");
-            } catch (IOException | IllegalStateException e) {
-                LoggerService.log(Level.ERROR, e.getMessage());
-            }
-        }
+        return MAPPER.readValue(file,
+                MAPPER.getTypeFactory().constructCollectionType(List.class, this.clazz)
+        );
     }
 
-    public static <T> void serializeList(T list) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+    private void serializeList(List<T> list) throws IOException {
+        File newFile = new File(baseDir + this.clazz.getSimpleName() + ".json");
 
-        File newFile = new File(baseDir + list.getClass().getSimpleName() + ".json");
-
-        objectMapper.writerWithDefaultPrettyPrinter()
+        MAPPER.writerWithDefaultPrettyPrinter()
                 .writeValue(newFile, list);
     }
 
     @Override
-    public List<T> get(Map<String, Object> columnCondition) {
-        return List.of();
+    public List<T> get(Map<String, Object> fieldValueFilters) {
+        try {
+            List<T> elements = parse(this.clazz.getSimpleName() + ".json");
+
+            return this.entRef.filterListByFields(elements, fieldValueFilters);
+        } catch (IOException | IllegalStateException e) {
+            LoggerService.log(Level.ERROR, e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public int create(T t) {
-        return 0;
+        List<T> elements = this.get(Map.of());
+        elements.add(t);
+
+        try {
+            serializeList(elements);
+            return 1;
+        } catch (IOException e) {
+            LoggerService.log(Level.ERROR, e.getMessage());
+            return 0;
+        }
     }
 
     @Override
-    public int update(Map<String, Object> newValues, Map<String, Object> columnCondition) {
-        return 0;
+    public int update(Map<String, Object> newValues, Map<String, Object> fieldValueFilters) {
+        List<T> elements = this.get(Map.of());
+        List<T> elementsToUpdate = entRef.filterListByFields(elements, fieldValueFilters);
+        Map<String, Field> fieldMap = this.entRef.matchColumnField();
+        int updateCount = 0;
+
+        for (T currentEl : elements) {
+            if (!elementsToUpdate.contains(currentEl))
+                continue;
+
+            for (String column : fieldMap.keySet()) {
+                if (!newValues.containsKey(column))
+                    continue;
+
+                updateCount++;
+                try {
+                    Field f = fieldMap.get(column);
+                    f.setAccessible(true);
+                    f.set(currentEl, newValues.get(column));
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException("Error updating field: " + column, e);
+                }
+            }
+        }
+
+        try {
+            serializeList(elements);
+        } catch (IOException e) {
+            LoggerService.log(Level.ERROR, e.getMessage());
+        }
+
+        return updateCount;
     }
 
+
     @Override
-    public int delete(Map<String, Object> columnCondition) {
-        return 0;
+    public int delete(Map<String, Object> fieldValueFilters) {
+        List<T> elements = this.get(Map.of());
+        List<T> elementsToDelete = entRef.filterListByFields(elements, fieldValueFilters);
+
+        try {
+            elementsToDelete.forEach(elements::remove);
+            serializeList(elements);
+        } catch (IOException e) {
+            LoggerService.log(Level.ERROR, e.getMessage());
+        }
+
+        return elementsToDelete.size();
     }
+
 }

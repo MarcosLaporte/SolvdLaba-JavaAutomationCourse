@@ -126,4 +126,36 @@ public class EntityReflection<T extends Entity> {
         return fieldType == int.class || fieldType == long.class || fieldType == double.class ||
                 fieldType == float.class || fieldType == short.class || fieldType == byte.class;
     }
+
+    public Map<String, Field> matchColumnField() {
+        Map<String, Field> fieldMap = new HashMap<>();
+        for (Field field : this.clazz.getDeclaredFields()) {
+            Column column = field.getAnnotation(Column.class);
+            if (column != null) {
+                field.setAccessible(true);
+                fieldMap.put(column.name(), field);
+            }
+        }
+
+        return fieldMap;
+    }
+
+    public List<T> filterListByFields(List<T> baseList, Map<String, Object> fieldValueFilters) {
+        Map<String, Field> fieldMap = this.matchColumnField();
+        if (fieldValueFilters == null || fieldValueFilters.isEmpty())
+            return baseList;
+
+        return baseList.stream()
+                .filter(el -> fieldValueFilters.entrySet().stream().allMatch(
+                        entry -> {
+                            Field field = fieldMap.get(entry.getKey());
+                            try {
+                                return field != null && field.get(el).equals(entry.getValue());
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                                return false;
+                            }
+                        })
+                ).collect(Collectors.toList());
+    }
 }
