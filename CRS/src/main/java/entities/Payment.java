@@ -3,7 +3,7 @@ package entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import entities.annotations.*;
-import services.xml.DateAdapter;
+import utils.XmlLocalDateAdapter;
 
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -23,7 +23,7 @@ public class Payment extends Entity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @XmlElement
     @Column(name = "pay_date")
-    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
     public LocalDate payDate;
 
     @JsonProperty

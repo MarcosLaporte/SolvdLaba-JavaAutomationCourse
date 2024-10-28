@@ -1,11 +1,11 @@
-package services.xml;
+package utils;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class DateAdapter extends XmlAdapter<String, LocalDate> {
+public class XmlLocalDateAdapter extends XmlAdapter<String, LocalDate> {
 
     @Override
     public LocalDate unmarshal(String dateString) {

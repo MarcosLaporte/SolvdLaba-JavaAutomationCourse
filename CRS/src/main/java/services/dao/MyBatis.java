@@ -1,4 +1,4 @@
-package services.database;
+package services.dao;
 
 import entities.Entity;
 import org.apache.ibatis.io.Resources;

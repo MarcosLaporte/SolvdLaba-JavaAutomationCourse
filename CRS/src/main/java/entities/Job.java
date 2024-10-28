@@ -3,7 +3,7 @@ package entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import entities.annotations.*;
-import services.xml.DateAdapter;
+import utils.XmlLocalDateAdapter;
 
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -27,14 +27,14 @@ public class Job extends Entity {
     @JsonProperty
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @XmlElement
-    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
     @Column(name = "date_start")
     public LocalDate dateStart;
 
     @JsonProperty
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @XmlElement
-    @XmlJavaTypeAdapter(DateAdapter.class)
+    @XmlJavaTypeAdapter(XmlLocalDateAdapter.class)
     @Column(name = "date_finish", isNullable = true)
     public LocalDate dateFinish;
 

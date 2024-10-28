@@ -1,9 +1,9 @@
-package services;
+package services.dao;
 
 import entities.Entity;
 import org.apache.logging.log4j.Level;
-import services.database.EntityReflection;
-import services.database.IDao;
+import utils.LoggerService;
+import services.EntityReflection;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -14,11 +14,13 @@ public abstract class FileDao<T extends Entity> implements IDao<T> {
     public final EntityReflection<T> entRef;
     public final Class<T> clazz;
     public final String filesDir;
+    public final String filesExt;
 
-    public FileDao(Class<T> clazz, String filesDir) {
+    public FileDao(Class<T> clazz, String filesDir, String filesExt) {
         this.clazz = clazz;
         this.entRef = new EntityReflection<>(clazz);
         this.filesDir = filesDir;
+        this.filesExt = filesExt;
     }
 
     protected abstract List<T> parse(String fileName) throws Exception;
@@ -28,7 +30,7 @@ public abstract class FileDao<T extends Entity> implements IDao<T> {
     @Override
     public List<T> get(Map<String, Object> fieldValueFilters) {
         try {
-            List<T> elements = parse(this.clazz.getSimpleName() + ".xml");
+            List<T> elements = parse(this.clazz.getSimpleName() + filesExt);
 
             return this.entRef.filterListByFields(elements, fieldValueFilters);
         } catch (Exception e) {

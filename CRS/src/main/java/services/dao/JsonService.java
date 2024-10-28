@@ -1,4 +1,4 @@
-package services;
+package services.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -18,7 +18,7 @@ public class JsonService<T extends Entity> extends FileDao<T> {
     }
 
     public JsonService(Class<T> clazz) {
-        super(clazz, baseDir);
+        super(clazz, baseDir, ".json");
     }
 
     @Override

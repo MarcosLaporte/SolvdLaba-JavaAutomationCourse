@@ -1,4 +1,4 @@
-package services.xml;
+package services.dao;
 
 import entities.*;
 import entities.lists.*;
@@ -8,8 +8,7 @@ import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.Level;
 import org.xml.sax.SAXException;
-import services.FileDao;
-import services.LoggerService;
+import utils.LoggerService;
 import services.ReflectionService;
 
 import javax.xml.XMLConstants;
@@ -44,7 +43,7 @@ public class XMLService<T extends Entity> extends FileDao<T> {
             );
 
     public XMLService(Class<T> clazz) {
-        super(clazz, baseDir);
+        super(clazz, baseDir, ".xml");
     }
 
     public static boolean validateXMLSchema(String xsdPath, String xmlPath) throws IOException {

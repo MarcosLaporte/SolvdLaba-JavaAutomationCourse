@@ -1,9 +1,8 @@
-package services.database;
+package services;
 
 import entities.Entity;
 import entities.annotations.*;
-import services.InputService;
-import services.ReflectionService;
+import utils.InputService;
 
 import java.lang.reflect.*;
 import java.time.LocalDate;
