@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<customers>
+    <customer>
+        <id>101</id>
+        <fullName>TEST</fullName>
+        <email>guymontag@salamander.com</email>
+        <phoneNo>3058917290</phoneNo>
+        <address>123 Main St, New York</address>
+        <zip>12345</zip>
+    </customer>
+    <customer>
+        <id>102</id>
+        <fullName>Winston Smith</fullName>
+        <email>smithwinston@bb.com</email>
+        <phoneNo>2425155029</phoneNo>
+        <address>456 Oak Ave, Airstrip One</address>
+        <zip>54321</zip>
+    </customer>
+    <customer>
+        <id>103</id>
+        <fullName>Evey Hammond</fullName>
+        <email>eveyhammond@email.com</email>
+        <phoneNo>9227571255</phoneNo>
+        <address>789 Pine Rd, Shooters Hill</address>
+        <zip>67890</zip>
+    </customer>
+    <customer>
+        <id>105</id>
+        <fullName>Kal-El</fullName>
+        <email>clarkkent@dailyplanet.com</email>
+        <phoneNo>178226260</phoneNo>
+        <address>344 Clinton St, Metropolis</address>
+        <zip>16872</zip>
+    </customer>
+</customers>

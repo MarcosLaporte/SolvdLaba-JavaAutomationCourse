@@ -8,16 +8,24 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlRootElement(name = "feedbacks")
-public class FeedbackList {
+public class FeedbackList implements IEntityList<Feedback> {
     @JsonProperty("feedbacks")
     private List<Feedback> feedbackList;
 
+    private FeedbackList() {
+    }
+
+    private FeedbackList(List<Feedback> feedbackList) {
+        this.feedbackList = feedbackList;
+    }
+
     @XmlElement(name = "feedback")
-    public List<Feedback> getFeedbackList() {
+    public List<Feedback> getList() {
         return this.feedbackList;
     }
 
-    public void setFeedbackList(List<Feedback> feedbackList) {
+    @Override
+    public void setList(List<Feedback> feedbackList) {
         this.feedbackList = feedbackList;
     }
 }

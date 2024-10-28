@@ -1,0 +1,16 @@
+[ {
+  "jobId" : 10001,
+  "custComment" : "Everything works perfect. Not so good customer service.",
+  "rating" : 4,
+  "dateSubmit" : "2024-10-04"
+}, {
+  "jobId" : 10002,
+  "custComment" : "10/10 would come again",
+  "rating" : 5,
+  "dateSubmit" : "2024-10-08"
+}, {
+  "jobId" : 10003,
+  "custComment" : "Fixed the problem but left scratches on the case",
+  "rating" : 3,
+  "dateSubmit" : "2024-10-09"
+} ]

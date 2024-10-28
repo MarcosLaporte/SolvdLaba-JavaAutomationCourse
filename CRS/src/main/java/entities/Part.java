@@ -6,6 +6,7 @@ import entities.annotations.*;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+@SuppressWarnings("unused")
 @XmlRootElement(name = "part")
 @Table(name = "parts")
 public class Part extends Entity {
@@ -66,30 +67,6 @@ public class Part extends Entity {
 
     private Part(Integer id, Integer supplierId, String name, String description, Double value, Integer stock) {
         this(id.intValue(), supplierId.intValue(), name, description, value.doubleValue(), stock.intValue());
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setSupplierId(int supplierId) {
-        this.supplierId = supplierId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setValue(double value) {
-        this.value = value;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
     }
 
     public String toString() {

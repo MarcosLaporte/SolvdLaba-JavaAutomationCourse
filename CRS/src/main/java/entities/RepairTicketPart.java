@@ -6,6 +6,7 @@ import entities.annotations.*;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+@SuppressWarnings("unused")
 @XmlRootElement(name = "repairTicketPart")
 @Table(name = "repair_tickets_part")
 public class RepairTicketPart extends Entity {
@@ -38,18 +39,6 @@ public class RepairTicketPart extends Entity {
 
     private RepairTicketPart(Integer ticketId, Integer partId, Integer quantity) {
         this(ticketId.intValue(), partId.intValue(), quantity.intValue());
-    }
-
-    public void setTicketId(int ticketId) {
-        this.ticketId = ticketId;
-    }
-
-    public void setPartId(int partId) {
-        this.partId = partId;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     public String toString() {

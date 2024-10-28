@@ -8,16 +8,25 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlRootElement(name = "parts")
-public class PartList {
+public class PartList implements IEntityList<Part> {
     @JsonProperty("parts")
     private List<Part> partList;
 
+    private PartList() {
+    }
+
+    private PartList(List<Part> partList) {
+        this.partList = partList;
+    }
+
     @XmlElement(name = "part")
-    public List<Part> getPartList() {
+    @Override
+    public List<Part> getList() {
         return this.partList;
     }
 
-    public void setPartList(List<Part> partList) {
+    @Override
+    public void setList(List<Part> partList) {
         this.partList = partList;
     }
 }

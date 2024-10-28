@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<repairTicketParts>
+    <repairTicketPart>
+        <ticketId>10001</ticketId>
+        <partId>1002</partId>
+        <quantity>1</quantity>
+    </repairTicketPart>
+    <repairTicketPart>
+        <ticketId>10002</ticketId>
+        <partId>1002</partId>
+        <quantity>2</quantity>
+    </repairTicketPart>
+    <repairTicketPart>
+        <ticketId>10002</ticketId>
+        <partId>1006</partId>
+        <quantity>1</quantity>
+    </repairTicketPart>
+    <repairTicketPart>
+        <ticketId>10003</ticketId>
+        <partId>1004</partId>
+        <quantity>1</quantity>
+    </repairTicketPart>
+</repairTicketParts>

@@ -6,6 +6,7 @@ import entities.annotations.*;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+@SuppressWarnings("unused")
 @XmlRootElement(name = "supplier")
 @Table(name = "suppliers")
 public class Supplier extends Entity {
@@ -60,26 +61,6 @@ public class Supplier extends Entity {
 
     private Supplier(Integer id, String fullName, String email, Long phoneNo, String address) {
         this(id.intValue(), fullName, email, phoneNo.longValue(), address);
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPhoneNo(long phoneNo) {
-        this.phoneNo = phoneNo;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     @Override

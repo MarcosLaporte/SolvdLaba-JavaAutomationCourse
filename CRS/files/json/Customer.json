@@ -1,0 +1,36 @@
+[ {
+  "id" : 101,
+  "fullName" : "TEST",
+  "email" : "guymontag@salamander.com",
+  "phoneNo" : 3058917290,
+  "address" : "123 Main St, New York",
+  "zip" : 12345
+}, {
+  "id" : 102,
+  "fullName" : "Winston Smith",
+  "email" : "smithwinston@bb.com",
+  "phoneNo" : 2425155029,
+  "address" : "456 Oak Ave, Airstrip One",
+  "zip" : 54321
+}, {
+  "id" : 103,
+  "fullName" : "Evey Hammond",
+  "email" : "eveyhammond@email.com",
+  "phoneNo" : 9227571255,
+  "address" : "789 Pine Rd, Shooters Hill",
+  "zip" : 67890
+}, {
+  "id" : 105,
+  "fullName" : "Kal-El",
+  "email" : "clarkkent@dailyplanet.com",
+  "phoneNo" : 178226260,
+  "address" : "344 Clinton St, Metropolis",
+  "zip" : 16872
+}, {
+  "id" : 107,
+  "fullName" : "NAME TEST",
+  "email" : "EMAIL@TEST.COM",
+  "phoneNo" : 11111111,
+  "address" : "TEST Blvd. 123",
+  "zip" : 987
+} ]

@@ -1,0 +1,16 @@
+[ {
+  "id" : 10001,
+  "ticketId" : 10001,
+  "dateStart" : "2024-10-02",
+  "dateFinish" : "2024-10-03"
+}, {
+  "id" : 10002,
+  "ticketId" : 10002,
+  "dateStart" : "2024-10-05",
+  "dateFinish" : "2024-10-07"
+}, {
+  "id" : 10003,
+  "ticketId" : 10003,
+  "dateStart" : "2024-10-07",
+  "dateFinish" : "2024-10-08"
+} ]
