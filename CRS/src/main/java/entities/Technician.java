@@ -6,6 +6,7 @@ import entities.annotations.*;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+@SuppressWarnings("unused")
 @XmlRootElement(name = "technician")
 @Table(name = "technicians")
 public class Technician extends Entity {
@@ -46,18 +47,6 @@ public class Technician extends Entity {
 
     private Technician(Integer id, String fullName, Float salary) {
         this(id.intValue(), fullName, salary.floatValue());
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public void setSalary(float salary) {
-        this.salary = salary;
     }
 
     public String toString() {

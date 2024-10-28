@@ -10,6 +10,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
+@SuppressWarnings("unused")
 @XmlRootElement(name = "job")
 @Table(name = "jobs")
 public class Job extends Entity {
@@ -58,22 +59,6 @@ public class Job extends Entity {
 
     private Job(Integer id, Integer ticketId, LocalDate dateStart, LocalDate dateFinish) {
         this(id.intValue(), ticketId.intValue(), dateStart, dateFinish);
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setTicketId(int ticketId) {
-        this.ticketId = ticketId;
-    }
-
-    public void setDateStart(LocalDate dateStart) {
-        this.dateStart = dateStart;
-    }
-
-    public void setDateFinish(LocalDate dateFinish) {
-        this.dateFinish = dateFinish;
     }
 
     public String toString() {

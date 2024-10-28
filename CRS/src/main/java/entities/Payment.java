@@ -10,6 +10,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
+@SuppressWarnings("unused")
 @XmlRootElement(name = "payment")
 @Table(name = "payments")
 public class Payment extends Entity {
@@ -43,18 +44,6 @@ public class Payment extends Entity {
 
     private Payment(Integer jobId, LocalDate payDate, Double amount) {
         this(jobId.intValue(), payDate, amount.doubleValue());
-    }
-
-    public void setJobId(int jobId) {
-        this.jobId = jobId;
-    }
-
-    public void setPayDate(LocalDate payDate) {
-        this.payDate = payDate;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
     }
 
     public String toString() {
